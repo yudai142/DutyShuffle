@@ -6,6 +6,33 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  // provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Work {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  multiple Int? @db.UnsignedInt
+}
+model Menber {
+  id Int @id @default(autoincrement())
+  last_name String  @db.VarChar(30)
+  first_name String  @db.VarChar(30)
+  kana_name String  @db.VarChar(255)
+  archive Boolean @db.TinyInt(1) @default(false)
+}
+
+model Menber_option {}
+
+model History {}
+
+model Other {
+  url String @unique
+  user User @relation(fields: [userId], references: [id])
+  userId Int @map("user_id")
+  @@map("post")
+  posts Post[]
+  @@map("user")
 }
