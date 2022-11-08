@@ -37,6 +37,7 @@ if (!file_exists($filename)){
       exit($e->getMessage());
     }
   }
+  // echo "接続テスト"
   // echo connect();
 }
 ?>
