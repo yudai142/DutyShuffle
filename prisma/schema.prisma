@@ -16,6 +16,7 @@ model Work {
   id Int @id @default(autoincrement())
   name String @db.VarChar(255)
   multiple Int? @db.UnsignedInt
+  archive Boolean @default(false)
   menberOption MenberOption[]
   history History[]
   @@map("work")
@@ -37,7 +38,7 @@ model MenberOption {
   workId Int @map("work_id")
   menber Menber @relation(fields: [menberId], references: [id])
   menberId Int @map("menber_id")
-  status Boolean @default(false)
+  status Int
   @@map("menber_option")
 }
 
