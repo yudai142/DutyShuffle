@@ -9,6 +9,7 @@ datasource db {
   // provider = "postgresql"
   provider = "mysql"
   url      = env("DATABASE_URL")
+  // shadowDatabaseUrl = env("DATABASE_URL")
 }
 
 model Work {
