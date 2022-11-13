@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- ホスト: localhost:8889
--- 生成日時: 2022 年 11 月 08 日 22:48
+-- 生成日時: 2022 年 11 月 12 日 23:20
 -- サーバのバージョン： 5.7.26
 -- PHP のバージョン: 7.4.2
 
@@ -57,7 +57,7 @@ CREATE TABLE `menber_option` (
   `id` int(11) NOT NULL,
   `work_id` int(11) NOT NULL,
   `menber_id` int(11) NOT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0'
+  `status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -80,7 +80,8 @@ CREATE TABLE `shuffle_option` (
 CREATE TABLE `work` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `multiple` int(10) UNSIGNED DEFAULT NULL
+  `multiple` int(10) UNSIGNED DEFAULT NULL,
+  `archive` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -105,7 +106,8 @@ CREATE TABLE `_prisma_migrations` (
 --
 
 INSERT INTO `_prisma_migrations` (`id`, `checksum`, `finished_at`, `migration_name`, `logs`, `rolled_back_at`, `started_at`, `applied_steps_count`) VALUES
-('dcd4d0e4-145e-4a1e-9d5f-5214d2d3b12e', '8c2a30f0e43c75a60963e647359c35b7f4c861b0594cf21363e8a85d6572f8dd', '2022-11-08 22:30:49.160', '20221108021909_init', NULL, NULL, '2022-11-08 22:30:48.858', 1);
+('1a55dc16-51e4-429e-aea5-63d82dd42bfe', '8c2a30f0e43c75a60963e647359c35b7f4c861b0594cf21363e8a85d6572f8dd', '2022-11-09 10:22:15.413', '20221108021909_init', NULL, NULL, '2022-11-09 10:22:15.103', 1),
+('c66f77bc-29c1-49a0-9120-14e30ab42d96', '28244d4519d3b8827345e74995b17f19036adfeb80c15d3e9cfa06743a8c9eb5', '2022-11-09 10:22:15.470', '20221109015544_add_status_to_work', NULL, NULL, '2022-11-09 10:22:15.414', 1);
 
 --
 -- ダンプしたテーブルのインデックス
