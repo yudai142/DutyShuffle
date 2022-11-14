@@ -23,3 +23,4 @@ Homestead.json
 .phpunit.result.cache
 env.php
 .DS_Store
+.vscode

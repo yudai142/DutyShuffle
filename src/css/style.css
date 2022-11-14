@@ -1,0 +1,47 @@
+body {
+  display: flex;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.sidebar {
+  width: 100%;
+  max-width: 198px;
+  border-right: 1px solid black;
+  /* background: #FFE5B2; */
+}
+
+header {
+  color: #333;
+  /* color: #fff; */
+  /* background: #FFCC66; */
+  font-size: 36px;
+  text-align: center;
+  line-height: 70px;
+  user-select: none;
+  border-bottom: 1px solid black;
+  height: 70px;
+}
+
+.sidebar ul a {
+  display: block;
+  line-height: 65px;
+  font-size: 24px;
+  color: #333;
+  /* color: #fff; */
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid black;
+  transition: 0.4s;
+}
+
+.sidebar ul li {
+  height: 70px;
+}
+
+ul li:hover a {
+  padding-left: 50px;
+}
