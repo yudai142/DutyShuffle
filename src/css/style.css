@@ -44,4 +44,225 @@ header {
 
 ul li:hover a {
   padding-left: 50px;
+  text-decoration: none;
+}
+
+/* date-form */
+
+label {
+  position: relative;
+  width: 100%;
+  max-width: 415px;
+  margin-bottom: 0px!important;
+}
+
+input[type="date"] {
+  padding: 0 10px;
+  width: 100%;
+  max-width: 313px;
+  height: 41px;
+  border: 0;
+  background: transparent;
+  box-sizing: border-box;
+  font-size: 35px;
+}
+
+input[type="date"]:focus {
+  outline: 0;
+}
+
+label::before {
+  position: absolute;
+  content: "";
+  top: -3px;
+  right: 57px;
+  width: 50px;
+  height: 50px;
+  background-color: #06c;
+  background-image: url("../image/icon_calendar.png");
+  background-repeat: no-repeat;
+  /* 画像の繰り返しを指定  */
+  background-position: center center;
+  /* 画像の表示位置を指定  */
+  background-size: contain;
+  /* 画像のサイズを指定    */
+  border-radius: 10px;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type="date"]::-webkit-clear-button {
+  -webkit-appearance: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 57px;
+  top: -3px;
+  padding: 0;
+  width: 50px;
+  height: 50px;
+  /* background: rgba(255, 0, 0, 0.5); // 一旦背景色を付けて、見やすくします */
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+}
+
+.date-form {
+  height: 93px;
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  text-align: center;
+  border-bottom: 1px solid black;
+}
+
+.icon-left a {
+  color: #06c;
+}
+
+.icon-left a:hover {
+  color: #337ab7;
+}
+
+.icon-right a {
+  color: #06c;
+}
+
+.icon-right a:hover {
+  color: #337ab7;
+}
+
+
+
+
+/* サブ ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
+
+.blue-button {
+  align-items: center;
+  background-color: #0A66C2;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 24px;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+}
+
+.blue-button:hover {
+  color: #ffffff;
+  background-color: #16437E;
+  text-decoration: none;
+}
+
+.red-button {
+  align-items: center;
+  background-color: #e74c3c;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+}
+
+.red-button:hover {
+  color: #ffffff;
+  background-color: #ff5341;
+}
+
+.gray-button {
+  align-items: center;
+  background-color: #4c586f;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+}
+
+.gray-button:hover {
+  color: #ffffff;
+  opacity: .8;
+}
+
+.login-button {
+  position: absolute;
+  top: -21px;
+  right: -236px;
+}
+
+.logout-button {
+  position: absolute;
+  top: -5px;
+  right: 0;
+}
+
+.list-button {
+  position: absolute;
+  top: -5px;
+  right: 130px;
+}
+
+.top-button {
+  position: absolute;
+  top: -5px;
+  right: 130px;
 }
