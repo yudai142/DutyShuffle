@@ -7,7 +7,7 @@
   <title>Document</title>
   <link rel="stylesheet" href="../src/css/style.css" />
   <link rel="stylesheet" href="../src/css/reset.css" />
-  <link rel="stylesheet" href="../src/css/allocation.css" />
+  <link rel="stylesheet" href="../src/css/example.css" />
 </head>
 <body>
   <div class="sidebar">
@@ -31,8 +31,23 @@
     </ul>
   </div>
   <main>
-    <header>割り当て</header>
+    <header>オプション</header>
     <!-- ↓ここからコーディングしてください -->
+    <div class="option-form">
+      <div class="option-left">
+        <h1>作業が被らない期間：</h1>
+        <input type="text" size="5">
+        <h1>　日　</h1>
+        <button>変更</button>
+      </div><!-- /.option-left -->
+      <div class="option-right">
+        <button>オプションの追加</button>
+      </div><!-- /.option-right -->
+    </div><!-- /.option-form -->
+    <div class="container-option">
+      <h1>固定・除外させたい担当</h1>
+      <div class="option-box"></div><!-- /.option-box -->
+    </div><!-- /.container-option -->
   </main>
 </body>
 </html>
