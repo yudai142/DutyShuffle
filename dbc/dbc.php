@@ -1,8 +1,8 @@
 <?php
-$filename = './env.php';
+$filename = '../env.php';
 if (!file_exists($filename)){
   //For Heroku
-  function connect(){
+  function dbc(){
     try {
       $url = parse_url(getenv('DATABASE_URL'));
       $dsn = sprintf('pgsql:host=%s;dbname=%s', $url['host'], substr($url['path'], 1));
@@ -17,9 +17,9 @@ if (!file_exists($filename)){
   }
 }else{
   //For Locale
-  require_once 'env.php';
+  require_once '../env.php';
   // ini_set('display_errors', true);
-  function connect(){
+  function dbc(){
     $host = DB_HOST;
     $db = DB_NAME;
     $user = DB_USER;

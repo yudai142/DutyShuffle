@@ -22,3 +22,25 @@
     <span style="position: relative;"><a href="login.php" class="login-button blue-button">割り当てへ</a></span>
   <?php endif;?>
 </div>
+
+
+    <!-- レコード追加 -->
+    <div class="add_products">
+        <!-- 入力フォーム -->
+        作業名:<input id="name" required><br>
+        参加人数:<input  id="multiple" type="number" min=1 value=1 required><br>
+        有効/無効:<input id="archive" type="checkbox" value=1 >
+        <!-- レコード追加後に入力内容を表示 -->
+        <div id="add_result">
+        </div>
+        <!-- 送信ボタン -->
+        <button id="ajax_add">追加ボタン</button>
+    </div>
+    <!-- レコード全件取得 -->
+    <!-- 追加したレコードも即時反映される -->
+    <table border="1" id="all_show_result">
+        <tr>
+            <th>id</th><th>作業名</th><th>人数</th><th>有効/無効</th>
+        </tr>
+    </table>
+    <script src="../src/js/ajax.js"></script>
