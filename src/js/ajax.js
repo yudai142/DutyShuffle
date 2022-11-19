@@ -36,7 +36,6 @@ $(function(){
       var confirmResult = true;
   
       if(confirmResult) {
-          $('#archive').prop("checked") == true ? $archive = 1 : $archive = 0;
           $.ajax({
               // 送信方法
               type: "POST",
@@ -49,7 +48,7 @@ $(function(){
                   // #nameと#priceのvalueをセット
                   "name" : $('#name').val(),
                   "multiple" : $('#multiple').val(),
-                  "archive" : $archive
+                  "archive" : Number($('#archive').prop("checked"))
               },
               // 通信が成功した時
               success: function(data) {
