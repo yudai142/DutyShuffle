@@ -3,7 +3,7 @@ $(function(){
   // 試しに関数にしてみただけ
   function getAllData(){
     $.ajax({
-      url: "../classes/ajax_all.php",
+      url: "../classes/ajax.php",
       data: {
         "type": 'work_list',
       },
