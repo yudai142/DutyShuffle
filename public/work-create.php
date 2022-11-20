@@ -1,7 +1,7 @@
 <div class="modal-container">
 	<div class="modal-body">
 		<!-- 閉じるボタン -->
-		<div class="modal-close">×</div>
+		<!-- <div class="modal-close">×</div> -->
 		<!-- モーダル内のコンテンツ -->
 		<div class="modal-content">
       <h1>作業登録</h1>

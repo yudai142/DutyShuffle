@@ -49,7 +49,7 @@ ul li:hover a {
 
 /* date-form */
 
-label {
+.date-form label {
   position: relative;
   width: 100%;
   max-width: 415px;
@@ -71,7 +71,7 @@ input[type="date"]:focus {
   outline: 0;
 }
 
-label::before {
+.date-form label::before {
   position: absolute;
   content: "";
   top: -3px;
