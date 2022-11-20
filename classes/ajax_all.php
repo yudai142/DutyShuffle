@@ -1,5 +1,4 @@
 <?php
-ini_set('display_errors', true);
 // データベース接続
 require_once("../dbc/dbc.php");
 // データ取得用SQL
