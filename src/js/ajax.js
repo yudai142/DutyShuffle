@@ -8,7 +8,7 @@ $(function(){
       },
       success: function(data) {
           $.each(data, function(key, value){
-            $('#member_show_result').append("<tr><td>" + value.id + "</td><td>" + value.last_name + "</td><td>" + value.first_name + "</td><td>" + value.kana_name + "</td><td>" + value.archive + "</td></tr>"); 
+            $('#member_show_result').append("<li><button class='md-btn' data-target='modal-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
           });
       },
       error: function(){
@@ -29,7 +29,7 @@ $(function(){
       },
       success: function(data) {
           $.each(data, function(key, value){
-              $('#work_show_result').append("<tr><td>" + value.id + "</td><td>" + value.name + "</td><td>" + value.multiple + "</td><td>" + value.archive + "</td></tr>");
+              $('#work_show_result').append("<li><button class='md-btn' data-target='modal-work' value=" + value.id + ">" + value.name + "</button><li>");
           });
       },
       error: function(){
@@ -54,7 +54,7 @@ $(function(){
         },
         success: function(data) {
           $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
-          $('#work_show_result').append("<tr><td>" + data[0].id + "</td><td>" + data[0].name + "</td><td>" + data[0].multiple + "</td><td>" + data[0].archive + "</td></tr>"); 
+          $('#work_show_result').append("<li><button id='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
         },
         error: function(data) {
             console.log("通信失敗");
@@ -78,7 +78,7 @@ $(function(){
         },
         success: function(data) {
           $('#member_result').html("<p>" + data[0].last_name + data[0].first_name + "("+data[0].kana_name + ")" + data[0].archive + "を登録しました。</p>");
-          $('#member_show_result').append("<tr><td>" + data[0].id + "</td><td>" + data[0].last_name + "</td><td>" + data[0].first_name + "</td><td>" + data[0].kana_name + "</td><td>" + data[0].archive + "</td></tr>"); 
+          $('#member_show_result').append("<li><button id='modal-member' value=" + data[0].id + ">" + data[0].last_name + "　" + data[0].first_name + "</button><li>");
         },
         error: function(data) {
             console.log("通信失敗");

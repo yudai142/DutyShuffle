@@ -7,9 +7,8 @@
             作業名:<input id="name" required><br>
             参加人数:<input  id="multiple" type="number" min=1 value=1 required><br>
             有効/無効:<input id="work_archive" type="checkbox" >
-            <div id="work_result">
-            </div>
-            <button id="submit_work">
+            <div id="work_result"></div>
+            <button id="submit_work"></button>
             <button class="md-close">戻る</button>
         </div>
   		</div>

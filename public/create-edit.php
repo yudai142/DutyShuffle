@@ -16,11 +16,8 @@
         <option value="true">全て表示</option>
       </select>
       <button class="md-btn" data-target="modal-member">メンバー登録</button>
-      <table border="1" id="member_show_result">
-          <tr>
-              <th>id</th><th>姓</th><th>名</th><th>ふりがな</th><th>有効/無効</th>
-          </tr>
-      </table>
+      <ul id="member_show_result">
+      </ul>
     </div>
   </div>
   <div class="tab_content" id="programming_content">
@@ -32,11 +29,8 @@
       </select>
       <button class="md-btn" data-target="modal-work">作業登録</button>
       <!-- 追加したレコードも即時反映される -->
-      <table border="1" id="work_show_result">
-          <tr>
-              <th>id</th><th>作業名</th><th>人数</th><th>有効/無効</th>
-          </tr>
-      </table>
+      <ul id="work_show_result">
+      </ul>
     </div>
   </div>
   
@@ -49,5 +43,5 @@
 
 <?php require_once "../public/member-create.php" ?>
 <?php require_once "../public/work-create.php" ?>
-<script src="../src/js/modal.js"></script>
 <script src="../src/js/ajax.js"></script>
+<script defer src="../src/js/modal.js"></script>

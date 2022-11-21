@@ -8,9 +8,8 @@
             名:<input id="first_name" required><br>
             ふりがな:<input id="kana_name" required><br>
             有効/無効:<input id="member_archive" type="checkbox" >
-            <div id="member_result">
-            </div>
-            <button id="submit_member">
+            <div id="member_result"></div>
+            <button id="submit_member"></button>
             <button class="md-close">戻る</button>
         </div>
   		</div>
