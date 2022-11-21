@@ -15,7 +15,7 @@
         <option value="false">有効のみ表示</option>
         <option value="true">全て表示</option>
       </select>
-      <button class="md-btn" data-target="modal01">メンバー登録</button>
+      <button class="md-btn" data-target="modal-member">メンバー登録</button>
       <table border="1" id="member_show_result">
           <tr>
               <th>id</th><th>姓</th><th>名</th><th>ふりがな</th><th>有効/無効</th>
@@ -30,7 +30,7 @@
         <option value="false">有効のみ表示</option>
         <option value="true">全て表示</option>
       </select>
-      <button class="md-btn" data-target="modal02">作業登録</button>
+      <button class="md-btn" data-target="modal-work">作業登録</button>
       <!-- 追加したレコードも即時反映される -->
       <table border="1" id="work_show_result">
           <tr>

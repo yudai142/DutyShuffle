@@ -41,7 +41,7 @@ $(function(){
   }
   getAllWork();
   
-  $('#work_add').on('click',function(){
+  $('#submit_work').on('click',function(){
     $.ajax({
         type: "POST",
         url: "../classes/ajax.php",
@@ -64,7 +64,7 @@ $(function(){
     // return false
   });
 
-  $('#member_add').on('click',function(){
+  $('#submit_member').on('click',function(){
     $.ajax({
         type: "POST",
         url: "../classes/ajax.php",
