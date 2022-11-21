@@ -9,7 +9,7 @@
             有効/無効:<input id="work_archive" type="checkbox" >
             <div id="work_result">
             </div>
-            <button id="work_add">
+            <button id="submit_work">
             <button class="md-close">戻る</button>
         </div>
   		</div>
