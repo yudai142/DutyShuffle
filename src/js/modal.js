@@ -19,7 +19,7 @@ $(window).on('load', function() {
               success: function(data) {
                 $(modal).find('#name').val(data[0].name);
                 $(modal).find('#multiple').val(data[0].multiple);
-                (Number(data[0].archive)) ? $(modal).find('#work_archive').attr('checked', 'checked').prop("checked", true).change() : $(modal).find('#work_archive').removeAttr("checked").prop("checked", false).change();
+                (Number(data[0].archive)) ? $(modal).find('#work_archive').prop("checked", true) : $(modal).find('#work_archive').prop("checked", false);
                 $(modal).find('#work_result p').remove();
                 $(modal).find('#submit_work').val(data[0].id);
               },
@@ -32,7 +32,7 @@ $(window).on('load', function() {
             $(modal).find('h1').text("作業登録");
             $(modal).find('#name').val("");
             $(modal).find('#multiple').val(1);
-            $(modal).find('#work_archive').removeAttr("checked").prop("checked", false).change();
+            $(modal).find('#work_archive').prop("checked", false);
             $(modal).find('#work_result p').remove();
             $(modal).find('#submit_work').removeAttr('value');
             $(modal).find('#submit_work').text("追加");
@@ -52,7 +52,7 @@ $(window).on('load', function() {
                 $(modal).find('#last_name').val(data[0].last_name);
                 $(modal).find('#first_name').val(data[0].first_name);
                 $(modal).find('#kana_name').val(data[0].kana_name);
-                (Number(data[0].archive)) ? $(modal).find('#member_archive').attr('checked', 'checked').prop("checked", true).change() : $(modal).find('#member_archive').removeAttr("checked").prop("checked", false).change();
+                (Number(data[0].archive)) ? $(modal).find('#member_archive').prop("checked", true) : $(modal).find('#member_archive').prop("checked", false);
                 $(modal).find('#member_result p').remove();
                 $(modal).find('#submit_member').val(data[0].id);
               },
@@ -66,7 +66,7 @@ $(window).on('load', function() {
             $(modal).find('#last_name').val("");
             $(modal).find('#first_name').val("");
             $(modal).find('#kana_name').val("");
-            $(modal).find('#member_archive').removeAttr("checked").prop("checked", false).change();
+            $(modal).find('#member_archive').prop("checked", false);
             $(modal).find('#member_result p').remove();
             $(modal).find('#submit_member').removeAttr('value');
             $(modal).find('#submit_member').text("追加");
