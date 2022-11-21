@@ -21,7 +21,7 @@
         <option value="false">有効のみ表示</option>
         <option value="true">全て表示</option>
       </select>
-      <button id="modal-open">作業登録</button>
+      <button class="md-btn" data-target="modal02">作業登録</button>
       <!-- 追加したレコードも即時反映される -->
       <table border="1" id="all_show_result">
           <tr>
