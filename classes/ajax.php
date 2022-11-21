@@ -91,6 +91,25 @@ try{
       }
       echo json_encode($productList);
       exit;
+    case 'work_edit':
+      $sql = "SELECT id, name, multiple, archive FROM work WHERE id = ?";
+      $stmt = dbc()->prepare($sql);
+      $stmt->execute(array($_REQUEST['id']));
+
+      $productList = array();
+      // fetchメソッドでSQLの結果を取得
+      // 定数をPDO::FETCH_ASSOC:に指定すると連想配列で結果を取得できる
+      // 取得したデータを$productListへ代入する
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+          $productList[] = array(
+            'id'    => $row['id'],
+            'name'    => $row['name'],
+            'multiple'  => $row['multiple'],
+            'archive' => $row['archive']
+          );
+      }
+      echo json_encode($productList);
+      exit;
   };
 }catch(PDOException $e){
   exit($e->getMessage());

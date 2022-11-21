@@ -9,6 +9,25 @@ $(window).on('load', function() {
           if($(this).val()){
             $(modal).find('h1').text("作業編集");
             $(modal).find('#submit_work').text("変更");
+            $.ajax({
+              url: "../classes/ajax.php",
+              datatype: "json",
+              data: {
+                  "type": 'work_edit',
+                  "id" : $(this).val()
+              },
+              success: function(data) {
+                $(modal).find('#name').val(data[0].name);
+                $(modal).find('#multiple').val(data[0].multiple);
+                (Number(data[0].archive)) ? $(modal).find('#work_archive').attr('checked', 'checked').prop("checked", true).change() : $(modal).find('#work_archive').removeAttr("checked").prop("checked", false).change();
+                $(modal).find('#work_result p').remove();
+                $(modal).find('#submit_work').val(data[0].id);
+              },
+              error: function(data) {
+                  console.log("通信失敗");
+                  console.log(data);
+              }
+          });
           }else{
             $(modal).find('h1').text("作業登録");
             $(modal).find('#name').val("");
