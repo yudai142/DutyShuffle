@@ -41,6 +41,26 @@ $(window).on('load', function() {
           if($(this).val()){
             $(modal).find('h1').text("メンバー編集");
             $(modal).find('#submit_member').text("変更");
+            $.ajax({
+              url: "../classes/ajax.php",
+              datatype: "json",
+              data: {
+                  "type": 'member_edit',
+                  "id" : $(this).val()
+              },
+              success: function(data) {
+                $(modal).find('#last_name').val(data[0].last_name);
+                $(modal).find('#first_name').val(data[0].first_name);
+                $(modal).find('#kana_name').val(data[0].kana_name);
+                (Number(data[0].archive)) ? $(modal).find('#member_archive').attr('checked', 'checked').prop("checked", true).change() : $(modal).find('#member_archive').removeAttr("checked").prop("checked", false).change();
+                $(modal).find('#member_result p').remove();
+                $(modal).find('#submit_member').val(data[0].id);
+              },
+              error: function(data) {
+                  console.log("通信失敗");
+                  console.log(data);
+              }
+            });
           }else{
             $(modal).find('h1').text("メンバー登録");
             $(modal).find('#last_name').val("");

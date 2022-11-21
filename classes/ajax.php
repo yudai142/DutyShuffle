@@ -97,14 +97,28 @@ try{
       $stmt->execute(array($_REQUEST['id']));
 
       $productList = array();
-      // fetchメソッドでSQLの結果を取得
-      // 定数をPDO::FETCH_ASSOC:に指定すると連想配列で結果を取得できる
-      // 取得したデータを$productListへ代入する
       while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
           $productList[] = array(
             'id'    => $row['id'],
             'name'    => $row['name'],
             'multiple'  => $row['multiple'],
+            'archive' => $row['archive']
+          );
+      }
+      echo json_encode($productList);
+      exit;
+    case 'member_edit':
+      $sql = "SELECT id, last_name, first_name, kana_name, archive FROM member WHERE id = ?";
+      $stmt = dbc()->prepare($sql);
+      $stmt->execute(array($_REQUEST['id']));
+
+      $productList = array();
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+          $productList[] = array(
+            'id'    => $row['id'],
+            'last_name'  => $row['last_name'],
+            'first_name' => $row['first_name'],
+            'kana_name' => $row['kana_name'],
             'archive' => $row['archive']
           );
       }
