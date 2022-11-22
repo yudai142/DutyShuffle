@@ -91,6 +91,23 @@ try{
       }
       echo json_encode($productList);
       exit;
+    case 'member_edit':
+      $sql = "SELECT id, last_name, first_name, kana_name, archive FROM member WHERE id = ?";
+      $stmt = dbc()->prepare($sql);
+      $stmt->execute(array($_REQUEST['id']));
+
+      $productList = array();
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+          $productList[] = array(
+            'id'    => $row['id'],
+            'last_name'  => $row['last_name'],
+            'first_name' => $row['first_name'],
+            'kana_name' => $row['kana_name'],
+            'archive' => $row['archive']
+          );
+      }
+      echo json_encode($productList);
+      exit;
     case 'work_edit':
       $sql = "SELECT id, name, multiple, archive FROM work WHERE id = ?";
       $stmt = dbc()->prepare($sql);
@@ -107,21 +124,31 @@ try{
       }
       echo json_encode($productList);
       exit;
-    case 'member_edit':
-      $sql = "SELECT id, last_name, first_name, kana_name, archive FROM member WHERE id = ?";
+    case 'member_update':
+      $sql = "UPDATE member SET last_name = ?, first_name = ?, kana_name = ?, archive = ? WHERE id = ?";
       $stmt = dbc()->prepare($sql);
-      $stmt->execute(array($_REQUEST['id']));
+      $stmt->execute(array($_POST['last_name'], $_POST['first_name'], $_POST['kana_name'], $_POST['archive'], $_POST['id']));
 
-      $productList = array();
-      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
-          $productList[] = array(
-            'id'    => $row['id'],
-            'last_name'  => $row['last_name'],
-            'first_name' => $row['first_name'],
-            'kana_name' => $row['kana_name'],
-            'archive' => $row['archive']
-          );
-      }
+      $productList[] = array(
+        'id'    => $_POST['id'],
+        'last_name'  => $_POST['last_name'],
+        'first_name' => $_POST['first_name'],
+        'kana_name' => $_POST['kana_name'],
+        'archive' => $_POST['archive']
+      );
+      echo json_encode($productList);
+      exit;
+    case 'work_update':
+      $sql = "UPDATE work SET name = ?, multiple = ?, archive = ? WHERE id = ?";
+      $stmt = dbc()->prepare($sql);
+      $stmt->execute(array($_POST['name'], $_POST['multiple'], $_POST['archive'], $_POST['id']));
+
+      $productList[] = array(
+        'id'    => $_POST['id'],
+        'name'    => $_POST['name'],
+        'multiple'  => $_POST['multiple'],
+        'archive' => $_POST['archive']
+      );
       echo json_encode($productList);
       exit;
   };

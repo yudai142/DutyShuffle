@@ -8,7 +8,7 @@ $(function(){
       },
       success: function(data) {
           $.each(data, function(key, value){
-            $('#member_show_result').append("<li><button class='md-btn' data-target='modal-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
+            $('#member_show_result').append("<li id=member_" + value.id + "><button class='md-btn' data-target='modal-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
           });
       },
       error: function(){
@@ -29,7 +29,7 @@ $(function(){
       },
       success: function(data) {
           $.each(data, function(key, value){
-              $('#work_show_result').append("<li><button class='md-btn' data-target='modal-work' value=" + value.id + ">" + value.name + "</button><li>");
+              $('#work_show_result').append("<li id=work_" + value.id + "><button class='md-btn' data-target='modal-work' value=" + value.id + ">" + value.name + "</button><li>");
           });
       },
       error: function(){
@@ -49,6 +49,7 @@ $(function(){
           datatype: "json",
           data: {
               "type": 'member_update',
+              "id" : $(this).val(),
               "last_name" : $('#last_name').val(),
               "first_name" : $('#first_name').val(),
               "kana_name" : $('#kana_name').val(),
@@ -56,7 +57,7 @@ $(function(){
           },
           success: function(data) {
             $('#member_result').html("<p>" + data[0].last_name + data[0].first_name + "("+data[0].kana_name + ")" + data[0].archive + "を変更しました。</p>");
-            $('#member_show_result').find('h1').append("<li><button class='md-btn' data-target='modal-member' value=" + data[0].id + ">" + data[0].last_name + "　" + data[0].first_name + "</button><li>");
+            $('#member_show_result').find("#member_" + data[0].id).html("<button class='md-btn' data-target='modal-member' value=" + data[0].id + ">" + data[0].last_name + "　" + data[0].first_name + "</button>");
           },
           error: function(data) {
               console.log("通信失敗");
@@ -77,7 +78,7 @@ $(function(){
           },
           success: function(data) {
             $('#member_result').html("<p>" + data[0].last_name + data[0].first_name + "("+data[0].kana_name + ")" + data[0].archive + "を登録しました。</p>");
-            $('#member_show_result').append("<li><button class='md-btn' data-target='modal-member' value=" + data[0].id + ">" + data[0].last_name + "　" + data[0].first_name + "</button><li>");
+            $('#member_show_result').append("<li id=member_" + data[0].id + "><button class='md-btn' data-target='modal-member' value=" + data[0].id + ">" + data[0].last_name + "　" + data[0].first_name + "</button><li>");
           },
           error: function(data) {
               console.log("通信失敗");
@@ -89,25 +90,48 @@ $(function(){
   });
   
   $('#submit_work').on('click',function(){
-    $.ajax({
-        type: "POST",
-        url: "../classes/ajax.php",
-        datatype: "json",
-        data: {
-            "type": 'work_add',
-            "name" : $('#name').val(),
-            "multiple" : $('#multiple').val(),
-            "archive" : Number($('#work_archive').prop("checked"))
-        },
-        success: function(data) {
-          $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
-          $('#work_show_result').append("<li><button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
-        },
-        error: function(data) {
-            console.log("通信失敗");
-            console.log(data);
-        }
-    });
+    if($(this).val()){
+      $.ajax({
+          type: "POST",
+          url: "../classes/ajax.php",
+          datatype: "json",
+          data: {
+              "type": 'work_update',
+              "id" : $(this).val(),
+              "name" : $('#name').val(),
+              "multiple" : $('#multiple').val(),
+              "archive" : Number($('#work_archive').prop("checked"))
+          },
+          success: function(data) {
+            $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを変更しました。</p>");
+            $('#work_show_result').find("#work_" + data[0].id).html("<button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button>");
+          },
+          error: function(data) {
+              console.log("通信失敗");
+              console.log(data);
+          }
+      });
+    }else{
+      $.ajax({
+          type: "POST",
+          url: "../classes/ajax.php",
+          datatype: "json",
+          data: {
+              "type": 'work_add',
+              "name" : $('#name').val(),
+              "multiple" : $('#multiple').val(),
+              "archive" : Number($('#work_archive').prop("checked"))
+          },
+          success: function(data) {
+            $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
+            $('#work_show_result').append("<li><button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
+          },
+          error: function(data) {
+              console.log("通信失敗");
+              console.log(data);
+          }
+      });
+    }
     // return false
   });
 });
