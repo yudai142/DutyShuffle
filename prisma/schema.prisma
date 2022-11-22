@@ -17,37 +17,37 @@ model Work {
   name String @db.VarChar(255)
   multiple Int? @db.UnsignedInt
   archive Boolean @default(false)
-  menberOption MenberOption[]
+  memberOption MemberOption[]
   history History[]
   @@map("work")
 }
-model Menber {
+model Member {
   id Int @id @default(autoincrement())
   lastName String  @db.VarChar(30) @map("last_name")
   firstName String  @db.VarChar(30) @map("first_name")
   kanaName String  @db.VarChar(255) @map("kana_name")
   archive Boolean @default(false)
-  menberOption MenberOption[]
+  memberOption MemberOption[]
   history History[]
-  @@map("menber")
+  @@map("member")
 }
 
-model MenberOption {
+model MemberOption {
   id Int @id @default(autoincrement())
   work Work @relation(fields: [workId], references: [id])
   workId Int @map("work_id")
-  menber Menber @relation(fields: [menberId], references: [id])
-  menberId Int @map("menber_id")
+  member Member @relation(fields: [memberId], references: [id])
+  memberId Int @map("member_id")
   status Int
-  @@map("menber_option")
+  @@map("member_option")
 }
 
 model History {
   id Int @id @default(autoincrement())
   work Work? @relation(fields: [workId], references: [id])
   workId Int? @map("work_id")
-  menber Menber @relation(fields: [menberId], references: [id])
-  menberId Int @map("menber_id")
+  member Member @relation(fields: [memberId], references: [id])
+  memberId Int @map("member_id")
   day DateTime @db.Date
   @@map("history")
 }
@@ -55,5 +55,6 @@ model History {
 model ShuffleOption {
   id Int @id @default(autoincrement())
   interval Int? @default(7)
+  reset_date DateTime? @db.Date
   @@map("shuffle_option")
 }
