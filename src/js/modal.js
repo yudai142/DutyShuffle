@@ -5,7 +5,7 @@ $(document).on('click', '.md-btn', function(e) {
   if(target == "modal-work"){
     if($(this).val()){
       $(modal).find('h1').text("作業編集");
-      $(modal).find('#submit_work').text("変更");
+      $(modal).find('#submit_work').val("変更");
       $.ajax({
         url: "../classes/ajax.php",
         datatype: "json",
@@ -18,7 +18,8 @@ $(document).on('click', '.md-btn', function(e) {
           $(modal).find('#multiple').val(data[0].multiple);
           (Number(data[0].archive)) ? $(modal).find('#work_archive').prop("checked", true) : $(modal).find('#work_archive').prop("checked", false);
           $(modal).find('#work_result p').remove();
-          $(modal).find('#submit_work').val(data[0].id);
+          $(modal).find('#work_id').remove();
+          $(modal).find('#submit_work').append("<input type='hidden' id=work_id value=" + data[0].id + ">");
         },
         error: function(data) {
             console.log("通信失敗");
@@ -31,8 +32,8 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('#multiple').val(1);
       $(modal).find('#work_archive').prop("checked", false);
       $(modal).find('#work_result p').remove();
-      $(modal).find('#submit_work').removeAttr('value');
-      $(modal).find('#submit_work').text("追加");
+      $(modal).find('#work_id').remove();
+      $(modal).find('#submit_work').val("追加");
     }
   }else if(target == "modal-member"){
     if($(this).val()){
