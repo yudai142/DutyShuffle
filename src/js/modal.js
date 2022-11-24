@@ -19,7 +19,7 @@ $(document).on('click', '.md-btn', function(e) {
           (Number(data[0].archive)) ? $(modal).find('#work_archive').prop("checked", true) : $(modal).find('#work_archive').prop("checked", false);
           $(modal).find('#work_result p').remove();
           $(modal).find('#work_id').remove();
-          $(modal).find('#submit_work').append("<input type='hidden' id=work_id value=" + data[0].id + ">");
+          $(modal).find('form').append("<input type='hidden' id=work_id value=" + data[0].id + ">");
         },
         error: function(data) {
             console.log("通信失敗");
@@ -38,7 +38,7 @@ $(document).on('click', '.md-btn', function(e) {
   }else if(target == "modal-member"){
     if($(this).val()){
       $(modal).find('h1').text("メンバー編集");
-      $(modal).find('#submit_member').text("変更");
+      $(modal).find('#submit_member').val("変更");
       $.ajax({
         url: "../classes/ajax.php",
         datatype: "json",
@@ -52,7 +52,8 @@ $(document).on('click', '.md-btn', function(e) {
           $(modal).find('#kana_name').val(data[0].kana_name);
           (Number(data[0].archive)) ? $(modal).find('#member_archive').prop("checked", true) : $(modal).find('#member_archive').prop("checked", false);
           $(modal).find('#member_result p').remove();
-          $(modal).find('#submit_member').val(data[0].id);
+          $(modal).find('#member_id').remove();
+          $(modal).find('form').append("<input type='hidden' id=member_id value=" + data[0].id + ">");
         },
         error: function(data) {
             console.log("通信失敗");
@@ -66,8 +67,8 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('#kana_name').val("");
       $(modal).find('#member_archive').prop("checked", false);
       $(modal).find('#member_result p').remove();
-      $(modal).find('#submit_member').removeAttr('value');
-      $(modal).find('#submit_member').text("追加");
+      $(modal).find('#member_id').remove();
+      $(modal).find('#submit_member').val("追加");
     }
   }
   $(modal).find('.modal-container').fadeIn();
