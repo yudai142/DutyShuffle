@@ -154,8 +154,13 @@ $(function(){
                 "archive" : Number($('#work_archive').prop("checked"))
             },
             success: function(data) {
-              $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
-              $('#work_show_result').append("<li><button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
+              console.log(data);
+              if (!data["err"]){
+                $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
+                $('#work_show_result').append("<li><button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
+              }else{
+                $('#work_result').html("<p>" + data["err"] + "</p>");
+              }
             },
             error: function(data) {
               $('#work_result').html("<p>入力エラー</p>");

@@ -66,10 +66,22 @@ try{
       echo json_encode($productList);
       exit;
     case 'work_add':
+      $err = [];
+      $err[] = "名前";
+      $err[] = "参加人数";
+      (!isset($_POST['name']) || empty($_POST['name'])) ? $err[] = array("err" => "名前") : null;
+      (!isset($_POST['multiple']) || empty($_POST['multiple'])) ? $err[] = array("err" => "参加人数") : null;
+      if($err != 0) {
+        echo json_encode(array("err" => $err.join("、") + "に不備があります"));
+        exit;
+      }
       $sql = "INSERT INTO work(name, multiple, archive) VALUES(?, ?, ?)";
       $dbc = dbc();
       $stmt = $dbc->prepare($sql);
-      $stmt->execute(array($_POST['name'], $_POST['multiple'], $_POST['archive']));
+      if (!($stmt->execute(array($_POST['name'], $_POST['multiple'], $_POST['archive'])))) {
+        echo json_encode(array("err" => "データが正しく保存されませんでした"));
+        exit;
+      }
       // 先ほど追加したデータを取得
       // idはlastInsertId()で取得できる
       $last_id = $dbc->lastInsertId();
