@@ -1,5 +1,4 @@
 $(function(){
-
   function getAllMember(){
     $.ajax({
       url: "../classes/ajax.php",

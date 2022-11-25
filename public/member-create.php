@@ -10,7 +10,7 @@
             ふりがな:<input id="kana_name" required><br>
             有効/無効:<input id="member_archive" type="checkbox" >
             <div id="member_result"></div>
-            <input type="submit" id="submit_member">
+            <button id="submit_member">
             <button type="button" class="md-close">戻る</button>
           </form>
         </div>

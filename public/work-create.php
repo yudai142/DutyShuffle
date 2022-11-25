@@ -9,7 +9,7 @@
             参加人数:<input  id="multiple" type="number" min=1 value=1 required><br>
             有効/無効:<input id="work_archive" type="checkbox" >
             <div id="work_result"></div>
-            <input type="submit" id="submit_work">
+            <button id="submit_work">
             <button type="button" class="md-close">戻る</button>
           </form>
         </div>

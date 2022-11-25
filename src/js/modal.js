@@ -5,7 +5,7 @@ $(document).on('click', '.md-btn', function(e) {
   if(target == "modal-work"){
     if($(this).val()){
       $(modal).find('h1').text("作業編集");
-      $(modal).find('#submit_work').val("変更");
+      $(modal).find('#submit_work').text("変更");
       $.ajax({
         url: "../classes/ajax.php",
         datatype: "json",
@@ -33,12 +33,12 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('#work_archive').prop("checked", false);
       $(modal).find('#work_result p').remove();
       $(modal).find('#work_id').remove();
-      $(modal).find('#submit_work').val("追加");
+      $(modal).find('#submit_work').text("追加");
     }
   }else if(target == "modal-member"){
     if($(this).val()){
       $(modal).find('h1').text("メンバー編集");
-      $(modal).find('#submit_member').val("変更");
+      $(modal).find('#submit_member').text("変更");
       $.ajax({
         url: "../classes/ajax.php",
         datatype: "json",
@@ -68,7 +68,7 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('#member_archive').prop("checked", false);
       $(modal).find('#member_result p').remove();
       $(modal).find('#member_id').remove();
-      $(modal).find('#submit_member').val("追加");
+      $(modal).find('#submit_member').text("追加");
     }
   }
   $(modal).find('.modal-container').fadeIn();
