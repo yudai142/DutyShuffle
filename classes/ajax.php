@@ -67,12 +67,10 @@ try{
       exit;
     case 'work_add':
       $err = [];
-      $err[] = "名前";
-      $err[] = "参加人数";
-      (!isset($_POST['name']) || empty($_POST['name'])) ? $err[] = array("err" => "名前") : null;
-      (!isset($_POST['multiple']) || empty($_POST['multiple'])) ? $err[] = array("err" => "参加人数") : null;
-      if($err != 0) {
-        echo json_encode(array("err" => $err.join("、") + "に不備があります"));
+      if(!isset($_POST['name']) || empty($_POST['name'])) $err[] = "名前";
+      if(!isset($_POST['multiple']) || empty($_POST['multiple']) || $_POST['multiple'] <= 0) $err[] = "参加人数";
+      if(count($err) != 0) {
+        echo json_encode(array("err" => implode('と', $err)."に不備があります"));
         exit;
       }
       $sql = "INSERT INTO work(name, multiple, archive) VALUES(?, ?, ?)";

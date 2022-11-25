@@ -47,7 +47,7 @@ $(function(){
       if ($('#first_name').val() == "") err.push("名");
       if ($('#kana_name').val() == "") err.push("ふりがな");
       if (err.length) {
-        $('#member_result').html("<p>" + err.join("、") + "が不正です</p>");
+        $('#member_result').html("<p>" + err.join("と") + "が不正です</p>");
       }else{
         $.ajax({
           type: "POST",
@@ -78,7 +78,7 @@ $(function(){
       if ($('#first_name').val() == "") err.push("名");
       if ($('#kana_name').val() == "") err.push("ふりがな");
       if (err.length) {
-        $('#member_result').html("<p>" + err.join("、") + "が不正です</p>");
+        $('#member_result').html("<p>" + err.join("と") + "が不正です</p>");
       }else{
         $.ajax({
           type: "POST",
@@ -110,9 +110,9 @@ $(function(){
     if($("#work_id").val()){
       let err = [];
       if ($('#name').val() == "") err.push("作業名");
-      if ($('#multiple').val() == "" || $('#multiple').val() == 0) err.push("参加人数");
+      if ($('#multiple').val() == "" || $('#multiple').val() <= 0) err.push("参加人数");
       if (err.length) {
-        $('#work_result').html("<p>" + err.join("、") + "が不正です</p>");
+        $('#work_result').html("<p>" + err.join("と") + "が不正です</p>");
       }else{
         $.ajax({
             type: "POST",
@@ -139,9 +139,9 @@ $(function(){
     }else{
       let err = [];
       if ($('#name').val() == "") err.push("作業名");
-      if ($('#multiple').val() == "") err.push("参加人数");
+      if ($('#multiple').val() == "" || $('#multiple').val() <= 0) err.push("参加人数");
       if (err.length) {
-        $('#work_result').html("<p>" + err.join("、") + "が不正です</p>");
+        $('#work_result').html("<p>" + err.join("と") + "が不正です</p>");
       }else{
         $.ajax({
             type: "POST",
@@ -154,7 +154,6 @@ $(function(){
                 "archive" : Number($('#work_archive').prop("checked"))
             },
             success: function(data) {
-              console.log(data);
               if (!data["err"]){
                 $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
                 $('#work_show_result').append("<li><button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
