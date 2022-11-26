@@ -14,16 +14,21 @@ $(document).on('click', '.md-btn', function(e) {
             "id" : $(this).val()
         },
         success: function(data) {
-          $(modal).find('#name').val(data[0].name);
-          $(modal).find('#multiple').val(data[0].multiple);
-          (Number(data[0].archive)) ? $(modal).find('#work_archive').prop("checked", true) : $(modal).find('#work_archive').prop("checked", false);
-          $(modal).find('#work_result p').remove();
-          $(modal).find('#work_id').remove();
-          $(modal).find('form').append("<input type='hidden' id=work_id value=" + data[0].id + ">");
+          if (!data["err"]){
+            $(modal).find('#name').val(data[0].name);
+            $(modal).find('#multiple').val(data[0].multiple);
+            (Number(data[0].archive)) ? $(modal).find('#work_archive').prop("checked", true) : $(modal).find('#work_archive').prop("checked", false);
+            $(modal).find('#work_result p').remove();
+            $(modal).find('#work_id').remove();
+            $(modal).find('form').append("<input type='hidden' id=work_id value=" + data[0].id + ">");
+          }else{
+            $(modal).find('#work_result').html("<p>" + data["err"] + "</p>");
+          }
         },
         error: function(data) {
-            console.log("通信失敗");
-            console.log(data);
+          $(modal).find('#work_result').html("<p>通信エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
         }
     });
     }else{
@@ -47,17 +52,22 @@ $(document).on('click', '.md-btn', function(e) {
             "id" : $(this).val()
         },
         success: function(data) {
-          $(modal).find('#last_name').val(data[0].last_name);
-          $(modal).find('#first_name').val(data[0].first_name);
-          $(modal).find('#kana_name').val(data[0].kana_name);
-          (Number(data[0].archive)) ? $(modal).find('#member_archive').prop("checked", true) : $(modal).find('#member_archive').prop("checked", false);
-          $(modal).find('#member_result p').remove();
-          $(modal).find('#member_id').remove();
-          $(modal).find('form').append("<input type='hidden' id=member_id value=" + data[0].id + ">");
+          if (!data["err"]){
+            $(modal).find('#last_name').val(data[0].last_name);
+            $(modal).find('#first_name').val(data[0].first_name);
+            $(modal).find('#kana_name').val(data[0].kana_name);
+            (Number(data[0].archive)) ? $(modal).find('#member_archive').prop("checked", true) : $(modal).find('#member_archive').prop("checked", false);
+            $(modal).find('#member_result p').remove();
+            $(modal).find('#member_id').remove();
+            $(modal).find('form').append("<input type='hidden' id=member_id value=" + data[0].id + ">");
+          }else{
+            $(modal).find('#member_result').html("<p>" + data["err"] + "</p>");
+          }
         },
         error: function(data) {
-            console.log("通信失敗");
-            console.log(data);
+          $(modal).find('#member_result').html("<p>通信エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
         }
       });
     }else{
