@@ -44,7 +44,7 @@ try{
       if(!isset($_POST['first_name']) || empty($_POST['first_name'])) $err[] = "名";
       if(!isset($_POST['kana_name']) || empty($_POST['kana_name']) || !(preg_match("/^[ぁ-んー]+$/u", $_POST['kana_name']))) $err[] = "ふりがな";
       if(count($err) != 0) {
-        echo json_encode(array("err" => implode('と', $err)."に不備があります"));
+        echo json_encode(array("err" => implode('と', $err)."が不正です"));
         exit;
       }
       $sql = "INSERT INTO member(last_name, first_name, kana_name, archive) VALUES(?, ?, ?, ?)";
@@ -76,7 +76,7 @@ try{
       if(!isset($_POST['name']) || empty($_POST['name'])) $err[] = "名前";
       if(!isset($_POST['multiple']) || empty($_POST['multiple']) || $_POST['multiple'] <= 0) $err[] = "参加人数";
       if(count($err) != 0) {
-        echo json_encode(array("err" => implode('と', $err)."に不備があります"));
+        echo json_encode(array("err" => implode('と', $err)."が不正です"));
         exit;
       }
       $sql = "INSERT INTO work(name, multiple, archive) VALUES(?, ?, ?)";
@@ -140,7 +140,7 @@ try{
       if(!isset($_POST['first_name']) || empty($_POST['first_name'])) $err[] = "名";
       if(!isset($_POST['kana_name']) || empty($_POST['kana_name']) || !(preg_match("/^[ぁ-んー]+$/u", $_POST['kana_name']))) $err[] = "ふりがな";
       if(count($err) != 0) {
-        echo json_encode(array("err" => implode('と', $err)."に不備があります"));
+        echo json_encode(array("err" => implode('と', $err)."が不正です"));
         exit;
       }
       $sql = "UPDATE member SET last_name = ?, first_name = ?, kana_name = ?, archive = ? WHERE id = ?";
@@ -170,7 +170,7 @@ try{
       if(!isset($_POST['name']) || empty($_POST['name'])) $err[] = "名前";
       if(!isset($_POST['multiple']) || empty($_POST['multiple']) || $_POST['multiple'] <= 0) $err[] = "参加人数";
       if(count($err) != 0) {
-        echo json_encode(array("err" => implode('と', $err)."に不備があります"));
+        echo json_encode(array("err" => implode('と', $err)."が不正です"));
         exit;
       }
       $sql = "UPDATE work SET name = ?, multiple = ?, archive = ? WHERE id = ?";

@@ -10,8 +10,8 @@ $(document).on('click', '.md-btn', function(e) {
         url: "../classes/ajax.php",
         datatype: "json",
         data: {
-            "type": 'work_edit',
-            "id" : $(this).val()
+          "type": 'work_edit',
+          "id" : $(this).val()
         },
         success: function(data) {
           if (!data["err"]){
@@ -48,8 +48,8 @@ $(document).on('click', '.md-btn', function(e) {
         url: "../classes/ajax.php",
         datatype: "json",
         data: {
-            "type": 'member_edit',
-            "id" : $(this).val()
+          "type": 'member_edit',
+          "id" : $(this).val()
         },
         success: function(data) {
           if (!data["err"]){

@@ -23,8 +23,7 @@ $(function(){
     // return false
   }
   getAllMember()
-  // レコードを全件表示する
-  // 試しに関数にしてみただけ
+  
   function getAllWork(){
     $.ajax({
       url: "../classes/ajax.php",
@@ -51,14 +50,14 @@ $(function(){
   getAllWork();
 
   $('#submit_member').on('click',function(){
-    if($("#member_id").val()){
-      let err = [];
-      if ($('#last_name').val() == "") err.push("性");
-      if ($('#first_name').val() == "") err.push("名");
-      if ($('#kana_name').val() == "") err.push("ふりがな");
-      if (err.length) {
-        $('#member_result').html("<p>" + err.join("と") + "が不正です</p>");
-      }else{
+    let err = [];
+    if ($('#last_name').val() == "") err.push("性");
+    if ($('#first_name').val() == "") err.push("名");
+    if ($('#kana_name').val() == "") err.push("ふりがな");
+    if (err.length) {
+      $('#member_result').html("<p>" + err.join("と") + "が入力されていません</p>");
+    }else{
+      if($("#member_id").val()){
         $.ajax({
           type: "POST",
           url: "../classes/ajax.php",
@@ -73,10 +72,10 @@ $(function(){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#member_result').html("<p>" + data[0].last_name + data[0].first_name + "("+data[0].kana_name + ")" + data[0].archive + "を変更しました。</p>");
+              $('#member_result').html("<p>" + data[0].last_name + data[0].first_name + "("+data[0].kana_name + ")" + data[0].archive + "を更新しました。</p>");
               $('#member_show_result').find("#member_" + data[0].id).html("<button class='md-btn' data-target='modal-member' value=" + data[0].id + ">" + data[0].last_name + "　" + data[0].first_name + "</button>");
             }else{
-              $('#member_show_result').html("<p>" + data["err"] + "</p>");
+              $('#member_result').html("<p>" + data["err"] + "</p>");
             }
           },
           error: function(data) {
@@ -85,25 +84,17 @@ $(function(){
             console.log(data);
           }
         });
-      }
-    }else{
-      let err = [];
-      if ($('#last_name').val() == "") err.push("性");
-      if ($('#first_name').val() == "") err.push("名");
-      if ($('#kana_name').val() == "") err.push("ふりがな");
-      if (err.length) {
-        $('#member_result').html("<p>" + err.join("と") + "が不正です</p>");
       }else{
         $.ajax({
           type: "POST",
           url: "../classes/ajax.php",
           datatype: "json",
           data: {
-              "type": 'member_add',
-              "last_name" : $('#last_name').val(),
-              "first_name" : $('#first_name').val(),
-              "kana_name" : $('#kana_name').val(),
-              "archive" : Number($('#member_archive').prop("checked"))
+            "type": 'member_add',
+            "last_name" : $('#last_name').val(),
+            "first_name" : $('#first_name').val(),
+            "kana_name" : $('#kana_name').val(),
+            "archive" : Number($('#member_archive').prop("checked"))
           },
           success: function(data) {
             if (!data["err"]){
@@ -125,69 +116,62 @@ $(function(){
   });
   
   $('#submit_work').on('click',function(){
-    if($("#work_id").val()){
-      let err = [];
-      if ($('#name').val() == "") err.push("作業名");
-      if ($('#multiple').val() == "" || $('#multiple').val() <= 0) err.push("参加人数");
-      if (err.length) {
-        $('#work_result').html("<p>" + err.join("と") + "が不正です</p>");
-      }else{
-        $.ajax({
-            type: "POST",
-            url: "../classes/ajax.php",
-            datatype: "json",
-            data: {
-              "type": 'work_update',
-              "id" : $("#work_id").val(),
-              "name" : $('#name').val(),
-              "multiple" : $('#multiple').val(),
-              "archive" : Number($('#work_archive').prop("checked"))
-            },
-            success: function(data) {
-              if (!data["err"]){
-                $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを変更しました。</p>");
-                $('#work_show_result').find("#work_" + data[0].id).html("<button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button>");
-              }else{
-                $('#work_show_result').html("<p>" + data["err"] + "</p>");
-              }
-            },
-            error: function(data) {
-                $('#work_result').html("<p>入力エラー</p>");
-                console.log("通信失敗");
-                console.log(data);
-            }
-        });
-      }
+    let err = [];
+    if ($('#name').val() == "") err.push("作業名");
+    if ($('#multiple').val() == "") err.push("参加人数");
+    if (err.length) {
+      $('#work_result').html("<p>" + err.join("と") + "が入力されていません</p>");
     }else{
-      let err = [];
-      if ($('#name').val() == "") err.push("作業名");
-      if ($('#multiple').val() == "" || $('#multiple').val() <= 0) err.push("参加人数");
-      if (err.length) {
-        $('#work_result').html("<p>" + err.join("と") + "が不正です</p>");
+      if($("#work_id").val()){
+        $.ajax({
+          type: "POST",
+          url: "../classes/ajax.php",
+          datatype: "json",
+          data: {
+            "type": 'work_update',
+            "id" : $("#work_id").val(),
+            "name" : $('#name').val(),
+            "multiple" : $('#multiple').val(),
+            "archive" : Number($('#work_archive').prop("checked"))
+          },
+          success: function(data) {
+            if (!data["err"]){
+              $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを更新しました。</p>");
+              $('#work_show_result').find("#work_" + data[0].id).html("<button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button>");
+            }else{
+              $('#work_result').html("<p>" + data["err"] + "</p>");
+            }
+          },
+          error: function(data) {
+            $('#work_result').html("<p>入力エラー</p>");
+            console.log("通信失敗");
+            console.log(data);
+          }
+        });
       }else{
         $.ajax({
-            type: "POST",
-            url: "../classes/ajax.php",
-            datatype: "json",
-            data: {
-                "type": 'work_add',
-                "name" : $('#name').val(),
-                "multiple" : $('#multiple').val(),
-                "archive" : Number($('#work_archive').prop("checked"))
-            },
-            success: function(data) {
-              if (!data["err"]){
-                $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
-                $('#work_show_result').append("<li id=work_" + data[0].id + "><button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
-              }else{
-                $('#work_result').html("<p>" + data["err"] + "</p>");
-              }
-            },
-            error: function(data) {
-              $('#work_result').html("<p>入力エラー</p>");
-              console.log("通信失敗");
-              console.log(data);
+          type: "POST",
+          url: "../classes/ajax.php",
+          datatype: "json",
+          data: {
+            "type": 'work_add',
+            "name" : $('#name').val(),
+            "multiple" : $('#multiple').val(),
+            "archive" : Number($('#work_archive').prop("checked"))
+          },
+          success: function(data) {
+            if (!data["err"]){
+              $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
+              $('#work_show_result').append("<li id=work_" + data[0].id + "><button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
+            }else{
+              $('#work_result').html("<p>" + data["err"] + "</p>");
             }
+          },
+          error: function(data) {
+            $('#work_result').html("<p>入力エラー</p>");
+            console.log("通信失敗");
+            console.log(data);
+          }
         });
       }
     }
