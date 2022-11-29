@@ -100,6 +100,10 @@ $(function(){
             if (!data["err"]){
               $('#member_result').html("<p>" + data[0].last_name + data[0].first_name + "("+data[0].kana_name + ")" + data[0].archive + "を登録しました。</p>");
               $('#member_show_result').append("<li id=member_" + data[0].id + "><button class='md-btn' data-target='modal-member' value=" + data[0].id + ">" + data[0].last_name + "　" + data[0].first_name + "</button><li>");
+              $('#last_name').val("");
+              $('#first_name').val("");
+              $('#kana_name').val("");
+              $('#member_archive').prop("checked", false);
             }else{
               $('#member_result').html("<p>" + data["err"] + "</p>");
             }
@@ -163,6 +167,9 @@ $(function(){
             if (!data["err"]){
               $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
               $('#work_show_result').append("<li id=work_" + data[0].id + "><button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
+              $('#name').val("");
+              $('#multiple').val(1);
+              $('#work_archive').prop("checked", false);
             }else{
               $('#work_result').html("<p>" + data["err"] + "</p>");
             }
