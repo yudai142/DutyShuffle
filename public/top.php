@@ -22,3 +22,4 @@
     <span style="position: relative;"><a href="login.php" class="login-button blue-button">割り当てへ</a></span>
   <?php endif;?>
 </div>
+
