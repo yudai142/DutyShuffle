@@ -1,4 +1,53 @@
 $(function(){
+  if ( location.pathname.indexOf("/create-edit.php") !== -1 ){
+    getAllMember();
+    getAllWork();
+  }else if ( location.pathname.indexOf("/top.php") != -1 ){
+    joinMember();
+    joinWork();
+  }
+  function joinMember(){
+    // $(this).val() ? $data = {"type": 'join_member'}: $data = {"type": 'join_member', date: $(this).val()}
+    $.ajax({
+      url: "../classes/ajax.php",
+      data: {"type": 'join_member'},
+      success: function(data) {
+        if (!data["err"]){
+          $.each(data, function(key, value){
+            $('#join_member').append("<li id=join_member_" + value.id + "><button class='remove-btn' data-target='remove-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
+          });
+        }else{
+          $('#join_member').append("<p>" + data["err"] + "</p>");
+        }
+      },
+      error: function(){
+        $('#member_show_result').append("<p>通信エラー</p>");
+        console.log("通信失敗");
+        console.log(data);
+      }
+    });
+  }
+  function joinWork(){
+    // $(this).val() ? $data = {"type": 'join_work'}: $data = {"type": 'join_work', date: $(this).val()}
+    $.ajax({
+      url: "../classes/ajax.php",
+      data: {"type": 'join_work'},
+      success: function(data) {
+        if (!data["err"]){
+          $.each(data, function(key, value){
+            $('#join_work').append("<li id=join_work_" + value.id + "><button class='off-btn' data-target='status-change' value=" + value.id + ">" + value.name + "</button><li>");
+          });
+        }else{
+          $('#join_work').append("<p>" + data["err"] + "</p>");
+        }
+      },
+      error: function(){
+        $('#member_show_result').append("<p>通信エラー</p>");
+        console.log("通信失敗");
+        console.log(data);
+      }
+    });
+  }
   function getAllMember(){
     $.ajax({
       url: "../classes/ajax.php",
@@ -22,7 +71,6 @@ $(function(){
     });
     // return false
   }
-  getAllMember()
   
   function getAllWork(){
     $.ajax({
@@ -47,7 +95,6 @@ $(function(){
     });
     // return false
   }
-  getAllWork();
 
   $('#submit_member').on('click',function(){
     let err = [];

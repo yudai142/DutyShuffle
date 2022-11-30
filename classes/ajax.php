@@ -4,6 +4,41 @@ header('Content-Type: application/json; charset=utf-8');
 
 try{
   switch($_REQUEST['type']){
+    case 'join_member':
+      $sql = "SELECT * FROM member";
+      $stmt = dbc()->prepare($sql);
+      if (!($stmt->execute())) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+        $productList[] = array(
+          'id'    => $row['id'],
+          'last_name'  => $row['last_name'],
+          'first_name' => $row['first_name'],
+          'kana_name' => $row['kana_name'],
+          'archive' => $row['archive']
+        );
+      }
+      echo json_encode($productList);
+      exit;
+    case 'join_work':
+      $sql = "SELECT * FROM work";
+      $stmt = dbc()->prepare($sql);
+      if (!($stmt->execute())) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+        $productList[] = array(
+          'id'    => $row['id'],
+          'name'  => $row['name'],
+          'multiple' => $row['multiple'],
+          'archive' => $row['archive']
+        );
+      }
+      echo json_encode($productList);
+      exit;
     case 'member_list':
       $sql = "SELECT * FROM member";
       $stmt = dbc()->prepare($sql);

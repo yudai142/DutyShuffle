@@ -23,3 +23,10 @@
   <?php endif;?>
 </div>
 
+<div class="join_work">
+  <ul id="join_work" style="display:flex;margin-bottom:30px;"></ul>
+</div><!-- /.work_list -->
+<div class="join_member">
+  <ul id="join_member" style="display: flex;"></ul>
+</div><!-- /.member_list -->
+<script src="../src/js/ajax.js"></script>
