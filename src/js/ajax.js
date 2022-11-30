@@ -1,4 +1,8 @@
 $(function(){
+  if ( location.pathname.indexOf("/create-edit.php") != -1 ){
+    getAllMember();
+    getAllWork();
+  }
   function getAllMember(){
     $.ajax({
       url: "../classes/ajax.php",
@@ -22,7 +26,6 @@ $(function(){
     });
     // return false
   }
-  getAllMember()
   
   function getAllWork(){
     $.ajax({
@@ -47,11 +50,10 @@ $(function(){
     });
     // return false
   }
-  getAllWork();
 
   $('#submit_member').on('click',function(){
     let err = [];
-    if ($('#last_name').val() == "") err.push("性");
+    if ($('#last_name').val() == "") err.push("姓");
     if ($('#first_name').val() == "") err.push("名");
     if ($('#kana_name').val() == "") err.push("ふりがな");
     if (err.length) {
