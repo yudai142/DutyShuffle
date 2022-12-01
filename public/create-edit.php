@@ -1,8 +1,8 @@
-<?php require_once "../component/head_component.php" ?>
+<?php $title = "登録・編集"; require_once "../component/head_component.php" ?>
 <link rel="stylesheet" href="../src/css/create-edit.css" />
 <link rel="stylesheet" href="../src/css/member-create.css" />
 <link rel="stylesheet" href="../src/css/work-create.css" />
-<?php $title = "登録・編集"; require_once "../component/sidebar_component.php"; ?>
+<?php require_once "../component/sidebar_component.php"; ?>
 <div class="tabs">
   <input id="all" type="radio" name="tab_item" checked>
   <label class="tab_item" for="all">メンバー</label>
@@ -41,7 +41,7 @@
 
 
 
-<?php require_once "../public/member-create.php" ?>
-<?php require_once "../public/work-create.php" ?>
+<?php require_once "../public/modal/modal-member.php" ?>
+<?php require_once "../public/modal/modal-work.php" ?>
 <script src="../src/js/ajax.js"></script>
 <script defer src="../src/js/modal.js"></script>

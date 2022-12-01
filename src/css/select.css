@@ -1,0 +1,14 @@
+
+.container-select {
+  width: 100%;
+  max-width: 1026px;
+  margin: 66px auto;
+  padding: 30px 60px;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.container-select-header {
+  display: flex;
+  justify-content: space-between;
+}

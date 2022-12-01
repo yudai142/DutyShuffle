@@ -28,7 +28,7 @@ $(function(){
     });
   }
   function joinWork(){
-    // $(this).val() ? $data = {"type": 'join_work'}: $data = {"type": 'join_work', date: $(this).val()}
+    // $(this).val() ? $data = {"type": 'join_work'}: $data = {"type": 'join_work', day: $(this).val()}
     $.ajax({
       url: "../classes/ajax.php",
       data: {"type": 'join_work'},

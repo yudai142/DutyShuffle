@@ -80,6 +80,35 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('#member_id').remove();
       $(modal).find('#submit_member').text("追加");
     }
+  }else if(target == "modal-select"){
+    $(modal).find('h1').text("メンバー編集");
+    $(modal).find('#submit_member').text("変更");
+    // $.ajax({
+    //   url: "../classes/ajax.php",
+    //   datatype: "json",
+    //   data: {
+    //     "type": 'member_edit',
+    //     "id" : $(this).val()
+    //   },
+    //   success: function(data) {
+    //     if (!data["err"]){
+    //       $(modal).find('#last_name').val(data[0].last_name);
+    //       $(modal).find('#first_name').val(data[0].first_name);
+    //       $(modal).find('#kana_name').val(data[0].kana_name);
+    //       (Number(data[0].archive)) ? $(modal).find('#member_archive').prop("checked", true) : $(modal).find('#member_archive').prop("checked", false);
+    //       $(modal).find('#member_result p').remove();
+    //       $(modal).find('#member_id').remove();
+    //       $(modal).find('form').append("<input type='hidden' id=member_id value=" + data[0].id + ">");
+    //     }else{
+    //       $(modal).find('#member_result').html("<p>" + data["err"] + "</p>");
+    //     }
+    //   },
+    //   error: function(data) {
+    //     $(modal).find('#member_result').html("<p>通信エラー</p>");
+    //     console.log("通信失敗");
+    //     console.log(data);
+    //   }
+    // });
   }
   $(modal).find('.modal-container').fadeIn();
 });
