@@ -5,71 +5,59 @@ header('Content-Type: application/json; charset=utf-8');
 try{
   switch($_REQUEST['type']){
     case 'join_member':
-      $sql = "SELECT * FROM member";
-      $stmt = dbc()->prepare($sql);
-      if (!($stmt->execute())) {
+      $sql = "SELECT history.member_id ,last_name, first_name FROM history, member WHERE member.id = history.member_id group by member.id ORDER BY member.kana_name ASC";
+      if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
-      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+      foreach($stmt as $row) {
         $productList[] = array(
-          'id'    => $row['id'],
-          'last_name'  => $row['last_name'],
-          'first_name' => $row['first_name'],
-          'kana_name' => $row['kana_name'],
-          'archive' => $row['archive']
+          'id'    => $row['member_id'],
+          'last_name' => $row['last_name'],
+          'first_name'  => $row['first_name'],
         );
       }
       echo json_encode($productList);
       exit;
     case 'join_work':
-      $sql = "SELECT * FROM work";
-      $stmt = dbc()->prepare($sql);
-      if (!($stmt->execute())) {
+      $sql = "SELECT id, name FROM work WHERE archive=0";
+      if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
-      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+      foreach($stmt as $row) {
         $productList[] = array(
           'id'    => $row['id'],
-          'name'  => $row['name'],
-          'multiple' => $row['multiple'],
-          'archive' => $row['archive']
+          'name'  => $row['name']
         );
       }
       echo json_encode($productList);
       exit;
     case 'member_list':
       $sql = "SELECT * FROM member";
-      $stmt = dbc()->prepare($sql);
-      if (!($stmt->execute())) {
+      if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
-      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+      foreach($stmt as $row) {
         $productList[] = array(
           'id'    => $row['id'],
           'last_name'  => $row['last_name'],
-          'first_name' => $row['first_name'],
-          'kana_name' => $row['kana_name'],
-          'archive' => $row['archive']
+          'first_name' => $row['first_name']
         );
       }
       echo json_encode($productList);
       exit;
     case 'work_list':
       $sql = "SELECT * FROM work";
-      $stmt = dbc()->prepare($sql);
-      if (!($stmt->execute())) {
+      if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
-      while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+      foreach($stmt as $row) {
         $productList[] = array(
           'id'    => $row['id'],
-          'name'  => $row['name'],
-          'multiple' => $row['multiple'],
-          'archive' => $row['archive']
+          'name'  => $row['name']
         );
       }
       echo json_encode($productList);

@@ -21,7 +21,7 @@ $(function(){
         }
       },
       error: function(){
-        $('#member_show_result').append("<p>通信エラー</p>");
+        $('#join_member').append("<p>通信エラー</p>");
         console.log("通信失敗");
         console.log(data);
       }
@@ -42,7 +42,7 @@ $(function(){
         }
       },
       error: function(){
-        $('#member_show_result').append("<p>通信エラー</p>");
+        $('#join_work').append("<p>通信エラー</p>");
         console.log("通信失敗");
         console.log(data);
       }
