@@ -10,12 +10,17 @@ $(function(){
     // $(this).val() ? $data = {"type": 'join_member'}: $data = {"type": 'join_member', date: $(this).val()}
     $.ajax({
       url: "../classes/ajax.php",
-      data: {"type": 'join_member'},
+      data: {
+        "type": 'join_member',
+        "day": $("#date").val()
+      },
       success: function(data) {
         if (!data["err"]){
+          let arr = [];
           $.each(data, function(key, value){
-            $('#join_member').append("<li id=join_member_" + value.id + "><button class='remove-btn' data-target='remove-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
+            arr.push("<li id=join_member_" + value.id + "><button class='remove-btn' data-target='remove-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
           });
+          $('#join_member').html(arr);
         }else{
           $('#join_member').append("<p>" + data["err"] + "</p>");
         }
@@ -231,4 +236,46 @@ $(function(){
     }
     // return false
   });
+  
+  $('#submit_select').on('click',function(){
+    let err = [];
+    if (err.length) {
+      $('#select_result').html("<p>" + err.join("と") + "が入力されていません</p>");
+    }else{
+      let check = [];
+      $("#select_list input[type=checkbox]:checked").each(function() {
+        check.push($(this).val());
+      });
+      // console.log(check)
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        datatype: "json",
+        data: {
+          "type": 'member_select_definition',
+          "select": check,
+          "day": $("#date").val()
+        },
+        success: function(data) {
+          if (!data["err"]){
+            let arr = []
+            $.each(data, function(key, value){
+              arr.push("<li id=join_member_" + value.id + "><button class='remove-btn' data-target='remove-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
+            });
+            $('#join_member').html(arr)
+            $('.modal-container').fadeOut();
+          }else{
+            $('#select_result').html("<p>" + data["err"] + "</p>");
+          }
+        },
+        error: function(data) {
+          $('#select_result').html("<p>入力エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
+        }
+      });
+    }
+    // return false
+  });
+  
 });

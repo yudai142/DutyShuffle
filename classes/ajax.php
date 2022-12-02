@@ -2,11 +2,15 @@
 require_once("../dbc/dbc.php");
 header('Content-Type: application/json; charset=utf-8');
 
+
 try{
   switch($_REQUEST['type']){
     case 'join_member':
-      $sql = "SELECT history.member_id ,last_name, first_name FROM history, member WHERE member.id = history.member_id group by member.id ORDER BY member.kana_name ASC";
-      if (!($stmt = dbc()->query($sql))) {
+      $date = date('Y-m-d',  strtotime($_REQUEST['day']));
+      $sql = "SELECT history.member_id ,last_name, first_name FROM history, member WHERE day=? AND member.id = history.member_id group by member.id ORDER BY member.kana_name ASC";
+      $stmt = dbc()->prepare($sql);
+      $stmt->execute(array($date));
+      if (!($stmt->fetch(PDO::FETCH_ASSOC))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
@@ -29,6 +33,60 @@ try{
         $productList[] = array(
           'id'    => $row['id'],
           'name'  => $row['name']
+        );
+      }
+      echo json_encode($productList);
+      exit;
+    case 'member_select_list':
+      $sql = "SELECT id, last_name, first_name FROM member WHERE archive=0 ORDER BY member.kana_name ASC";
+      if (!($stmt = dbc()->query($sql))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      foreach($stmt as $row) {
+        $productList[] = array(
+          'id'    => $row['id'],
+          'last_name'  => $row['last_name'],
+          'first_name' => $row['first_name']
+        );
+      }
+      echo json_encode($productList);
+      exit;
+    case 'member_select_definition':
+      $date = date('Y-m-d',  strtotime($_REQUEST['day']));
+      
+      $select = $_REQUEST['select'];
+      $sql = "SELECT member_id FROM history WHERE day=? group by member_id";
+      $stmt = dbc()->prepare($sql);
+      $stmt->execute(array($date));
+      $selected = [];
+      foreach( $stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $selected[] = $row['member_id'];
+      }
+      $selected_result = array_diff($selected, $select);
+      $select_result = array_diff($select, $selected);
+      // $productList[] = $select;
+      
+      foreach($selected_result as $row) {
+        $sql = "DELETE FROM history WHERE day=? AND member_id=?";
+        $stmt = dbc()->prepare($sql);
+        $stmt->execute(array($date, $row));
+      }
+      
+      foreach($select_result as $row) {
+        $sql = "INSERT INTO history(day, member_id) VALUES(?, ?)";
+        $stmt = dbc()->prepare($sql);
+        $stmt->execute(array($date, $row));
+      }
+      
+      $sql2 = "SELECT history.member_id ,last_name, first_name FROM history, member WHERE day=? AND member.id = history.member_id group by member.id ORDER BY member.kana_name ASC";
+      $stmt2 = dbc()->prepare($sql2);
+      $stmt2->execute(array($date));
+      foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $productList[] = array(
+          'id'    => $row['member_id'],
+          'last_name' => $row['last_name'],
+          'first_name'  => $row['first_name'],
         );
       }
       echo json_encode($productList);
