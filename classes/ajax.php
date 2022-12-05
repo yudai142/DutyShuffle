@@ -38,7 +38,7 @@ try{
       exit;
     case 'member_select_list':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
-      $sql = "SELECT id, last_name, first_name FROM member WHERE archive=0 ORDER BY kana_name ASC";
+      $sql = "SELECT id, last_name, first_name, archive FROM member ORDER BY kana_name ASC";
       $sql2 = "SELECT member_id FROM history WHERE day=? group by member_id";
       $checked = [];
       
@@ -55,12 +55,14 @@ try{
         $checked[] = $row['member_id'];
       }
       foreach($stmt as $row) {
-        $productList[] = array(
-          'id'    => $row['id'],
-          'last_name'  => $row['last_name'],
-          'first_name' => $row['first_name'],
-          'checked' => (in_array($row['id'], $checked)) ? "checked" : ""
-        );
+        if(in_array($row['id'], $checked) || $row['archive'] == 0){
+          $productList[] = array(
+            'id'    => $row['id'],
+            'last_name'  => $row['last_name'],
+            'first_name' => $row['first_name'],
+            'checked' => (in_array($row['id'], $checked)) ? "checked" : ""
+          );
+        }
       }
       echo json_encode($productList);
       exit;
