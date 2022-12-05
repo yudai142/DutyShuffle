@@ -246,7 +246,6 @@ $(function(){
       $("#select_list input[type=checkbox]:checked").each(function() {
         check.push($(this).val());
       });
-      // console.log(check)
       $.ajax({
         type: "POST",
         url: "../classes/ajax.php",

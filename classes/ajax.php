@@ -7,16 +7,15 @@ try{
   switch($_REQUEST['type']){
     case 'join_member':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
-      $sql = "SELECT history.member_id ,last_name, first_name FROM history, member WHERE day=? AND member.id = history.member_id group by member.id ORDER BY member.kana_name ASC";
+      $sql = "SELECT member.id ,last_name, first_name FROM history, member WHERE day=? AND member.id = history.member_id group by member_id ORDER BY member.kana_name ASC";
       $stmt = dbc()->prepare($sql);
-      $stmt->execute(array($date));
-      if (!($stmt->fetch(PDO::FETCH_ASSOC))) {
+      if (!($stmt->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
-      foreach($stmt as $row) {
+      foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $productList[] = array(
-          'id'    => $row['member_id'],
+          'id'    => $row['id'],
           'last_name' => $row['last_name'],
           'first_name'  => $row['first_name'],
         );
