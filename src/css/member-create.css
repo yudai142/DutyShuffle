@@ -12,7 +12,7 @@ h1 {
   height: 446px;
   max-width: 1026px;
   margin: 66px auto;
-  padding: 20px 90px;
+  padding: 20px 50px;
   border: 1px solid black;
   border-radius: 10px;
   background-color: #D2DAF6;
@@ -45,6 +45,7 @@ h1 {
   line-height: 44px;
   padding-left: 10px;
   color: #7B7A7A;
+  
 }
 
 .input-tx {
@@ -55,9 +56,10 @@ h1 {
 }
 
 .checkbox {
-  float: left;
   width: 25px;
   height: 25px;
+  display: inline-block;  
+  margin-left: 20px;
 }
 
 .supple {
@@ -65,6 +67,7 @@ h1 {
   line-height: 29px;
   color: #333333;
   float: right;
+  padding-left: 62px;
 }
 
 .clear  {
