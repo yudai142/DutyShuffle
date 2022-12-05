@@ -7,7 +7,6 @@ $(function(){
     joinWork();
   }
   function joinMember(){
-    // $(this).val() ? $data = {"type": 'join_member'}: $data = {"type": 'join_member', date: $(this).val()}
     $.ajax({
       url: "../classes/ajax.php",
       data: {
@@ -18,11 +17,11 @@ $(function(){
         if (!data["err"]){
           let arr = [];
           $.each(data, function(key, value){
-            arr.push("<li id=join_member_" + value.id + "><button class='remove-btn' data-target='remove-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
+            arr.push(`<li id=join_member_${value.id}><button class='remove-btn' data-target='remove-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
           });
           $('#join_member').html(arr);
         }else{
-          $('#join_member').append("<p>" + data["err"] + "</p>");
+          $('#join_member').append(`<p>${data["err"]}</p>`);
         }
       },
       error: function(){
@@ -40,10 +39,10 @@ $(function(){
       success: function(data) {
         if (!data["err"]){
           $.each(data, function(key, value){
-            $('#join_work').append("<li id=join_work_" + value.id + "><button class='off-btn' data-target='status-change' value=" + value.id + ">" + value.name + "</button><li>");
+            $('#join_work').append(`<li id=join_work_${value.id}><button class='off-btn' data-target='status-change' value=${value.id}>${value.name}</button><li>`);
           });
         }else{
-          $('#join_work').append("<p>" + data["err"] + "</p>");
+          $('#join_work').append(`<p>${data["err"]}</p>`);
         }
       },
       error: function(){
@@ -62,10 +61,10 @@ $(function(){
       success: function(data) {
         if (!data["err"]){
           $.each(data, function(key, value){
-            $('#member_show_result').append("<li id=member_" + value.id + "><button class='md-btn' data-target='modal-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
+            $('#member_show_result').append(`<li id=member_${value.id}><button class='md-btn' data-target='modal-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
           });
         }else{
-          $('#member_show_result').append("<p>" + data["err"] + "</p>");
+          $('#member_show_result').append(`<p>${data["err"]}</p>`);
         }
       },
       error: function(){
@@ -86,10 +85,10 @@ $(function(){
       success: function(data) {
         if (!data["err"]){
           $.each(data, function(key, value){
-            $('#work_show_result').append("<li id=work_" + value.id + "><button class='md-btn' data-target='modal-work' value=" + value.id + ">" + value.name + "</button><li>");
+            $('#work_show_result').append(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
           });
         }else{
-          $('#work_show_result').append("<p>" + data["err"] + "</p>");
+          $('#work_show_result').append(`<p>${data["err"]}</p>`);
         }
       },
       error: function(){
@@ -107,7 +106,7 @@ $(function(){
     if ($('#first_name').val() == "") err.push("名");
     if ($('#kana_name').val() == "") err.push("ふりがな");
     if (err.length) {
-      $('#member_result').html("<p>" + err.join("と") + "が入力されていません</p>");
+      $('#member_result').html(`<p>${err.join("と")}が入力されていません</p>`);
     }else{
       if($("#member_id").val()){
         $.ajax({
@@ -124,10 +123,10 @@ $(function(){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#member_result').html("<p>" + data[0].last_name + data[0].first_name + "("+data[0].kana_name + ")" + data[0].archive + "を更新しました。</p>");
-              $('#member_show_result').find("#member_" + data[0].id).html("<button class='md-btn' data-target='modal-member' value=" + data[0].id + ">" + data[0].last_name + "　" + data[0].first_name + "</button>");
+              $('#member_result').html(`<p>${data[0].last_name}${data[0].first_name}(${data[0].kana_name})${data[0].archive}を更新しました。</p>`);
+              $('#member_show_result').find(`#member_${data[0].id}`).html(`<button class='md-btn' data-target='modal-member' value=${data[0].id}>${data[0].last_name}　${data[0].first_name}</button>`);
             }else{
-              $('#member_result').html("<p>" + data["err"] + "</p>");
+              $('#member_result').html(`<p>${data["err"]}</p>`);
             }
           },
           error: function(data) {
@@ -150,14 +149,14 @@ $(function(){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#member_result').html("<p>" + data[0].last_name + data[0].first_name + "("+data[0].kana_name + ")" + data[0].archive + "を登録しました。</p>");
-              $('#member_show_result').append("<li id=member_" + data[0].id + "><button class='md-btn' data-target='modal-member' value=" + data[0].id + ">" + data[0].last_name + "　" + data[0].first_name + "</button><li>");
+              $('#member_result').html(`<p>${data[0].last_name}${data[0].first_name}(${data[0].kana_name})${data[0].archive}を登録しました。</p>`);
+              $('#member_show_result').append(`<li id=member_${data[0].id}><button class='md-btn' data-target='modal-member' value=${data[0].id}>${data[0].last_name}　${data[0].first_name}</button><li>`);
               $('#last_name').val("");
               $('#first_name').val("");
               $('#kana_name').val("");
               $('#member_archive').prop("checked", false);
             }else{
-              $('#member_result').html("<p>" + data["err"] + "</p>");
+              $('#member_result').html(`<p>${data["err"]}</p>`);
             }
           },
           error: function(data) {
@@ -176,7 +175,7 @@ $(function(){
     if ($('#name').val() == "") err.push("作業名");
     if ($('#multiple').val() == "") err.push("参加人数");
     if (err.length) {
-      $('#work_result').html("<p>" + err.join("と") + "が入力されていません</p>");
+      $('#work_result').html(`<p>${err.join("と")}が入力されていません</p>`);
     }else{
       if($("#work_id").val()){
         $.ajax({
@@ -192,10 +191,10 @@ $(function(){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを更新しました。</p>");
-              $('#work_show_result').find("#work_" + data[0].id).html("<button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button>");
+              $('#work_result').html(`<p>${data[0].name}が${data[0].multiple}人の${data[0].archive}のデータを更新しました。</p>`);
+              $('#work_show_result').find(`#work_${data[0].id}`).html(`<button class='md-btn' data-target='modal-work' value=${data[0].id}>${data[0].name}</button>`);
             }else{
-              $('#work_result').html("<p>" + data["err"] + "</p>");
+              $('#work_result').html(`<p>${data["err"]}</p>`);
             }
           },
           error: function(data) {
@@ -217,13 +216,13 @@ $(function(){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#work_result').html("<p>" + data[0].name + "が" + data[0].multiple + "人の" + data[0].archive + "のデータを登録しました。</p>");
-              $('#work_show_result').append("<li id=work_" + data[0].id + "><button class='md-btn' data-target='modal-work' value=" + data[0].id + ">" + data[0].name + "</button><li>"); 
+              $('#work_result').html(`<p>${data[0].name}が${data[0].multiple}人の${data[0].archive}のデータを登録しました。</p>`);
+              $('#work_show_result').append(`<li id=work_${data[0].id}><button class='md-btn' data-target='modal-work' value=${data[0].id}>${data[0].name}</button><li>`); 
               $('#name').val("");
               $('#multiple').val(1);
               $('#work_archive').prop("checked", false);
             }else{
-              $('#work_result').html("<p>" + data["err"] + "</p>");
+              $('#work_result').html(`<p>${data["err"]}</p>`);
             }
           },
           error: function(data) {
@@ -240,7 +239,7 @@ $(function(){
   $('#submit_select').on('click',function(){
     let err = [];
     if (err.length) {
-      $('#select_result').html("<p>" + err.join("と") + "が入力されていません</p>");
+      $('#select_result').html(`<p>${err.join("と")}が入力されていません</p>`);
     }else{
       let check = [];
       $("#select_list input[type=checkbox]:checked").each(function() {
@@ -259,12 +258,12 @@ $(function(){
           if (!data["err"]){
             let arr = []
             $.each(data, function(key, value){
-              arr.push("<li id=join_member_" + value.id + "><button class='remove-btn' data-target='remove-member' value=" + value.id + ">" + value.last_name + "　" + value.first_name + "</button><li>");
+              arr.push(`<li id=join_member_${value.id}><button class='remove-btn' data-target='remove-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
             });
             $('#join_member').html(arr)
             $('.modal-container').fadeOut();
           }else{
-            $('#select_result').html("<p>" + data["err"] + "</p>");
+            $('#select_result').html(`<p>${data["err"]}</p>`);
           }
         },
         error: function(data) {

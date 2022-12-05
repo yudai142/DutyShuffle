@@ -37,23 +37,35 @@ try{
       echo json_encode($productList);
       exit;
     case 'member_select_list':
-      $sql = "SELECT id, last_name, first_name FROM member WHERE archive=0 ORDER BY member.kana_name ASC";
+      $date = date('Y-m-d',  strtotime($_REQUEST['day']));
+      $sql = "SELECT id, last_name, first_name FROM member WHERE archive=0 ORDER BY kana_name ASC";
+      $sql2 = "SELECT member_id FROM history WHERE day=? group by member_id";
+      $checked = [];
+      
       if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
+      }
+      $stmt2 = dbc()->prepare($sql2);
+      if (!($stmt2->execute((array($date))))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      foreach( $stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $checked[] = $row['member_id'];
       }
       foreach($stmt as $row) {
         $productList[] = array(
           'id'    => $row['id'],
           'last_name'  => $row['last_name'],
-          'first_name' => $row['first_name']
+          'first_name' => $row['first_name'],
+          'checked' => (in_array($row['id'], $checked)) ? "checked" : ""
         );
       }
       echo json_encode($productList);
       exit;
     case 'member_select_definition':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
-      
       $select = $_REQUEST['select'];
       $sql = "SELECT member_id FROM history WHERE day=? group by member_id";
       $stmt = dbc()->prepare($sql);

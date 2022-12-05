@@ -20,9 +20,9 @@ $(document).on('click', '.md-btn', function(e) {
             (Number(data[0].archive)) ? $(modal).find('#work_archive').prop("checked", true) : $(modal).find('#work_archive').prop("checked", false);
             $(modal).find('#work_result p').remove();
             $(modal).find('#work_id').remove();
-            $(modal).find('form').append("<input type='hidden' id=work_id value=" + data[0].id + ">");
+            $(modal).find('form').append(`<input type='hidden' id=work_id value=${data[0].id}>`);
           }else{
-            $(modal).find('#work_result').html("<p>" + data["err"] + "</p>");
+            $(modal).find('#work_result').html(`<p>${data["err"]}</p>`);
           }
         },
         error: function(data) {
@@ -59,9 +59,9 @@ $(document).on('click', '.md-btn', function(e) {
             (Number(data[0].archive)) ? $(modal).find('#member_archive').prop("checked", true) : $(modal).find('#member_archive').prop("checked", false);
             $(modal).find('#member_result p').remove();
             $(modal).find('#member_id').remove();
-            $(modal).find('form').append("<input type='hidden' id=member_id value=" + data[0].id + ">");
+            $(modal).find('form').append(`<input type='hidden' id=member_id value=${data[0].id}>`);
           }else{
-            $(modal).find('#member_result').html("<p>" + data["err"] + "</p>");
+            $(modal).find('#member_result').html(`<p>${data["err"]}</p>`);
           }
         },
         error: function(data) {
@@ -87,17 +87,18 @@ $(document).on('click', '.md-btn', function(e) {
       url: "../classes/ajax.php",
       datatype: "json",
       data: {
-        "type": 'member_select_list'
+        "type": 'member_select_list',
+        "day": $("#date").val()
       },
       success: function(data) {
         if (!data["err"]){
           let arr = [];
           $.each(data, function(key, value){
-            arr.push("<li id=member_" + value.id + "><span><input type='checkbox' value=" + value.id + ">：<span>" + value.last_name + "　" + value.first_name + "　<li>");
+            arr.push(`<li id=member_${value.id}><span><input type='checkbox' value='${value.id}'${value.checked}>：<span>${value.last_name}　${value.first_name}<li>`);
           });
           $('#select_list').html(arr);
         }else{
-          $('#select_list').html("<p>" + data["err"] + "</p>");
+          $('#select_list').html(`<p>${data["err"]}</p>`);
         }
       },
       error: function(data) {
