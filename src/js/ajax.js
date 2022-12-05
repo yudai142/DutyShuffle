@@ -288,7 +288,11 @@ $(function(){
             $.each(data, function(key, value){
               arr.push(`<li id=join_member_${value.id}><button class='remove-btn' data-target='remove-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
             });
-            $('#join_member').html(arr)
+            if(arr.length != 0){
+              $('#join_member').html("arr")
+            }else{
+              $('#join_member').html("")
+            }
             $('.modal-container').fadeOut();
           }else{
             $('#select_result').html(`<p>${data["err"]}</p>`);

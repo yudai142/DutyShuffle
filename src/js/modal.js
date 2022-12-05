@@ -83,6 +83,7 @@ $(document).on('click', '.md-btn', function(e) {
   }else if(target == "modal-select"){
     $(modal).find('h1').text("参加メンバー選択");
     $(modal).find('#submit_select').text("確定");
+    $(modal).find('#select_result p').remove();
     $.ajax({
       url: "../classes/ajax.php",
       datatype: "json",

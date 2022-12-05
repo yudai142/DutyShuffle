@@ -72,7 +72,7 @@ try{
       $sql = "SELECT member_id work_id last_name first_name FROM history, member WHERE day=? AND member.id = history.member_id group by member_id ORDER BY kana_name ASC";
       $stmt = dbc()->prepare($sql);
       $stmt->execute(array($date));
-      $selected = [];
+      $productList = [];
       foreach( $stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if($row['work_id'] != null && !in_array($row['id'], $select)){
           $productList[] = array(
@@ -82,6 +82,7 @@ try{
           );
         }
       }
+      if(count($productList) == 0){$productList[] = array("err" => "OK");}
       echo json_encode($productList);
       exit;
     case 'member_select_definition':
