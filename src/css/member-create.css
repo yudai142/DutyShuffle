@@ -27,19 +27,23 @@ h1 {
 
 .form-lists {
   display: flex;
-  flex-wrap: wrap;
   padding-top: 40px;
-  justify-content: space-between;
+}
+
+.form-list { 
+  flex-flow: column;
 }
 
 .form {
   padding-bottom: 36px;
+  margin-right: 33px;
 }
 
 .item {
   float: left;
   font-size: 36px;
   line-height: 44px;
+  padding-left: 10px;
   color: #7B7A7A;
 }
 
@@ -52,6 +56,8 @@ h1 {
 
 .checkbox {
   float: left;
+  width: 25px;
+  height: 25px;
 }
 
 .supple {
