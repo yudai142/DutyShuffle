@@ -66,9 +66,27 @@ try{
       }
       echo json_encode($productList);
       exit;
-    case 'member_select_definition':
+    case 'member_select_check':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
       $select = $_REQUEST['select'];
+      $sql = "SELECT member_id work_id last_name first_name FROM history, member WHERE day=? AND member.id = history.member_id group by member_id ORDER BY kana_name ASC";
+      $stmt = dbc()->prepare($sql);
+      $stmt->execute(array($date));
+      $selected = [];
+      foreach( $stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if($row['work_id'] != null && !in_array($row['id'], $select)){
+          $productList[] = array(
+            'id'    => $row['member_id'],
+            'last_name' => $row['last_name'],
+            'first_name'  => $row['first_name'],
+          );
+        }
+      }
+      echo json_encode($productList);
+      exit;
+    case 'member_select_definition':
+      $date = date('Y-m-d',  strtotime($_REQUEST['day']));
+      $select = ($_REQUEST['select']) ? $_REQUEST['select'] : [];
       $sql = "SELECT member_id FROM history WHERE day=? group by member_id";
       $stmt = dbc()->prepare($sql);
       $stmt->execute(array($date));
@@ -78,7 +96,6 @@ try{
       }
       $selected_result = array_diff($selected, $select);
       $select_result = array_diff($select, $selected);
-      // $productList[] = $select;
       
       foreach($selected_result as $row) {
         $sql = "DELETE FROM history WHERE day=? AND member_id=?";

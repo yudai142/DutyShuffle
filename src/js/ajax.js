@@ -250,6 +250,34 @@ $(function(){
         url: "../classes/ajax.php",
         datatype: "json",
         data: {
+          "type": 'member_select_check',
+          "select": check,
+          "day": $("#date").val()
+        },
+        success: function(data) {
+          if (!data["err"]){
+            $.each(data, function(key, value){
+              if (confirm(`${value.last_name}　${value.first_name}さんは他のタスクに入っていますが、除外してもよろしいですか？`)) {
+                return false;
+              } else {
+                check.push(value.id)
+              }
+            });
+          }else{
+            $('#select_result').html(`<p>${data["err"]}</p>`);
+          }
+        },
+        error: function(data) {
+          $('#select_result').html("<p>入力エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
+        }
+      });
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        datatype: "json",
+        data: {
           "type": 'member_select_definition',
           "select": check,
           "day": $("#date").val()
@@ -273,7 +301,5 @@ $(function(){
         }
       });
     }
-    // return false
   });
-  
 });
