@@ -23,7 +23,7 @@ $(function($){
       },
       success: function(data) {
         if (data == null){
-          false
+          $('#join_member').html("");
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
@@ -306,14 +306,7 @@ $(function($){
         },
         success: function(data) {
           if (data == null){
-            $('#join_member').html("")
-            $('.modal-container').fadeOut();
-          }else if(data['err'] == null){
-            let arr = []
-            $.each(data, function(key, value){
-              arr.push(`<li id=join_member_${value.id}><button class='remove-btn' data-target='remove-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
-            });
-            $('#join_member').html(arr)
+            joinMember();
             $('.modal-container').fadeOut();
           }else{
             $('#select_result').html(`<p>${data["err"]}</p>`);

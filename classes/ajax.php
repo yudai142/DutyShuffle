@@ -90,7 +90,10 @@ try{
       $select = ($_REQUEST['select']) ? $_REQUEST['select'] : [];
       $sql = "SELECT member_id FROM history WHERE day=? group by member_id";
       $stmt = dbc()->prepare($sql);
-      $stmt->execute(array($date));
+      if (!($stmt->execute(array($date)))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
       $selected = [];
       foreach( $stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $selected[] = $row['member_id'];
@@ -101,26 +104,21 @@ try{
       foreach($selected_result as $row) {
         $sql = "DELETE FROM history WHERE day=? AND member_id=?";
         $stmt = dbc()->prepare($sql);
-        $stmt->execute(array($date, $row));
+        if (!($stmt->execute(array($date, $row)))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
       }
       
       foreach($select_result as $row) {
         $sql = "INSERT INTO history(day, member_id) VALUES(?, ?)";
         $stmt = dbc()->prepare($sql);
-        $stmt->execute(array($date, $row));
+        if (!($stmt->execute(array($date, $row)))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
       }
-      
-      $sql2 = "SELECT history.member_id ,last_name, first_name FROM history, member WHERE day=? AND member.id = history.member_id group by member.id ORDER BY member.kana_name ASC";
-      $stmt2 = dbc()->prepare($sql2);
-      $stmt2->execute(array($date));
-      foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $productList[] = array(
-          'id'    => $row['member_id'],
-          'last_name' => $row['last_name'],
-          'first_name'  => $row['first_name'],
-        );
-      }
-      echo json_encode($productList);
+      echo json_encode(null);
       exit;
     case 'member_list':
       if($_REQUEST['select'] == "1"){
