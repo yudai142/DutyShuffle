@@ -14,7 +14,9 @@ $(function(){
         "day": $("#date").val()
       },
       success: function(data) {
-        if (!data["err"]){
+        if (data == null){
+          false
+        }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
             arr.push(`<li id=join_member_${value.id}><button class='remove-btn' data-target='remove-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
@@ -37,7 +39,9 @@ $(function(){
       url: "../classes/ajax.php",
       data: {"type": 'join_work'},
       success: function(data) {
-        if (!data["err"]){
+        if (data == null){
+          false
+        }else if(data['err'] == null){
           $.each(data, function(key, value){
             $('#join_work').append(`<li id=join_work_${value.id}><button class='off-btn' data-target='status-change' value=${value.id}>${value.name}</button><li>`);
           });
@@ -59,7 +63,9 @@ $(function(){
         "type": 'member_list',
       },
       success: function(data) {
-        if (!data["err"]){
+        if (data == null){
+          false
+        }else if(data['err'] == null){
           $.each(data, function(key, value){
             $('#member_show_result').append(`<li id=member_${value.id}><button class='md-btn' data-target='modal-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
           });
@@ -83,7 +89,9 @@ $(function(){
         "type": 'work_list',
       },
       success: function(data) {
-        if (!data["err"]){
+        if (data == null){
+          false
+        }else if(data['err'] == null){
           $.each(data, function(key, value){
             $('#work_show_result').append(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
           });
@@ -245,34 +253,34 @@ $(function(){
       $("#select_list input[type=checkbox]:checked").each(function() {
         check.push($(this).val());
       });
-      $.ajax({
-        type: "POST",
-        url: "../classes/ajax.php",
-        datatype: "json",
-        data: {
-          "type": 'member_select_check',
-          "select": check,
-          "day": $("#date").val()
-        },
-        success: function(data) {
-          if (!data["err"]){
-            $.each(data, function(key, value){
-              if (confirm(`${value.last_name}　${value.first_name}さんは他のタスクに入っていますが、除外してもよろしいですか？`)) {
-                return false;
-              } else {
-                check.push(value.id)
-              }
-            });
-          }else{
-            $('#select_result').html(`<p>${data["err"]}</p>`);
-          }
-        },
-        error: function(data) {
-          $('#select_result').html("<p>入力エラー</p>");
-          console.log("通信失敗");
-          console.log(data);
-        }
-      });
+      // $.ajax({
+      //   type: "POST",
+      //   url: "../classes/ajax.php",
+      //   datatype: "json",
+      //   data: {
+      //     "type": 'member_select_check',
+      //     "select": check,
+      //     "day": $("#date").val()
+      //   },
+      //   success: function(data) {
+      //     if (!data["err"]){
+      //       $.each(data, function(key, value){
+      //         if (confirm(`${value.last_name}　${value.first_name}さんは他のタスクに入っていますが、除外してもよろしいですか？`)) {
+      //           return false;
+      //         } else {
+      //           check.push(value.id)
+      //         }
+      //       });
+      //     }else{
+      //       $('#select_result').html(`<p>${data["err"]}</p>`);
+      //     }
+      //   },
+      //   error: function(data) {
+      //     $('#select_result').html("<p>入力エラー</p>");
+      //     console.log("通信失敗");
+      //     console.log(data);
+      //   }
+      // });
       $.ajax({
         type: "POST",
         url: "../classes/ajax.php",
@@ -283,16 +291,15 @@ $(function(){
           "day": $("#date").val()
         },
         success: function(data) {
-          if (!data["err"]){
+          if (data == null){
+            $('#join_member').html("")
+            $('.modal-container').fadeOut();
+          }else if(data['err'] == null){
             let arr = []
             $.each(data, function(key, value){
               arr.push(`<li id=join_member_${value.id}><button class='remove-btn' data-target='remove-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
             });
-            if(arr.length != 0){
-              $('#join_member').html("arr")
-            }else{
-              $('#join_member').html("")
-            }
+            $('#join_member').html(arr)
             $('.modal-container').fadeOut();
           }else{
             $('#select_result').html(`<p>${data["err"]}</p>`);
