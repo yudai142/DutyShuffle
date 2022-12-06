@@ -11,9 +11,10 @@
   
   <div class="tab_content" id="all_content">
     <div class="tab_content_description">
-      <select name="member_view">
-        <option value="false">有効のみ表示</option>
-        <option value="true">全て表示</option>
+      <select id="member_view">
+        <option value="0">全て表示</option>
+        <option value="1" selected>有効のみ表示</option>
+        <option value="2">無効のみ表示</option>
       </select>
       <button class="md-btn" data-target="modal-member">メンバー登録</button>
       <ul id="member_show_result">
@@ -23,9 +24,10 @@
   <div class="tab_content" id="programming_content">
     <div class="tab_content_description">
       <!-- レコード全件取得 -->
-      <select name="work_view">
-        <option value="false">有効のみ表示</option>
-        <option value="true">全て表示</option>
+      <select id="work_view">
+        <option value="0">全て表示</option>
+        <option value="1" selected>有効のみ表示</option>
+        <option value="2">無効のみ表示</option>
       </select>
       <button class="md-btn" data-target="modal-work">作業登録</button>
       <!-- 追加したレコードも即時反映される -->

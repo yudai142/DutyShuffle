@@ -1,11 +1,19 @@
-$(function(){
+$(function($){
   if ( location.pathname.indexOf("/create-edit.php") !== -1 ){
     getAllMember();
     getAllWork();
+    $('#member_view').change(function() {
+      getAllMember();
+    });
+      
+    $('#work_view').change(function() {
+      getAllWork();
+    });
   }else if ( location.pathname.indexOf("/top.php") != -1 ){
     joinMember();
     joinWork();
   }
+  
   function joinMember(){
     $.ajax({
       url: "../classes/ajax.php",
@@ -61,13 +69,16 @@ $(function(){
       url: "../classes/ajax.php",
       data: {
         "type": 'member_list',
+        "select": $('#member_view').val()
       },
       success: function(data) {
         if (data == null){
           false
         }else if(data['err'] == null){
+          let arr = []
           $.each(data, function(key, value){
-            $('#member_show_result').append(`<li id=member_${value.id}><button class='md-btn' data-target='modal-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
+            arr.push(`<li id=member_${value.id}><button class='md-btn' data-target='modal-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
+            $('#member_show_result').html(arr);
           });
         }else{
           $('#member_show_result').append(`<p>${data["err"]}</p>`);
@@ -87,14 +98,17 @@ $(function(){
       url: "../classes/ajax.php",
       data: {
         "type": 'work_list',
+        "select": $('#work_view').val()
       },
       success: function(data) {
         if (data == null){
           false
         }else if(data['err'] == null){
+          let arr = []
           $.each(data, function(key, value){
-            $('#work_show_result').append(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
+              arr.push(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
           });
+          $('#work_show_result').html(arr)
         }else{
           $('#work_show_result').append(`<p>${data["err"]}</p>`);
         }
@@ -132,7 +146,7 @@ $(function(){
           success: function(data) {
             if (!data["err"]){
               $('#member_result').html(`<p>${data[0].last_name}${data[0].first_name}(${data[0].kana_name})${data[0].archive}を更新しました。</p>`);
-              $('#member_show_result').find(`#member_${data[0].id}`).html(`<button class='md-btn' data-target='modal-member' value=${data[0].id}>${data[0].last_name}　${data[0].first_name}</button>`);
+              getAllMember();
             }else{
               $('#member_result').html(`<p>${data["err"]}</p>`);
             }
@@ -158,11 +172,11 @@ $(function(){
           success: function(data) {
             if (!data["err"]){
               $('#member_result').html(`<p>${data[0].last_name}${data[0].first_name}(${data[0].kana_name})${data[0].archive}を登録しました。</p>`);
-              $('#member_show_result').append(`<li id=member_${data[0].id}><button class='md-btn' data-target='modal-member' value=${data[0].id}>${data[0].last_name}　${data[0].first_name}</button><li>`);
               $('#last_name').val("");
               $('#first_name').val("");
               $('#kana_name').val("");
               $('#member_archive').prop("checked", false);
+              getAllMember();
             }else{
               $('#member_result').html(`<p>${data["err"]}</p>`);
             }
@@ -200,7 +214,7 @@ $(function(){
           success: function(data) {
             if (!data["err"]){
               $('#work_result').html(`<p>${data[0].name}が${data[0].multiple}人の${data[0].archive}のデータを更新しました。</p>`);
-              $('#work_show_result').find(`#work_${data[0].id}`).html(`<button class='md-btn' data-target='modal-work' value=${data[0].id}>${data[0].name}</button>`);
+              getAllWork();
             }else{
               $('#work_result').html(`<p>${data["err"]}</p>`);
             }
@@ -225,10 +239,10 @@ $(function(){
           success: function(data) {
             if (!data["err"]){
               $('#work_result').html(`<p>${data[0].name}が${data[0].multiple}人の${data[0].archive}のデータを登録しました。</p>`);
-              $('#work_show_result').append(`<li id=work_${data[0].id}><button class='md-btn' data-target='modal-work' value=${data[0].id}>${data[0].name}</button><li>`); 
               $('#name').val("");
               $('#multiple').val(1);
               $('#work_archive').prop("checked", false);
+              getAllWork();
             }else{
               $('#work_result').html(`<p>${data["err"]}</p>`);
             }

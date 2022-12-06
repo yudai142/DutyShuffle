@@ -123,7 +123,13 @@ try{
       echo json_encode($productList);
       exit;
     case 'member_list':
-      $sql = "SELECT * FROM member";
+      if($_REQUEST['select'] == "1"){
+        $sql = "SELECT * FROM member WHERE archive = 0";
+      }else if($_REQUEST['select'] == "2"){
+        $sql = "SELECT * FROM member WHERE archive = 1";
+      }else{
+        $sql = "SELECT * FROM member";
+      }
       if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
@@ -138,7 +144,13 @@ try{
       echo json_encode($productList);
       exit;
     case 'work_list':
-      $sql = "SELECT * FROM work";
+      if($_REQUEST['select'] == "1"){
+        $sql = "SELECT * FROM work WHERE archive = 0";
+      }else if($_REQUEST['select'] == "2"){
+        $sql = "SELECT * FROM work WHERE archive = 1";
+      }else{
+        $sql = "SELECT * FROM work";
+      }
       if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
