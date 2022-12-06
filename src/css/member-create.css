@@ -32,15 +32,16 @@ h1 {
 
 .form-list { 
   flex-flow: column;
+  width: 50%;
 }
 
 .form {
   padding-bottom: 36px;
   margin-right: 33px;
+  display: flex;
 }
 
 .item {
-  float: left;
   font-size: 36px;
   line-height: 44px;
   padding-left: 10px;
@@ -57,26 +58,25 @@ h1 {
 
 .checkbox {
   width: 25px;
-  height: 25px;
-  display: inline-block;  
   margin-left: 20px;
 }
 
 .supple {
   font-size: 24px;
-  line-height: 29px;
+  line-height: 44px;
   color: #333333;
-  /* float: right; */
-  
 }
 
 .upper {
   padding-left: 62px;
 }
 
-.invalid {
-  float: left;
+.form-list:last-of-type .form:last-of-type {
+  padding-bottom: 23px;
 }
+
+/* .invalid {
+} */
 
 .clear  {
   clear: both;
