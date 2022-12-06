@@ -66,8 +66,16 @@ h1 {
   font-size: 24px;
   line-height: 29px;
   color: #333333;
-  float: right;
+  /* float: right; */
+  
+}
+
+.upper {
   padding-left: 62px;
+}
+
+.invalid {
+  float: left;
 }
 
 .clear  {
