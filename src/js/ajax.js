@@ -138,7 +138,7 @@ $(function($){
       },
       success: function(data) {
         if (data == null){
-          false
+          $('#member_show_result').html("");
         }else if(data['err'] == null){
           let arr = []
           $.each(data, function(key, value){
