@@ -12,7 +12,7 @@ h1 {
   height: 446px;
   max-width: 1026px;
   margin: 66px auto;
-  padding: 20px 50px;
+  padding: 20px 80px;
   border: 1px solid black;
   border-radius: 10px;
   background-color: #D2DAF6;
@@ -37,14 +37,13 @@ h1 {
 
 .form {
   padding-bottom: 36px;
-  margin-right: 33px;
+  margin-right: 30px;
   display: flex;
 }
 
 .item {
   font-size: 36px;
   line-height: 44px;
-  padding-left: 10px;
   color: #7B7A7A;
   
 }
@@ -63,21 +62,49 @@ h1 {
 
 .supple {
   font-size: 24px;
-  line-height: 44px;
   color: #333333;
 }
 
 .upper {
   padding-left: 62px;
+  line-height: 44px;
+}
+
+.form-list:last-of-type .form {
+  margin-right: 0px;
 }
 
 .form-list:last-of-type .form:last-of-type {
   padding-bottom: 23px;
 }
 
-/* .invalid {
-} */
+.btns {
+  display: flex;
+  justify-content: flex-end;
+}
 
-.clear  {
-  clear: both;
+.btn {
+  padding: 3.5px 19px;
+  width: 86px;
+  height: 37px;
+  margin-top: 45px;
+  border-radius: 60px;
+  color: #FFFFFF;
+  font-size: 24px;
+  box-shadow: 0px 2px black;
+}
+
+.btn:active {
+  box-shadow: none;
+  position: relative;
+  top: 2px;
+}
+
+.left {
+  background-color: #FE975D;
+}
+
+.right {
+  background-color: #1E9097;
+  margin-left: 31px;
 }
