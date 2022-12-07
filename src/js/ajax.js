@@ -12,6 +12,71 @@ $(function($){
   }else if ( location.pathname.indexOf("/top.php") != -1 ){
     joinMember();
     joinWork();
+  }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
+    allocationView();
+  }
+  
+  function allocationView(){
+    $.ajax({
+      type: "POST",
+      url: "../classes/ajax.php",
+      datatype: "json",
+      data: {
+        "type": 'allocation_list',
+        "day": $("#date").val()
+      },
+      success: function(data) {
+        if (data == null){
+          $('#allocation-form').html("");
+        }else if(data["err"] == null){
+          let arr = []
+          $.each(data[0], function(work_key, work_value){
+            if(data[1] != null){
+              let member = data[1].filter(value => {if(value.work_id == work_value.id){return true;}});
+              let list = [];
+              $.each(member, function(member_key, member_value){
+                list.push(`
+                  <li><button style="color:red;">${member_value.last_name}　${member_value.first_name}</button></li>
+                `);
+              });
+              arr.push(`
+                <div class="content" style="display:flex;flex-flow: column;">
+                  <div class="work-title"><button style="color:blue;">${work_value.name}</button></div>
+                  <ul class="work-member">
+                    ${list.join("")}
+                  </ul>
+                </div>
+              `);
+            }else{
+              arr.push(`
+                <div class="content" style="display:flex;flex-flow: column;">
+                  <div class="work-title"><button style="color:blue;">${work_value.name}</button></div>
+                  <ul class="work-member"></ul>
+                </div>
+              `);
+            }
+          });
+          if(data[1] != null){
+            let null_member = data[1].filter(value => {if(value.work_id == null){return true;}});
+            let null_list = [];
+            $.each(null_member, function(null_key, null_value){
+              null_list.push(`
+                <li><button style="color:red;">${null_value.last_name}　${null_value.first_name}</button></li>
+              `);
+            });
+            $('#null-member-list').html(null_list);
+          }
+          $('#allocation-form').html(arr);
+        }else{
+          $('#allocation-form').html(`<p>${data["err"]}</p>`);
+        }
+      },
+      error: function(data) {
+        $('#allocation-form').html("<p>通信エラー</p>");
+        console.log("通信失敗");
+        console.log(data);
+      }
+    });
   }
   
   function joinMember(){

@@ -5,6 +5,32 @@ header('Content-Type: application/json; charset=utf-8');
 
 try{
   switch($_REQUEST['type']){
+    case 'allocation_list':
+      $date = date('Y-m-d',  strtotime($_REQUEST['day']));
+      
+      $sql2 = "SELECT id, name FROM work WHERE archive=0";
+      if (!($stmt2 = dbc()->query($sql2))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      $productList[0] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+      
+      $sql = "SELECT last_name, first_name, member_id ,work_id FROM history, member WHERE day=? AND member.id = history.member_id";
+      $stmt = dbc()->prepare($sql);
+      if (!($stmt->execute(array($date)))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $productList[1][] = array(
+          'id'    => $row['member_id'],
+          'last_name' => $row['last_name'],
+          'first_name'  => $row['first_name'],
+          'work_id'    => $row['work_id'],
+        );
+      }
+      echo json_encode($productList);
+      exit;
     case 'join_member':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
       $sql = "SELECT member.id ,last_name, first_name FROM history, member WHERE day=? AND member.id = history.member_id group by member_id ORDER BY member.kana_name ASC";
