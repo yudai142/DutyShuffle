@@ -98,6 +98,11 @@ $(document).on('click', '.md-btn', function(e) {
             //   arr.push(`<li id=member_${value.id}><span><input type='checkbox' value='${value.id}'${value.checked}>：<span>${value.last_name}　${value.first_name}<li>`);
             // });
             // $('#select_list').html(arr);
+            $(modal).find('h1').text(`${data[0]["name"]}に参加するメンバーの選択`);
+            $(modal).find('#submit_select').text("確定");
+            $(modal).find('#select_result p').remove();
+            $(modal).find('#select_work_id').remove();
+            $(modal).find('form').append(`<input type='hidden' id=select_work_id value=${data[0]["id"]}>`);
           }else{
             $('#select_list').html(`<p>${data["err"]}</p>`);
           }
@@ -108,9 +113,6 @@ $(document).on('click', '.md-btn', function(e) {
           console.log(data);
         }
       });
-      $(modal).find('h1').text("に参加するメンバーの選択");
-      $(modal).find('#submit_select').text("確定");
-      $(modal).find('#select_result p').remove();
     }else{
       $(modal).find('h1').text("参加メンバー選択");
       $(modal).find('#submit_select').text("確定");
@@ -141,7 +143,7 @@ $(document).on('click', '.md-btn', function(e) {
       });
     }
   }
-  // $(modal).find('.modal-container').fadeIn();
+  $(modal).find('.modal-container').fadeIn();
 });
 $('.md-close').on('click',function(){
   $('.modal-container').fadeOut();
