@@ -8,20 +8,26 @@ try{
     case 'allocation_list':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
       
-      $sql2 = "SELECT id, name FROM work WHERE archive=0";
-      if (!($stmt2 = dbc()->query($sql2))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
-        exit;
-      }
-      $productList[0] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-      
       $sql = "SELECT last_name, first_name, member_id ,work_id FROM history, member WHERE day=? AND member.id = history.member_id";
+      $sql2 = "SELECT id, name, archive FROM work";
+      
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
+      if (!($stmt2 = dbc()->query($sql2))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      
+      $work_list = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+      $work_id_list = [];
+      
       foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if($row['work_id'] != null){
+          $work_id_list[] = $row['work_id'];
+        }
         $productList[1][] = array(
           'id'    => $row['member_id'],
           'last_name' => $row['last_name'],
@@ -29,6 +35,16 @@ try{
           'work_id'    => $row['work_id'],
         );
       }
+      $work_id_list = array_unique($work_id_list);
+      foreach($work_list as $row) {
+        if(in_array($row['id'], $work_id_list) || $row['archive'] == 0){
+          $productList[0][] = array(
+            'id'    => $row['id'],
+            'name'  => $row['name']
+          );
+        }
+      }
+      
       echo json_encode($productList);
       exit;
     case 'join_member':
@@ -146,6 +162,38 @@ try{
       }
       echo json_encode(null);
       exit;
+    case 'member_select_work':
+      $date = date('Y-m-d',  strtotime($_REQUEST['day']));
+      
+      $sql2 = "SELECT id, name FROM work";
+      $stmt2 = dbc()->prepare($sql2);
+      if (!($stmt2->execute(array($_REQUEST['work_id'])))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      $work_list = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+      $productList[0] = $work_list[array_search($_REQUEST['work_id'], array_column($work_list, 'id'))];
+      
+      $sql = "SELECT member_id, work_id, last_name, first_name FROM history, member WHERE day=? AND member.id = history.member_id ORDER BY kana_name ASC";
+      $stmt = dbc()->prepare($sql);
+      if (!($stmt->execute(array($date)))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      foreach( $stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if($row['work_id'] != null){
+          $row['work_id'] = $work_list[array_search($row['work_id'], array_column($work_list, 'id'))]["name"];
+        }
+        $productList[1][] = array(
+          'id'    => $row['member_id'],
+          'last_name' => $row['last_name'],
+          'first_name'  => $row['first_name'],
+          'work_name'    => $row['work_id'],
+        );
+      }
+      echo json_encode($productList);
+      exit;
+      
     case 'member_list':
       if($_REQUEST['select'] == "1"){
         $sql = "SELECT * FROM member WHERE archive = 0";

@@ -24,7 +24,7 @@
   <h3>担当</h3>
   <div id="allocation-form" style="display:flex;"></div>
 </div>
-<h3>サポート</h3>
+<h3>サポート(未選択)</h3>
 <ul id="null-member-list"></ul>
 
 <?php require_once "../public/modal/modal-select.php" ?>
