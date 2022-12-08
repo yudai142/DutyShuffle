@@ -41,7 +41,7 @@ $(function($){
               });
               arr.push(`
                 <div class="content" style="display:flex;flex-flow: column;white-space: nowrap;">
-                  <div class="work-title"><button class="md-btn work" data-target="modal-select" value="${work_value.id}" style="color:blue;">${work_value.name}</button></div>
+                  <div class="work-title"><button class="md-btn" data-target="modal-select" data-type="work" value="${work_value.id}" style="color:blue;">${work_value.name}</button></div>
                   <ul class="work-member">
                     ${list.join("")}
                   </ul>

@@ -81,7 +81,7 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('#submit_member').text("追加");
     }
   }else if(target == "modal-select"){
-    if($(this).hasClass('work')){
+    if($(this).data('type') == 'work'){
       $.ajax({
         url: "../classes/ajax.php",
         datatype: "json",
