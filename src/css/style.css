@@ -330,5 +330,5 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 30px 60px;
   border: 1px solid black;
   border-radius: 10px;
-  height: 334px;
+  min-height: 334px;
 }

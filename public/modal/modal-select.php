@@ -2,14 +2,20 @@
   <div class="modal-container">
   	<div class="modal-body">
   		<div class="modal-content">
-        <div class="container-select-header">
-          <button type="button" class="md-close">戻る</button>
+        <div class="select-header">
           <h1>メンバー選択</h1>
-          <button id="submit_select">確定</button>
         </div>
         <div class="add_products">
           <form onsubmit="return false;">
-            <ul id="select_list" style="display:flex;"></ul><!-- /#select_list -->
+            <div class="select-buttons">
+              <button type="button" class="md-close">戻る</button>
+              <div class="select-button-right">
+                <input type="checkbox">
+                <span>：シャッフルの際割り当てしない</span>
+                <button id="submit_select">確定</button>
+              </div>
+            </div>
+            <ul id="select_list" style="display:flex;flex-flow: column;"></ul>
             <div id="select_result"></div>
           </form>
         </div>

@@ -8,7 +8,12 @@
   border-radius: 10px;
 }
 
-.container-select-header {
+.select-header {
+  display: flex;
+  justify-content: center;
+}
+
+.select-buttons {
   display: flex;
   justify-content: space-between;
 }

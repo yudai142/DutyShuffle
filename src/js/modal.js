@@ -93,11 +93,13 @@ $(document).on('click', '.md-btn', function(e) {
         success: function(data) {
           if (!data["err"]){
             console.log(data)
-            // let arr = [];
-            // $.each(data, function(key, value){
-            //   arr.push(`<li id=member_${value.id}><span><input type='checkbox' value='${value.id}'${value.checked}>：<span>${value.last_name}　${value.first_name}<li>`);
-            // });
-            // $('#select_list').html(arr);
+            let arr = [];
+            $.each(data[1], function(key, value){
+              $style = (value.work_name)?"style=color:green;":"";
+              $work_name = (value.work_name)?`<br><span style=color:orange;>${value.work_name}を担当しています</span>`:"";
+              arr.push(`<li id=member_${value.id}><span><input type='checkbox' value='${value.id}'${value.checked}>：<span ${$style}>${value.last_name}　${value.first_name}</span>${$work_name}<li>`);
+            });
+            $('#select_list').html(arr);
             $(modal).find('h1').text(`${data[0]["name"]}に参加するメンバーの選択`);
             $(modal).find('#submit_select').text("確定");
             $(modal).find('#select_result p').remove();

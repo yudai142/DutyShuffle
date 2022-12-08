@@ -20,12 +20,20 @@
   <span style="position: relative;"><a href="login.php" class="login-button blue-button">シャッフル</a></span>
 </div>
 
-<div class="allocation-table">
-  <h3>担当</h3>
+<div class="allocation-table" style="margin:50px 40px">
+  <div class="allocation-head" style="display:flex;justify-content: space-between;flex-wrap:wrap;">
+    <h3>担当</h3>
+    <div class="allocation-head-right">
+      <button>担当全解除</button>
+      <button>メンバー追加</button>
+    </div>
+  </div>
   <div id="allocation-form" style="display:flex;"></div>
 </div>
-<h3>サポート(未選択)</h3>
-<ul id="null-member-list"></ul>
+<div class="support-table" style="margin:0 40px">
+  <h3>サポート(未選択)</h3>
+  <ul id="null-member-list"></ul>
+</div>
 
 <?php require_once "../public/modal/modal-select.php" ?>
 <script src="../src/js/ajax.js"></script>
