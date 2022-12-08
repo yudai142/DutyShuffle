@@ -92,8 +92,7 @@
   
   .form-list { 
 	flex-flow: column;
-	/* width: 50%; */
-	flex: auto;
+	width: 50%;
   }
   
   .form {
@@ -133,4 +132,8 @@
   .upper {
 	padding-left: 62px;
 	line-height: 44px;
+  }
+  
+  .btn {
+	margin-top: 26px;
   }
