@@ -277,7 +277,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 3.5px 19px;
   width: 86px;
   height: 37px;
-  margin-top: 45px;
   border-radius: 60px;
   color: #FFFFFF;
   font-size: 24px;

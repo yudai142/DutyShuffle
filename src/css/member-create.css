@@ -74,3 +74,7 @@ h1 {
 .form-list:last-of-type .form:last-of-type {
   padding-bottom: 23px;
 }
+
+.btn {
+  margin-top: 45px;
+}
