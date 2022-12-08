@@ -103,6 +103,8 @@ $(document).on('click', '.md-btn', function(e) {
             $('#select_list').html(arr);
             $(modal).find('h1').text(`${data[0]["name"]}に参加するメンバーの選択`);
             $(modal).find('#submit_select').text("確定");
+            $(modal).find('#submit_select').attr("data-type", "");
+            $(modal).find('#submit_select').attr("data-type","work");
             $(modal).find('#select_result p').remove();
             $(modal).find('#select_work_id').remove();
             $(modal).find('form').append(`<input type='hidden' id=select_work_id value=${data[0]["id"]}>`);

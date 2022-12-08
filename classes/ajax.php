@@ -183,6 +183,7 @@ try{
       foreach( $stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if($row['work_id'] != null){
           $row['work_id'] = $work_list[array_search($row['work_id'], array_column($work_list, 'id'))]["name"];
+          // ここから
         }
         $productList[1][] = array(
           'id'    => $row['member_id'],
@@ -193,7 +194,43 @@ try{
       }
       echo json_encode($productList);
       exit;
+    case 'member_select_work_definition':
+      $date = date('Y-m-d',  strtotime($_REQUEST['day']));
+      $select = ($_REQUEST['select']) ? $_REQUEST['select'] : [];
+      $sql = "SELECT id, member_id FROM history WHERE day=?";
+      $stmt = dbc()->prepare($sql);
+      if (!($stmt->execute(array($date, $_REQUEST['work_id'])))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      $selected = [];
+      $histories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      foreach( $histories as $row) {
+        $selected[] = $row['member_id'];
+      }
+      $selected_result = array_diff($selected, $select);
+      $select_result = array_diff($select, $selected);
       
+      foreach($selected_result as $row) {
+        $history_id = $histories[array_search($row, array_column($histories, 'member_id'))]["id"];
+        $sql = "UPDATE history SET work_id = null WHERE id=?";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($history_id)))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }
+      
+      foreach($select_result as $row) {
+        $sql = "INSERT INTO history(day, member_id) VALUES(?, ?)";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($date, $row)))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }
+      echo json_encode(null);
+      exit;
     case 'member_list':
       if($_REQUEST['select'] == "1"){
         $sql = "SELECT * FROM member WHERE archive = 0";

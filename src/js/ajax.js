@@ -332,6 +332,13 @@ $(function($){
       $("#select_list input[type=checkbox]:checked").each(function() {
         check.push($(this).val());
       });
+      if($(this).data('type') == 'work'){
+        data_type = "member_select_work_definition"
+        work_id = $("#select_work_id").val()
+      }else{
+        data_type = "member_select_definition"
+        work_id = ""
+      }
       // $.ajax({
       //   type: "POST",
       //   url: "../classes/ajax.php",
@@ -365,13 +372,19 @@ $(function($){
         url: "../classes/ajax.php",
         datatype: "json",
         data: {
-          "type": 'member_select_definition',
+          "type": data_type,
           "select": check,
-          "day": $("#date").val()
+          "day": $("#date").val(),
+          work_id
         },
         success: function(data) {
           if (data == null){
-            joinMember();
+            if($(this).data('type') == 'work'){
+              console.log("あ")
+              allocationView();
+            }else{
+              joinMember();
+            }
             $('.modal-container').fadeOut();
           }else{
             $('#select_result').html(`<p>${data["err"]}</p>`);
@@ -384,5 +397,6 @@ $(function($){
         }
       });
     }
+
   });
 });
