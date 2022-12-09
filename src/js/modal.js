@@ -1,6 +1,6 @@
 $(document).on('click', '.md-btn', function(e) {
   e.preventDefault();
-  const target = $(this).data('target');
+  const target = $(this).attr('data-target');
   const modal = document.getElementById(target);
   if(target == "modal-work"){
     if($(this).val()){
@@ -81,7 +81,7 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('#submit_member').text("追加");
     }
   }else if(target == "modal-select"){
-    if($(this).data('type') == 'work'){
+    if($(this).attr('data-type') == 'work'){
       $.ajax({
         url: "../classes/ajax.php",
         datatype: "json",

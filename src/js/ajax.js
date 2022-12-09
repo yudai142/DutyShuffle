@@ -332,7 +332,6 @@ $(function($){
       $("#select_list input[type=checkbox]:checked").each(function() {
         check.push($(this).val());
       });
-      console.log($(this).attr('data-type'));
       if($(this).attr('data-type') == 'work'){
         data_type = "member_select_work_definition"
         work_id = $("#select_work_id").val()
@@ -379,7 +378,7 @@ $(function($){
           work_id
         },
         success: function(data) {
-          if (data != null){
+          if (data == null || !data["err"]){
             if( location.pathname.indexOf("/allocation.php") != -1 ){
               allocationView();
             }else if( location.pathname.indexOf("/top.php") != -1 ){
