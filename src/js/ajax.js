@@ -50,7 +50,7 @@ $(function($){
             }else{
               arr.push(`
                 <div class="content" style="display:flex;flex-flow: column;">
-                  <div class="work-title"><button class="md-btn work" data-target="modal-select" value="${work_value.id}" style="color:blue;">${work_value.name}</button></div>
+                  <div class="work-title"><button class="md-btn" data-target="modal-select" value="${work_value.id}" style="color:blue;">${work_value.name}</button></div>
                   <ul class="work-member"></ul>
                 </div>
               `);
@@ -332,7 +332,8 @@ $(function($){
       $("#select_list input[type=checkbox]:checked").each(function() {
         check.push($(this).val());
       });
-      if($(this).data('type') == 'work'){
+      console.log($(this).attr('data-type'));
+      if($(this).attr('data-type') == 'work'){
         data_type = "member_select_work_definition"
         work_id = $("#select_work_id").val()
       }else{
@@ -379,9 +380,9 @@ $(function($){
         },
         success: function(data) {
           if (data != null){
-            if(data == 'work'){
+            if( location.pathname.indexOf("/allocation.php") != -1 ){
               allocationView();
-            }else{
+            }else if( location.pathname.indexOf("/top.php") != -1 ){
               joinMember();
             }
             $('.modal-container').fadeOut();
