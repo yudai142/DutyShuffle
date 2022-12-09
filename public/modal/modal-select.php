@@ -10,8 +10,7 @@
             <div class="select-buttons">
               <button type="button" class="md-close">戻る</button>
               <div class="select-button-right">
-                <input type="checkbox">
-                <span>：シャッフルの際割り当てしない</span>
+                <span id="bool-check"></span>
                 <button id="submit_select">確定</button>
               </div>
             </div>

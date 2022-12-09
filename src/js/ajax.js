@@ -337,7 +337,7 @@ $(function($){
         work_id = $("#select_work_id").val()
       }else{
         data_type = "member_select_definition"
-        work_id = ""
+        work_id = null
       }
       // $.ajax({
       //   type: "POST",
@@ -378,9 +378,8 @@ $(function($){
           work_id
         },
         success: function(data) {
-          if (data == null){
-            if($(this).data('type') == 'work'){
-              console.log("あ")
+          if (data != null){
+            if(data == 'work'){
               allocationView();
             }else{
               joinMember();

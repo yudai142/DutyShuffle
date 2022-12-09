@@ -160,7 +160,7 @@ try{
           exit;
         }
       }
-      echo json_encode(null);
+      echo json_encode("select");
       exit;
     case 'member_select_work':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
@@ -174,7 +174,7 @@ try{
       $work_list = $stmt2->fetchAll(PDO::FETCH_ASSOC);
       $productList[0] = $work_list[array_search($_REQUEST['work_id'], array_column($work_list, 'id'))];
       
-      $sql = "SELECT member_id, work_id, last_name, first_name FROM history, member WHERE day=? AND member.id = history.member_id ORDER BY kana_name ASC";
+      $sql = "SELECT history.id, work_id, last_name, first_name FROM history, member WHERE day=? AND member.id = history.member_id ORDER BY kana_name ASC";
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
@@ -183,10 +183,9 @@ try{
       foreach( $stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         if($row['work_id'] != null){
           $row['work_id'] = $work_list[array_search($row['work_id'], array_column($work_list, 'id'))]["name"];
-          // ここから
         }
         $productList[1][] = array(
-          'id'    => $row['member_id'],
+          'history_id'    => $row['id'],
           'last_name' => $row['last_name'],
           'first_name'  => $row['first_name'],
           'work_name'    => $row['work_id'],
@@ -197,25 +196,27 @@ try{
     case 'member_select_work_definition':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
       $select = ($_REQUEST['select']) ? $_REQUEST['select'] : [];
-      $sql = "SELECT id, member_id FROM history WHERE day=?";
+      $sql = "SELECT id, member_id, work_id FROM history WHERE day=?";
       $stmt = dbc()->prepare($sql);
-      if (!($stmt->execute(array($date, $_REQUEST['work_id'])))) {
+      if (!($stmt->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
       $selected = [];
       $histories = $stmt->fetchAll(PDO::FETCH_ASSOC);
       foreach( $histories as $row) {
-        $selected[] = $row['member_id'];
+        if($row["work_id"] == $_REQUEST['work_id']){
+          $selected[] = $row['id'];
+        }
       }
+      
       $selected_result = array_diff($selected, $select);
       $select_result = array_diff($select, $selected);
       
       foreach($selected_result as $row) {
-        $history_id = $histories[array_search($row, array_column($histories, 'member_id'))]["id"];
-        $sql = "UPDATE history SET work_id = null WHERE id=?";
+        $sql = "UPDATE history SET work_id=null WHERE id=?";
         $stmt = dbc()->prepare($sql);
-        if (!($stmt->execute(array($history_id)))) {
+        if (!($stmt->execute(array($row)))) {
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
           exit;
         }
@@ -223,13 +224,14 @@ try{
       
       foreach($select_result as $row) {
         $sql = "INSERT INTO history(day, member_id) VALUES(?, ?)";
+        $sql = "UPDATE history SET work_id=? WHERE id=?";
         $stmt = dbc()->prepare($sql);
-        if (!($stmt->execute(array($date, $row)))) {
+        if (!($stmt->execute(array($_REQUEST['work_id'], $row)))) {
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
           exit;
         }
       }
-      echo json_encode(null);
+      echo json_encode("work");
       exit;
     case 'member_list':
       if($_REQUEST['select'] == "1"){

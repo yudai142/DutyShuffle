@@ -92,18 +92,17 @@ $(document).on('click', '.md-btn', function(e) {
         },
         success: function(data) {
           if (!data["err"]){
-            console.log(data)
             let arr = [];
             $.each(data[1], function(key, value){
-              $checked = (value.work_name == data[0]["name"]) ? "checked" : ""
-              $style = (value.work_name && value.work_name != data[0]["name"])?"style=color:green;":"";
-              $work_name = (value.work_name && value.work_name != data[0]["name"])?`<br><span style=color:orange;>${value.work_name}を担当しています</span>`:"";
-              arr.push(`<li id=member_${value.id}><span><input type='checkbox' value='${value.id}'${$checked}>：<span ${$style}>${value.last_name}　${value.first_name}</span>${$work_name}<li>`);
+              checked = (value.work_name == data[0]["name"]) ? "checked" : ""
+              style = (value.work_name && value.work_name != data[0]["name"])?"style=color:green;":"";
+              work_name = (value.work_name && value.work_name != data[0]["name"])?`<br><span style=color:orange;>${value.work_name}を担当しています</span>`:"";
+              arr.push(`<li id=history_${value.history_id}><span><input type='checkbox' value='${value.history_id}'${checked}>：<span ${style}>${value.last_name}　${value.first_name}</span>${work_name}<li>`);
             });
             $('#select_list').html(arr);
             $(modal).find('h1').text(`${data[0]["name"]}に参加するメンバーの選択`);
             $(modal).find('#submit_select').text("確定");
-            $(modal).find('#submit_select').attr("data-type", "");
+            $(modal).find('#bool-check').html(`<input type="checkbox">：シャッフルの非対称にする`);
             $(modal).find('#submit_select').attr("data-type","work");
             $(modal).find('#select_result p').remove();
             $(modal).find('#select_work_id').remove();
@@ -121,6 +120,8 @@ $(document).on('click', '.md-btn', function(e) {
     }else{
       $(modal).find('h1').text("参加メンバー選択");
       $(modal).find('#submit_select').text("確定");
+      $(modal).find('#bool-check').html("");
+      $(modal).find('#submit_select').attr("data-type", "");
       $(modal).find('#select_result p').remove();
       $.ajax({
         url: "../classes/ajax.php",
