@@ -5,6 +5,10 @@
 
 h1 {
   font-size: 48px;
+  text-align: center;
+  line-height: 58px;
+  color: #FFFFFF;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
 }
 
 .container-member {
@@ -17,13 +21,6 @@ h1 {
   border-radius: 10px;
   background-color: #D2DAF6;
   }
-  
-.container-member h1 {
-  text-align: center;
-  line-height: 58px;
-  color: #FFFFFF;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
-}
 
 .form-lists {
   display: flex;
@@ -78,33 +75,6 @@ h1 {
   padding-bottom: 23px;
 }
 
-.btns {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .btn {
-  padding: 3.5px 19px;
-  width: 86px;
-  height: 37px;
   margin-top: 45px;
-  border-radius: 60px;
-  color: #FFFFFF;
-  font-size: 24px;
-  box-shadow: 0px 2px black;
-}
-
-.btn:active {
-  box-shadow: none;
-  position: relative;
-  top: 2px;
-}
-
-.left {
-  background-color: #FE975D;
-}
-
-.right {
-  background-color: #1E9097;
-  margin-left: 31px;
 }
