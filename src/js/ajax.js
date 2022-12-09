@@ -36,7 +36,7 @@ $(function($){
               let list = [];
               $.each(member, function(member_key, member_value){
                 list.push(`
-                  <li><button style="color:red;">${member_value.last_name}　${member_value.first_name}</button></li>
+                  <li><button class="md-btn" data-target="modal-select" data-type="member" value="${member_value.history_id}" style="color:red;">${member_value.last_name}　${member_value.first_name}</button></li>
                 `);
               });
               arr.push(`
@@ -50,7 +50,7 @@ $(function($){
             }else{
               arr.push(`
                 <div class="content" style="display:flex;flex-flow: column;">
-                  <div class="work-title"><button class="md-btn" data-target="modal-select" value="${work_value.id}" style="color:blue;">${work_value.name}</button></div>
+                  <div class="work-title"><button class="md-btn" data-target="modal-select" style="color:blue;">${work_value.name}</button></div>
                   <ul class="work-member"></ul>
                 </div>
               `);
@@ -61,7 +61,7 @@ $(function($){
             let null_list = [];
             $.each(null_member, function(null_key, null_value){
               null_list.push(`
-                <li><button style="color:red;">${null_value.last_name}　${null_value.first_name}</button></li>
+                <li><button class="md-btn" data-target="modal-select" data-type="member" value="${null_value.history_id}"  style="color:red;">${null_value.last_name}　${null_value.first_name}</button></li>
               `);
             });
             $('#null-member-list').html(null_list);

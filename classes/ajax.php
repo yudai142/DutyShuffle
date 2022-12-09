@@ -8,7 +8,7 @@ try{
     case 'allocation_list':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
       
-      $sql = "SELECT last_name, first_name, member_id ,work_id FROM history, member WHERE day=? AND member.id = history.member_id";
+      $sql = "SELECT history.id,last_name, first_name ,work_id FROM history, member WHERE day=? AND member.id = history.member_id";
       $sql2 = "SELECT id, name, archive FROM work";
       
       $stmt = dbc()->prepare($sql);
@@ -29,7 +29,7 @@ try{
           $work_id_list[] = $row['work_id'];
         }
         $productList[1][] = array(
-          'id'    => $row['member_id'],
+          'history_id'    => $row['id'],
           'last_name' => $row['last_name'],
           'first_name'  => $row['first_name'],
           'work_id'    => $row['work_id'],

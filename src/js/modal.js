@@ -82,6 +82,11 @@ $(document).on('click', '.md-btn', function(e) {
     }
   }else if(target == "modal-select"){
     if($(this).attr('data-type') == 'work'){
+      $(modal).find('#submit_select').text("確定");
+      $(modal).find('#bool-check').html(`<input type="checkbox">：シャッフルの非対称にする`);
+      $(modal).find('#submit_select').attr("data-type","work");
+      $(modal).find('#select_result p').remove();
+      $(modal).find('#select_work_id').remove();
       $.ajax({
         url: "../classes/ajax.php",
         datatype: "json",
@@ -101,11 +106,6 @@ $(document).on('click', '.md-btn', function(e) {
             });
             $('#select_list').html(arr);
             $(modal).find('h1').text(`${data[0]["name"]}に参加するメンバーの選択`);
-            $(modal).find('#submit_select').text("確定");
-            $(modal).find('#bool-check').html(`<input type="checkbox">：シャッフルの非対称にする`);
-            $(modal).find('#submit_select').attr("data-type","work");
-            $(modal).find('#select_result p').remove();
-            $(modal).find('#select_work_id').remove();
             $(modal).find('form').append(`<input type='hidden' id=select_work_id value=${data[0]["id"]}>`);
           }else{
             $('#select_list').html(`<p>${data["err"]}</p>`);
@@ -120,7 +120,7 @@ $(document).on('click', '.md-btn', function(e) {
     }else{
       $(modal).find('h1').text("参加メンバー選択");
       $(modal).find('#submit_select').text("確定");
-      $(modal).find('#bool-check').html("");
+      $(modal).find('#bool-check').html(`<button>選択全解除</button>`);
       $(modal).find('#submit_select').attr("data-type", "");
       $(modal).find('#select_result p').remove();
       $.ajax({

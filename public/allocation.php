@@ -25,7 +25,7 @@
     <h3>担当</h3>
     <div class="allocation-head-right">
       <button>担当全解除</button>
-      <button>メンバー追加</button>
+      <button class="md-btn" data-target="modal-select">メンバー追加</button>
     </div>
   </div>
   <div id="allocation-form" style="display:flex;"></div>
