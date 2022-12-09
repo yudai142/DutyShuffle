@@ -1,0 +1,13 @@
+* {
+    box-sizing: border-box;
+    font-family: "Inter";
+  }
+
+  .btn {
+    color: black;
+    padding: 0;
+  }
+
+  .b-areal {
+    width: 147px;
+  }
