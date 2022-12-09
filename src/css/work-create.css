@@ -66,24 +66,10 @@
   height: 334px;
 }
 
-.container-work {
-	width: 100%;
+.work {
 	height: 334px;
-	max-width: 1026px;
-	margin: 66px auto;
 	padding: 20px 90px;
-	border: 1px solid black;
-	border-radius: 10px;
-	background-color: #D2DAF6;
 }
-
-  h1 {
-	font-size: 48px;
-	text-align: center;
-	line-height: 58px;
-	color: #FFFFFF;
-	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
-  }
 
   .form-lists {
 	display: flex;
