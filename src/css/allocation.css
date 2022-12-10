@@ -1,0 +1,38 @@
+
+
+
+.select-member-button {
+  position: relative;
+}
+
+.select-member select {
+  width: 100%;
+  font-weight: bold;
+}
+
+
+#checkboxes {
+  position:fixed;
+  /* top:30px; */
+  display: none;
+  border: 1px #dadada solid;
+  overflow: scroll;
+  max-height: 230px;
+  z-index: 1;
+}
+
+#check-form {
+  border-bottom: 1px #1e90ff solid ;
+  display: block;
+  background-color: white;
+  position: sticky;
+  top: 0;
+}
+.select-work {
+  background: white;;
+}
+.select-work:hover {
+  cursor: pointer;
+  background-color: #1e90ff;
+  color: white;
+}

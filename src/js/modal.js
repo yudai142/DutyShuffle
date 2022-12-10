@@ -154,3 +154,62 @@ $(document).on('click', '.md-btn', function(e) {
 $('.md-close').on('click',function(){
   $('.modal-container').fadeOut();
 });
+
+$(document).on('click', function(e) {
+  if($(e.target).closest('.select-member-button').length && $(e.target).closest('.select-member').attr('id') != $('#checkboxes').closest('.select-member').attr('id')){
+    let off = "#"+$('#checkboxes').closest('.select-member').attr('id');
+    let add = "#"+$(e.target).closest('.select-member').attr('id');
+    let value = $(e.target).closest('.select-member').find('.select-member-button').attr('value');
+    if($('#checkboxes').length){
+      $(off).find('#checkboxes').fadeOut().queue(function() {
+        this.remove();
+      });
+    }
+    $.ajax({
+      type: "POST",
+      url: "../classes/ajax.php",
+      datatype: "json",
+      data: {
+        "type": 'allocation_list',
+        "day": $("#date").val()
+      },
+      success: function(data) {
+        if (data == null){
+          // $('#allocation-form').html("");
+          false;
+        }else if(data["err"] == null){
+          let list = [];
+          $.each(data[0], function(work_key, work_value){
+            list.push(`
+              <div class="select-work">${work_value.name}</div>
+            `);
+          });
+          $(add).append(`
+            <div id="checkboxes">
+              <div id="check-form">
+                <span>移動先を選んでください</span>
+                <br>
+                <button><label for="check-copy"><input type="checkbox" name="check-copy" id="check-copy" />複製して追加</label></button>
+                <button>削除</button>
+                <input type="hidden" value="${value}">
+              </div>
+              ${list.join("")}
+            </div>
+          `)
+          $(add).find('#checkboxes').fadeIn();
+        }else{
+          $('#allocation-form').html(`<p>${data["err"]}</p>`);
+        }
+      },
+      error: function(data) {
+        $('#allocation-form').html("<p>通信エラー</p>");
+        console.log("通信失敗");
+        console.log(data);
+      }
+    });
+	}else if($('#checkboxes').length && !($(e.target).closest('#check-form').attr('id') == "check-form")){
+    $('#checkboxes').fadeOut().queue(function() {
+      this.remove();
+    });
+	}
+});

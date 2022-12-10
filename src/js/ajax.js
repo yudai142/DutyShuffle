@@ -36,7 +36,7 @@ $(function($){
               let list = [];
               $.each(member, function(member_key, member_value){
                 list.push(`
-                  <li><button class="md-btn" data-target="modal-select" data-type="member" value="${member_value.history_id}" style="color:red;">${member_value.last_name}　${member_value.first_name}</button></li>
+                  <li class="select-member" id="history_${member_value.history_id}"><button class="select-member-button" value="${member_value.history_id}" style="color:red;">${member_value.last_name}　${member_value.first_name}</button></li>
                 `);
               });
               arr.push(`
@@ -61,7 +61,7 @@ $(function($){
             let null_list = [];
             $.each(null_member, function(null_key, null_value){
               null_list.push(`
-                <li><button class="md-btn" data-target="modal-select" data-type="member" value="${null_value.history_id}"  style="color:red;">${null_value.last_name}　${null_value.first_name}</button></li>
+                <li class="select-member" id="history_${null_value.history_id}"><button class="select-member-button" value="${null_value.history_id}" style="color:red;">${null_value.last_name}　${null_value.first_name}</button></li>
               `);
             });
             $('#null-member-list').html(null_list);
@@ -396,6 +396,5 @@ $(function($){
         }
       });
     }
-
   });
 });
