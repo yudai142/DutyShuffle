@@ -194,7 +194,7 @@ $(document).on('click', function(e) {
                 <span>移動先を選んでください</span>
                 <br>
                 <button><label for="check-copy"><input type="checkbox" name="check-copy" id="check-copy" />複製して追加</label></button>
-                <button>削除</button>
+                <button class='state-btn' data-target='remove-member' value=${button_value}>削除</button>
               </div>
               ${list.join("")}
             </div>

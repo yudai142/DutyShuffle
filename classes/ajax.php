@@ -545,6 +545,48 @@ try{
       }
       echo json_encode($status);
       exit;
+    // case 'find_member':
+    //   if(isset($_REQUEST["history_id"])){
+    //     $sql = "SELECT family_name, given_name ,work_id FROM history, member WHERE history.id=? AND member.id = history.member_id";
+    //     $stmt = dbc()->prepare($sql);
+    //     if (!($stmt->execute(array($_REQUEST["history_id"])))) {
+    //       echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+    //       exit;
+    //     }
+    //     $member_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //     $sql2 = "SELECT name FROM work WHERE id=?";
+    //     $stmt2 = dbc()->prepare($sql2);
+    //     if (!($stmt2->execute(array($member_data[0]["work_id"])))) {
+    //       echo json_encode(array("err" => "データを取得できませんでした"));
+    //       exit;
+    //     }
+        
+    //     $work_data = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    //     $productList = array(
+    //       'member_name'  => $member_data[0]["family_name"].$member_data[0]["given_name"],
+    //       'work_name'  => $work_data[0]["name"],
+    //     );
+    //   }else{
+    //     echo json_encode(array("err" => "入力情報が不正です"));
+    //     exit;
+    //   }
+    //   echo json_encode($productList);
+    //   exit;
+    case 'join_member_remove':
+      if(isset($_REQUEST["history_id"])){
+        $sql = "DELETE FROM history WHERE id=?";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["history_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode("member");
+      exit;
   };
 }catch(PDOException $e){
   exit($e->getMessage());

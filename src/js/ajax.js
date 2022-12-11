@@ -470,46 +470,43 @@ $(function($){
         }
       });
     }else if ($(this).attr("data-target") == "remove-member") {
-      let add_text = ($(this).closest(`#join_member_${$(this).val()}`).find('span').text() == 0)? "":`\n${$(this).closest(`#join_member_${$(this).val()}`).find('span').text().slice( 0, -8 )}の担当も削除されます`;
-      if (confirm(`${$(this).text()}さんを不参加にしますか？${add_text}`)) {
-        console.log("はい")
-      } else {
-        console.log("いいえ")
+      let alert_text = "";
+      let add_text = "";
+      if( location.pathname.indexOf("/top.php") != -1 ){
+        alert_text = `${$(this).text()}さんを不参加にしますか？`
+        add_text = ($(this).closest(`#join_member_${$(this).attr("value")}`).find('span').text() == 0)? "":`\n${$(this).closest(`#join_member_${$(this).attr("value")}`).find('span').text().slice( 0, -8 )}の担当も削除されます`;
+      }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
+        alert_text = `${$(this).closest(".select-member").find(".select-member-button").text()}さんを不参加にしますか？`
+        add_text = ($(this).closest('.content').find('.md-btn').text() == 0)? "":`\n${$(this).closest('.content').find('.md-btn').text()}の担当も削除されます`;
       }
-      return false;
-      $.ajax({
-        type: "POST",
-        url: "../classes/ajax.php",
-        datatype: "json",
-        data: {
-          "type": "work-change",
-          "work_id": $(this).attr("value"),
-          "date": $("#date").val()
-        },
-        success: function(data) {
-          if (data == null || !data["err"]){
-            if( location.pathname.indexOf("/top.php") != -1 ){
-              joinWork();
-            }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
-              allocationView();
-              if(data=="1"){
-                $('#bool-check').find('.state-btn').attr('style','background:yellow;')
-                $('#bool-check').find('.state-btn').text('シャッフルの対称にする')
-              }else{
-                $('#bool-check').find('.state-btn').attr('style','')
-                $('#bool-check').find('.state-btn').text('シャッフルの非対称にする')
+      
+      if (confirm(`${alert_text}${add_text}`)) {
+        $.ajax({
+          type: "POST",
+          url: "../classes/ajax.php",
+          datatype: "json",
+          data: {
+            "type": "join_member_remove",
+            "history_id": $(this).attr("value")
+          },
+          success: function(data) {
+            if (data == null || !data["err"]){
+              if( location.pathname.indexOf("/top.php") != -1 ){
+                joinMember();
+              }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
+                allocationView();
               }
+            }else{
+              $('#select_result').html(`<p>${data["err"]}</p>`);
             }
-          }else{
-            $('#select_result').html(`<p>${data["err"]}</p>`);
+          },
+          error: function(data) {
+            $('#select_result').html("<p>入力エラー</p>");
+            console.log("通信失敗");
+            console.log(data);
           }
-        },
-        error: function(data) {
-          $('#select_result').html("<p>入力エラー</p>");
-          console.log("通信失敗");
-          console.log(data);
-        }
-      });
+        });
+      }
     }
   })
 
