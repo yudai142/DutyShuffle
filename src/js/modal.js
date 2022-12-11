@@ -170,8 +170,8 @@ $(document).on('click', function(e) {
       url: "../classes/ajax.php",
       datatype: "json",
       data: {
-        "type": 'allocation_list',
-        "day": $("#date").val()
+        "type": 'work_select_list',
+        "history_id": value
       },
       success: function(data) {
         if (data == null){
@@ -179,9 +179,9 @@ $(document).on('click', function(e) {
           false;
         }else if(data["err"] == null){
           let list = [];
-          $.each(data[0], function(work_key, work_value){
+          $.each(data, function(work_key, work_value){
             list.push(`
-              <div class="select-work">${work_value.name}</div>
+              <div class="select-work" value="${work_value.id}">${work_value.name}</div>
             `);
           });
           $(add).append(`

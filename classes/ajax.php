@@ -5,6 +5,33 @@ header('Content-Type: application/json; charset=utf-8');
 
 try{
   switch($_REQUEST['type']){
+    case 'work_select_list':
+      $sql = "SELECT work_id FROM history WHERE id=?";
+      $sql2 = "SELECT id, name, archive FROM work";
+      
+      $stmt = dbc()->prepare($sql);
+      if (!($stmt->execute(array($_REQUEST["history_id"])))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+
+      if (!($stmt2 = dbc()->query($sql2))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      
+      $history = $stmt->fetch(PDO::FETCH_ASSOC);
+      foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if($row['id'] != $history['work_id'] && $row['archive'] == 0){
+          $productList[] = array(
+            'id'    => $row['id'],
+            'name'  => $row['name']
+          );
+        }
+      }
+      
+      echo json_encode($productList);
+      exit;
     case 'allocation_list':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
       
@@ -16,6 +43,7 @@ try{
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
+
       if (!($stmt2 = dbc()->query($sql2))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
@@ -36,6 +64,7 @@ try{
         );
       }
       $work_id_list = array_unique($work_id_list);
+
       foreach($work_list as $row) {
         if(in_array($row['id'], $work_id_list) || $row['archive'] == 0){
           $productList[0][] = array(
