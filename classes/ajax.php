@@ -43,7 +43,7 @@ try{
           'work_id'    => $row['work_id'],
         );
       }
-      
+
       $work_id_list = array_unique($work_id_list);
       $off_works = $stmt3->fetchAll(PDO::FETCH_COLUMN);
 
@@ -62,17 +62,29 @@ try{
       exit;
     case 'join_member':
       $date = date('Y-m-d', strtotime($_REQUEST['date']));
-      $sql = "SELECT history.id ,family_name, given_name FROM history, member WHERE date=? AND member.id = history.member_id group by member_id ORDER BY member.kana_name ASC";
+      $sql = "SELECT history.id ,family_name, given_name, work_id FROM history, member WHERE date=? AND member.id = history.member_id group by member_id ORDER BY member.kana_name ASC";
+      $sql2 = "SELECT id ,name FROM work";
+
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
+
+      if (!($stmt2 = dbc()->query($sql2))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      $work_list = $stmt2->fetchAll(PDO::FETCH_ASSOC);
       foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if($row['work_id'] != null){
+          $row['work_id'] = $work_list[array_search($row['work_id'], array_column($work_list, 'id'))]["name"];
+        }
         $productList[] = array(
           'history_id'    => $row['id'],
           'family_name' => $row['family_name'],
           'given_name'  => $row['given_name'],
+          'work_name'  => $row['work_id']
         );
       }
       echo json_encode($productList);

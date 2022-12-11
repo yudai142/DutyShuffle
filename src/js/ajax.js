@@ -93,7 +93,8 @@ $(function($){
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
-            arr.push(`<li id=join_member_${value.history_id}><button class='remove-btn' data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</button><li>`);
+            let work_name = (value.work_name != null)?`<br><span>${value.work_name}を担当しています</span>`:"";
+            arr.push(`<li id=join_member_${value.history_id}><button class='state-btn' data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</button>${work_name}<li>`);
           });
           $('#join_member').html(arr);
         }else{
@@ -121,7 +122,7 @@ $(function($){
           let arr = [];
           $.each(data, function(key, value){
             let style = (value.status == 1)? "" : `style="background:yellow;"`
-            arr.push(`<li id=join_work_${value.id}><button class='off-btn' data-target='work-change' ${style} value=${value.id}>${value.name}</button><li>`);
+            arr.push(`<li id=join_work_${value.id}><button class='state-btn' data-target='work-change' ${style} value=${value.id}>${value.name}</button><li>`);
           });
           $('#join_work').html(arr);
         }else{
@@ -433,7 +434,7 @@ $(function($){
       });
     }
   })
-  $(document).on('click', '.off-btn', function(){
+  $(document).on('click', '.state-btn', function(){
     if ($(this).attr("data-target") == "work-change") {
       $.ajax({
         type: "POST",
@@ -451,11 +452,52 @@ $(function($){
             }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
               allocationView();
               if(data=="1"){
-                $('#bool-check').find('.off-btn').attr('style','background:yellow;')
-                $('#bool-check').find('.off-btn').text('シャッフルの対称にする')
+                $('#bool-check').find('.state-btn').attr('style','background:yellow;')
+                $('#bool-check').find('.state-btn').text('シャッフルの対称にする')
               }else{
-                $('#bool-check').find('.off-btn').attr('style','')
-                $('#bool-check').find('.off-btn').text('シャッフルの非対称にする')
+                $('#bool-check').find('.state-btn').attr('style','')
+                $('#bool-check').find('.state-btn').text('シャッフルの非対称にする')
+              }
+            }
+          }else{
+            $('#select_result').html(`<p>${data["err"]}</p>`);
+          }
+        },
+        error: function(data) {
+          $('#select_result').html("<p>入力エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
+        }
+      });
+    }else if ($(this).attr("data-target") == "remove-member") {
+      let add_text = ($(this).closest(`#join_member_${$(this).val()}`).find('span').text() == 0)? "":`\n${$(this).closest(`#join_member_${$(this).val()}`).find('span').text().slice( 0, -8 )}の担当も削除されます`;
+      if (confirm(`${$(this).text()}さんを不参加にしますか？${add_text}`)) {
+        console.log("はい")
+      } else {
+        console.log("いいえ")
+      }
+      return false;
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        datatype: "json",
+        data: {
+          "type": "work-change",
+          "work_id": $(this).attr("value"),
+          "date": $("#date").val()
+        },
+        success: function(data) {
+          if (data == null || !data["err"]){
+            if( location.pathname.indexOf("/top.php") != -1 ){
+              joinWork();
+            }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
+              allocationView();
+              if(data=="1"){
+                $('#bool-check').find('.state-btn').attr('style','background:yellow;')
+                $('#bool-check').find('.state-btn').text('シャッフルの対称にする')
+              }else{
+                $('#bool-check').find('.state-btn').attr('style','')
+                $('#bool-check').find('.state-btn').text('シャッフルの非対称にする')
               }
             }
           }else{
@@ -470,4 +512,5 @@ $(function($){
       });
     }
   })
+
 });

@@ -108,7 +108,7 @@ $(document).on('click', '.md-btn', function(e) {
             $(modal).find('form').append(`<input type='hidden' id=select_work_id value=${data[0]["id"]}>`);
             style = (data[0]["status"]==1)?`style="background:yellow;"`:"";
             status_text = (data[0]["status"]==1)?"シャッフルの対称にする":"シャッフルの非対称にする";
-            $(modal).find('#bool-check').html(`<button class='off-btn' data-target='work-change' ${style} value=${data[0]["id"]}>${status_text}</button>`);
+            $(modal).find('#bool-check').html(`<button class='state-btn' data-target='work-change' ${style} value=${data[0]["id"]}>${status_text}</button>`);
           }else{
             $('#select_list').html(`<p>${data["err"]}</p>`);
           }

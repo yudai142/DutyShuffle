@@ -29,7 +29,7 @@
 </div><!-- /.work_list -->
 <div class="join_member">
   <button class="md-btn" data-target="modal-select">参加</button>
-  <ul id="join_member" style="display: flex;"></ul>
+  <ul id="join_member" style="display: flex;flex-flow: column;"></ul>
 </div><!-- /.member_list -->
 <?php require_once "../public/modal/modal-select.php" ?>
 <script src="../src/js/ajax.js"></script>
