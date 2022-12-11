@@ -335,5 +335,5 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .add_products{
   overflow-y: scroll;
-  height: calc(100vh - 400px);
+  height: 257px;
 }
