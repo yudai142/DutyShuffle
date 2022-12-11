@@ -397,4 +397,34 @@ $(function($){
       });
     }
   });
+
+  $(document).on('click', '.select-work', function(){
+    let err = [];
+    if (err.length) {
+      $('#select_result').html(`<p>${err.join("と")}が入力されていません</p>`);
+    }else{
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        datatype: "json",
+        data: {
+          "type": "work_select_definition",
+          "select_work": $(this).attr("value"),
+          "history_id": $(this).closest(".select-member").find(".select-member-button").attr("value"),
+        },
+        success: function(data) {
+          if (data == null || !data["err"]){
+            allocationView();
+          }else{
+            $('#select_result').html(`<p>${data["err"]}</p>`);
+          }
+        },
+        error: function(data) {
+          $('#select_result').html("<p>入力エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
+        }
+      });
+    }
+  })
 });

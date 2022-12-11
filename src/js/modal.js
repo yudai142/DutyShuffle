@@ -159,7 +159,7 @@ $(document).on('click', function(e) {
   if($(e.target).closest('.select-member-button').length && $(e.target).closest('.select-member').attr('id') != $('#checkboxes').closest('.select-member').attr('id')){
     let off = "#"+$('#checkboxes').closest('.select-member').attr('id');
     let add = "#"+$(e.target).closest('.select-member').attr('id');
-    let value = $(e.target).closest('.select-member').find('.select-member-button').attr('value');
+    let button_value = $(e.target).closest('.select-member').find('.select-member-button').attr('value');
     if($('#checkboxes').length){
       $(off).find('#checkboxes').fadeOut().queue(function() {
         this.remove();
@@ -171,12 +171,14 @@ $(document).on('click', function(e) {
       datatype: "json",
       data: {
         "type": 'work_select_list',
-        "history_id": value
+        "history_id": button_value
       },
       success: function(data) {
         if (data == null){
-          // $('#allocation-form').html("");
-          false;
+          $(add).append(`
+            <div id="checkboxes">作業内容が登録されていません</div>
+          `)
+          $(add).find('#checkboxes').fadeIn();
         }else if(data["err"] == null){
           let list = [];
           $.each(data, function(work_key, work_value){
@@ -191,7 +193,6 @@ $(document).on('click', function(e) {
                 <br>
                 <button><label for="check-copy"><input type="checkbox" name="check-copy" id="check-copy" />複製して追加</label></button>
                 <button>削除</button>
-                <input type="hidden" value="${value}">
               </div>
               ${list.join("")}
             </div>

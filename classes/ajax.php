@@ -29,8 +29,29 @@ try{
           );
         }
       }
+      if($history['work_id'] != null){
+        $productList[] = array(
+          'id'    => 0,
+          'name'  => "サポート"
+        );
+      }
       
       echo json_encode($productList);
+      exit;
+    case 'work_select_definition':
+      if(isset($_REQUEST["select_work"], $_REQUEST["history_id"])){
+        if($_REQUEST["select_work"] == "0"){$_REQUEST["select_work"] = null;}
+        $sql = "UPDATE history SET work_id=? WHERE id=?";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["select_work"], $_REQUEST["history_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode("work");
       exit;
     case 'allocation_list':
       $date = date('Y-m-d',  strtotime($_REQUEST['day']));
