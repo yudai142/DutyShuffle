@@ -122,7 +122,7 @@ $(document).on('click', '.md-btn', function(e) {
     }else{
       $(modal).find('h1').text("参加メンバー選択");
       $(modal).find('#submit_select').text("確定");
-      $(modal).find('#bool-check').html(`<button>選択全解除</button>`);
+      $(modal).find('#bool-check').html(`<button><label><input id="checkAll" type="checkbox" value="">全部選択</label></button>`);
       $(modal).find('#submit_select').attr("data-type", "");
       $(modal).find('#select_result p').remove();
       $.ajax({
@@ -136,9 +136,16 @@ $(document).on('click', '.md-btn', function(e) {
           if (!data["err"]){
             let arr = [];
             $.each(data, function(key, value){
-              arr.push(`<li id=member_${value.id}><span><input type='checkbox' value='${value.id}'${value.checked}>：<span>${value.family_name}　${value.given_name}<li>`);
+              arr.push(`<li id=member_${value.id}><label><input type='checkbox' name="area[]" value='${value.id}'${value.checked}>：${value.family_name}　${value.given_name}</label><li>`);
             });
             $('#select_list').html(arr);
+            var boxCount = $( 'input[name="area[]"]' ).length;
+            var checked  = $( 'input[name="area[]"]' + ':checked' ).length;
+            if( checked === boxCount ) {
+              $( "#checkAll" ).prop( 'checked', true );
+            } else {
+              $( "#checkAll" ).prop( 'checked', false );
+            }
           }else{
             $('#select_list').html(`<p>${data["err"]}</p>`);
           }
@@ -153,8 +160,23 @@ $(document).on('click', '.md-btn', function(e) {
   }
   $(modal).find('.modal-container').fadeIn();
 });
-$('.md-close').on('click',function(){
+
+$(document).on('click','.md-close' ,function(){
   $('.modal-container').fadeOut();
+});
+
+$(document).on('click',"#checkAll", function() {
+  $( 'input[name="area[]"]' ).prop('checked', $(this).is(':checked') );
+});
+
+$(document).on('click','input[name="area[]"]' , function() {
+  var boxCount = $( 'input[name="area[]"]' ).length; //全チェックボックスの数を取得
+  var checked  = $( 'input[name="area[]"]' + ':checked' ).length; //チェックされているチェックボックスの数を取得
+  if( checked === boxCount ) {
+    $( "#checkAll" ).prop( 'checked', true );
+  } else {
+    $( "#checkAll" ).prop( 'checked', false );
+  }
 });
 
 $(document).on('click', function(e) {
