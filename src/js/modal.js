@@ -83,7 +83,6 @@ $(document).on('click', '.md-btn', function(e) {
   }else if(target == "modal-select"){
     if($(this).attr('data-type') == 'work'){
       $(modal).find('#submit_select').text("確定");
-      $(modal).find('#bool-check').html(`<input type="checkbox">：シャッフルの非対称にする`);
       $(modal).find('#submit_select').attr("data-type","work");
       $(modal).find('#select_result p').remove();
       $(modal).find('#select_work_id').remove();
@@ -107,6 +106,9 @@ $(document).on('click', '.md-btn', function(e) {
             $('#select_list').html(arr);
             $(modal).find('h1').text(`${data[0]["name"]}に参加するメンバーの選択`);
             $(modal).find('form').append(`<input type='hidden' id=select_work_id value=${data[0]["id"]}>`);
+            style = (data[0]["status"]==1)?`style="background:yellow;"`:"";
+            status_text = (data[0]["status"]==1)?"シャッフルの対称にする":"シャッフルの非対称にする";
+            $(modal).find('#bool-check').html(`<button class='off-btn' data-target='work-change' ${style} value=${data[0]["id"]}>${status_text}</button>`);
           }else{
             $('#select_list').html(`<p>${data["err"]}</p>`);
           }

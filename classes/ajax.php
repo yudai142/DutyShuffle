@@ -5,60 +5,13 @@ header('Content-Type: application/json; charset=utf-8');
 
 try{
   switch($_REQUEST['type']){
-    case 'work_select_list':
-      $sql = "SELECT work_id FROM history WHERE id=?";
-      $sql2 = "SELECT id, name, archive FROM work";
-      
-      $stmt = dbc()->prepare($sql);
-      if (!($stmt->execute(array($_REQUEST["history_id"])))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
-        exit;
-      }
-
-      if (!($stmt2 = dbc()->query($sql2))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
-        exit;
-      }
-      
-      $history = $stmt->fetch(PDO::FETCH_ASSOC);
-      foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if($row['id'] != $history['work_id'] && $row['archive'] == 0){
-          $productList[] = array(
-            'id'    => $row['id'],
-            'name'  => $row['name']
-          );
-        }
-      }
-      if($history['work_id'] != null){
-        $productList[] = array(
-          'id'    => 0,
-          'name'  => "サポート"
-        );
-      }
-      
-      echo json_encode($productList);
-      exit;
-    case 'work_select_definition':
-      if(isset($_REQUEST["select_work"], $_REQUEST["history_id"])){
-        if($_REQUEST["select_work"] == "0"){$_REQUEST["select_work"] = null;}
-        $sql = "UPDATE history SET work_id=? WHERE id=?";
-        $stmt = dbc()->prepare($sql);
-        if (!($stmt->execute(array($_REQUEST["select_work"], $_REQUEST["history_id"])))) {
-          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
-          exit;
-        }
-      }else{
-        echo json_encode(array("err" => "入力情報が不正です"));
-        exit;
-      }
-      echo json_encode("work");
-      exit;
     case 'allocation_list':
       $date = date('Y-m-d',  strtotime($_REQUEST['date']));
       
       $sql = "SELECT history.id,family_name, given_name ,work_id FROM history, member WHERE date=? AND member.id = history.member_id";
       $sql2 = "SELECT id, name, archive FROM work";
-      
+      $sql3 = "SELECT work_id FROM off_work WHERE date=?";
+
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
@@ -66,6 +19,12 @@ try{
       }
 
       if (!($stmt2 = dbc()->query($sql2))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+
+      $stmt3 = dbc()->prepare($sql3);
+      if (!($stmt3->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
@@ -84,13 +43,17 @@ try{
           'work_id'    => $row['work_id'],
         );
       }
+      
       $work_id_list = array_unique($work_id_list);
+      $off_works = $stmt3->fetchAll(PDO::FETCH_COLUMN);
 
       foreach($work_list as $row) {
         if(in_array($row['id'], $work_id_list) || $row['archive'] == 0){
+          $status = (in_array($row['id'], $off_works))? "0" : "1";
           $productList[0][] = array(
             'id'    => $row['id'],
-            'name'  => $row['name']
+            'name'  => $row['name'],
+            'status'  => $status
           );
         }
       }
@@ -99,7 +62,7 @@ try{
       exit;
     case 'join_member':
       $date = date('Y-m-d', strtotime($_REQUEST['date']));
-      $sql = "SELECT member.id ,family_name, given_name FROM history, member WHERE date=? AND member.id = history.member_id group by member_id ORDER BY member.kana_name ASC";
+      $sql = "SELECT history.id ,family_name, given_name FROM history, member WHERE date=? AND member.id = history.member_id group by member_id ORDER BY member.kana_name ASC";
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
@@ -107,7 +70,7 @@ try{
       }
       foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $productList[] = array(
-          'id'    => $row['id'],
+          'history_id'    => $row['id'],
           'family_name' => $row['family_name'],
           'given_name'  => $row['given_name'],
         );
@@ -226,13 +189,19 @@ try{
       $date = date('Y-m-d',  strtotime($_REQUEST['date']));
       
       $sql2 = "SELECT id, name FROM work";
-      $stmt2 = dbc()->prepare($sql2);
-      if (!($stmt2->execute(array($_REQUEST['work_id'])))) {
+      if (!($stmt2 = dbc()->query($sql2))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      $sql3 = "SELECT work_id FROM off_work WHERE date=? AND work_id=?";
+      $stmt3 = dbc()->prepare($sql3);
+      if (!($stmt3->execute(array($date, $_REQUEST['work_id'])))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
       $work_list = $stmt2->fetchAll(PDO::FETCH_ASSOC);
       $productList[0] = $work_list[array_search($_REQUEST['work_id'], array_column($work_list, 'id'))];
+      $productList[0]["status"] = ($stmt3->fetchAll(PDO::FETCH_COLUMN)==null)? "0":"1";
       
       $sql = "SELECT history.id, work_id, family_name, given_name FROM history, member WHERE date=? AND member.id = history.member_id ORDER BY kana_name ASC";
       $stmt = dbc()->prepare($sql);
@@ -488,6 +457,81 @@ try{
         'archive' => $row['archive']
       );
       echo json_encode($productList);
+      exit;
+    case 'work_select_list':
+      $sql = "SELECT work_id FROM history WHERE id=?";
+      $sql2 = "SELECT id, name, archive FROM work";
+      
+      $stmt = dbc()->prepare($sql);
+      if (!($stmt->execute(array($_REQUEST["history_id"])))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+
+      if (!($stmt2 = dbc()->query($sql2))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      
+      $history = $stmt->fetch(PDO::FETCH_ASSOC);
+      foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if($row['id'] != $history['work_id'] && $row['archive'] == 0){
+          $productList[] = array(
+            'id'    => $row['id'],
+            'name'  => $row['name']
+          );
+        }
+      }
+      if($history['work_id'] != null){
+        $productList[] = array(
+          'id'    => 0,
+          'name'  => "サポート"
+        );
+      }
+      
+      echo json_encode($productList);
+      exit;
+    case 'work_select_definition':
+      if(isset($_REQUEST["select_work"], $_REQUEST["history_id"])){
+        if($_REQUEST["select_work"] == "0"){$_REQUEST["select_work"] = null;}
+        $sql = "UPDATE history SET work_id=? WHERE id=?";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["select_work"], $_REQUEST["history_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode("work");
+      exit;
+    case 'work-change':
+      if(isset($_REQUEST["work_id"], $_REQUEST["date"])){
+        $date = date('Y-m-d',  strtotime($_REQUEST['date']));
+        $sql = "SELECT id FROM off_work WHERE date=? AND work_id=?";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($date, $_REQUEST["work_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        if($stmt->fetch(PDO::FETCH_COLUMN) == 0){
+          $sql2 = "INSERT INTO off_work(date, work_id) VALUES(?, ?)";
+          $status = "1";
+        }else{
+          $sql2 = "DELETE FROM off_work WHERE date=? AND work_id=?";
+          $status = "0";
+        }
+        $stmt2 = dbc()->prepare($sql2);
+        if (!($stmt2->execute(array($date, $_REQUEST["work_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode($status);
       exit;
   };
 }catch(PDOException $e){

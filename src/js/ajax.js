@@ -33,6 +33,7 @@ $(function($){
           $.each(data[0], function(work_key, work_value){
             if(data[1] != null){
               let member = data[1].filter(value => {if(value.work_id == work_value.id){return true;}});
+              let style = (work_value.status == 1)? `style="color:blue;"` : `style="color:blue;background:yellow;"`
               let list = [];
               $.each(member, function(member_key, member_value){
                 list.push(`
@@ -41,7 +42,7 @@ $(function($){
               });
               arr.push(`
                 <div class="content" style="display:flex;flex-flow: column;white-space: nowrap;">
-                  <div class="work-title"><button class="md-btn" data-target="modal-select" data-type="work" value="${work_value.id}" style="color:blue;">${work_value.name}</button></div>
+                  <div class="work-title"><button class="md-btn" data-target="modal-select" data-type="work" value="${work_value.id}" ${style}">${work_value.name}</button></div>
                   <ul class="work-member">
                     ${list.join("")}
                   </ul>
@@ -50,7 +51,7 @@ $(function($){
             }else{
               arr.push(`
                 <div class="content" style="display:flex;flex-flow: column;">
-                  <div class="work-title"><button class="md-btn" data-target="modal-select" style="color:blue;">${work_value.name}</button></div>
+                  <div class="work-title"><button class="md-btn" data-target="modal-select" ${style}>${work_value.name}</button></div>
                   <ul class="work-member"></ul>
                 </div>
               `);
@@ -92,7 +93,7 @@ $(function($){
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
-            arr.push(`<li id=join_member_${value.id}><button class='remove-btn' data-target='remove-member' value=${value.id}>${value.family_name}　${value.given_name}</button><li>`);
+            arr.push(`<li id=join_member_${value.history_id}><button class='remove-btn' data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</button><li>`);
           });
           $('#join_member').html(arr);
         }else{
@@ -117,10 +118,12 @@ $(function($){
         if (data == null){
           false
         }else if(data['err'] == null){
+          let arr = [];
           $.each(data, function(key, value){
             let style = (value.status == 1)? "" : `style="background:yellow;"`
-            $('#join_work').append(`<li id=join_work_${value.id}><button class='off-btn' data-target='status-change' ${style} value=${value.id}>${value.name}</button><li>`);
+            arr.push(`<li id=join_work_${value.id}><button class='off-btn' data-target='work-change' ${style} value=${value.id}>${value.name}</button><li>`);
           });
+          $('#join_work').html(arr);
         }else{
           $('#join_work').append(`<p>${data["err"]}</p>`);
         }
@@ -418,6 +421,43 @@ $(function($){
         success: function(data) {
           if (data == null || !data["err"]){
             allocationView();
+          }else{
+            $('#select_result').html(`<p>${data["err"]}</p>`);
+          }
+        },
+        error: function(data) {
+          $('#select_result').html("<p>入力エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
+        }
+      });
+    }
+  })
+  $(document).on('click', '.off-btn', function(){
+    if ($(this).attr("data-target") == "work-change") {
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        datatype: "json",
+        data: {
+          "type": "work-change",
+          "work_id": $(this).attr("value"),
+          "date": $("#date").val()
+        },
+        success: function(data) {
+          if (data == null || !data["err"]){
+            if( location.pathname.indexOf("/top.php") != -1 ){
+              joinWork();
+            }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
+              allocationView();
+              if(data=="1"){
+                $('#bool-check').find('.off-btn').attr('style','background:yellow;')
+                $('#bool-check').find('.off-btn').text('シャッフルの対称にする')
+              }else{
+                $('#bool-check').find('.off-btn').attr('style','')
+                $('#bool-check').find('.off-btn').text('シャッフルの非対称にする')
+              }
+            }
           }else{
             $('#select_result').html(`<p>${data["err"]}</p>`);
           }
