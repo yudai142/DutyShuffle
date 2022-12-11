@@ -101,7 +101,7 @@ $(document).on('click', '.md-btn', function(e) {
               checked = (value.work_name == data[0]["name"]) ? "checked" : ""
               style = (value.work_name && value.work_name != data[0]["name"])?"style=color:green;":"";
               work_name = (value.work_name && value.work_name != data[0]["name"])?`<br><span style=color:orange;>${value.work_name}を担当しています</span>`:"";
-              arr.push(`<li id=history_${value.history_id}><span><input type='checkbox' value='${value.history_id}'${checked}>：<span ${style}>${value.family_name}　${value.given_name}</span>${work_name}<li>`);
+              arr.push(`<li id=history_${value.history_id}><label><input type='checkbox' name="area[]" value='${value.history_id}'${checked}>：<span ${style}>${value.family_name}　${value.given_name}</span>${work_name}<li>`);
             });
             $('#select_list').html(arr);
             $(modal).find('h1').text(`${data[0]["name"]}に参加するメンバーの選択`);
