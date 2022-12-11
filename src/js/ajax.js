@@ -109,13 +109,17 @@ $(function($){
   function joinWork(){
     $.ajax({
       url: "../classes/ajax.php",
-      data: {"type": 'join_work'},
+      data: {
+        "type": 'join_work',
+        "date": $("#date").val()
+      },
       success: function(data) {
         if (data == null){
           false
         }else if(data['err'] == null){
           $.each(data, function(key, value){
-            $('#join_work').append(`<li id=join_work_${value.id}><button class='off-btn' data-target='status-change' value=${value.id}>${value.name}</button><li>`);
+            let style = (value.status == 1)? "" : `style="background:yellow;"`
+            $('#join_work').append(`<li id=join_work_${value.id}><button class='off-btn' data-target='status-change' ${style} value=${value.id}>${value.name}</button><li>`);
           });
         }else{
           $('#join_work').append(`<p>${data["err"]}</p>`);

@@ -115,15 +115,25 @@ try{
       echo json_encode($productList);
       exit;
     case 'join_work':
+      $date = date('Y-m-d', strtotime($_REQUEST['date']));
       $sql = "SELECT id, name FROM work WHERE archive=0";
       if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
+      $sql2 = "SELECT work_id FROM off_work WHERE date=?";
+      $stmt2 = dbc()->prepare($sql2);
+      if (!($stmt2->execute(array($date)))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      $off_works = $stmt2->fetchAll(PDO::FETCH_COLUMN);
       foreach($stmt as $row) {
+        $status = (in_array($row['id'], $off_works))? "0" : "1";
         $productList[] = array(
           'id'    => $row['id'],
-          'name'  => $row['name']
+          'name'  => $row['name'],
+          'status' => $status
         );
       }
       echo json_encode($productList);
