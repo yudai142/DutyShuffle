@@ -24,7 +24,7 @@
   <div class="allocation-head" style="display:flex;justify-content: space-between;flex-wrap:wrap;">
     <h3>担当</h3>
     <div class="allocation-head-right">
-      <button>担当全解除</button>
+      <button class="state-btn" data-target="allocation-remove">担当全解除</button>
       <button class="md-btn" data-target="modal-select">メンバー追加</button>
     </div>
   </div>
