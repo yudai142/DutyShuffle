@@ -53,8 +53,8 @@ $(document).on('click', '.md-btn', function(e) {
         },
         success: function(data) {
           if (!data["err"]){
-            $(modal).find('#last_name').val(data[0].last_name);
-            $(modal).find('#first_name').val(data[0].first_name);
+            $(modal).find('#family_name').val(data[0].family_name);
+            $(modal).find('#given_name').val(data[0].given_name);
             $(modal).find('#kana_name').val(data[0].kana_name);
             (Number(data[0].archive)) ? $(modal).find('#member_archive').prop("checked", true) : $(modal).find('#member_archive').prop("checked", false);
             $(modal).find('#member_result p').remove();
@@ -72,8 +72,8 @@ $(document).on('click', '.md-btn', function(e) {
       });
     }else{
       $(modal).find('h1').text("メンバー登録");
-      $(modal).find('#last_name').val("");
-      $(modal).find('#first_name').val("");
+      $(modal).find('#family_name').val("");
+      $(modal).find('#given_name').val("");
       $(modal).find('#kana_name').val("");
       $(modal).find('#member_archive').prop("checked", false);
       $(modal).find('#member_result p').remove();
@@ -92,7 +92,7 @@ $(document).on('click', '.md-btn', function(e) {
         datatype: "json",
         data: {
           "type": 'member_select_work',
-          "day": $("#date").val(),
+          "date": $("#date").val(),
           "work_id" : $(this).val()
         },
         success: function(data) {
@@ -102,7 +102,7 @@ $(document).on('click', '.md-btn', function(e) {
               checked = (value.work_name == data[0]["name"]) ? "checked" : ""
               style = (value.work_name && value.work_name != data[0]["name"])?"style=color:green;":"";
               work_name = (value.work_name && value.work_name != data[0]["name"])?`<br><span style=color:orange;>${value.work_name}を担当しています</span>`:"";
-              arr.push(`<li id=history_${value.history_id}><span><input type='checkbox' value='${value.history_id}'${checked}>：<span ${style}>${value.last_name}　${value.first_name}</span>${work_name}<li>`);
+              arr.push(`<li id=history_${value.history_id}><span><input type='checkbox' value='${value.history_id}'${checked}>：<span ${style}>${value.family_name}　${value.given_name}</span>${work_name}<li>`);
             });
             $('#select_list').html(arr);
             $(modal).find('h1').text(`${data[0]["name"]}に参加するメンバーの選択`);
@@ -128,13 +128,13 @@ $(document).on('click', '.md-btn', function(e) {
         datatype: "json",
         data: {
           "type": 'member_select_list',
-          "day": $("#date").val()
+          "date": $("#date").val()
         },
         success: function(data) {
           if (!data["err"]){
             let arr = [];
             $.each(data, function(key, value){
-              arr.push(`<li id=member_${value.id}><span><input type='checkbox' value='${value.id}'${value.checked}>：<span>${value.last_name}　${value.first_name}<li>`);
+              arr.push(`<li id=member_${value.id}><span><input type='checkbox' value='${value.id}'${value.checked}>：<span>${value.family_name}　${value.given_name}<li>`);
             });
             $('#select_list').html(arr);
           }else{

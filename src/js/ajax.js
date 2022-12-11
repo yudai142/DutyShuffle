@@ -23,7 +23,7 @@ $(function($){
       datatype: "json",
       data: {
         "type": 'allocation_list',
-        "day": $("#date").val()
+        "date": $("#date").val()
       },
       success: function(data) {
         if (data == null){
@@ -36,7 +36,7 @@ $(function($){
               let list = [];
               $.each(member, function(member_key, member_value){
                 list.push(`
-                  <li class="select-member" id="history_${member_value.history_id}"><button class="select-member-button" value="${member_value.history_id}" style="color:red;">${member_value.last_name}　${member_value.first_name}</button></li>
+                  <li class="select-member" id="history_${member_value.history_id}"><button class="select-member-button" value="${member_value.history_id}" style="color:red;">${member_value.family_name}　${member_value.given_name}</button></li>
                 `);
               });
               arr.push(`
@@ -61,7 +61,7 @@ $(function($){
             let null_list = [];
             $.each(null_member, function(null_key, null_value){
               null_list.push(`
-                <li class="select-member" id="history_${null_value.history_id}"><button class="select-member-button" value="${null_value.history_id}" style="color:red;">${null_value.last_name}　${null_value.first_name}</button></li>
+                <li class="select-member" id="history_${null_value.history_id}"><button class="select-member-button" value="${null_value.history_id}" style="color:red;">${null_value.family_name}　${null_value.given_name}</button></li>
               `);
             });
             $('#null-member-list').html(null_list);
@@ -84,7 +84,7 @@ $(function($){
       url: "../classes/ajax.php",
       data: {
         "type": 'join_member',
-        "day": $("#date").val()
+        "date": $("#date").val()
       },
       success: function(data) {
         if (data == null){
@@ -92,7 +92,7 @@ $(function($){
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
-            arr.push(`<li id=join_member_${value.id}><button class='remove-btn' data-target='remove-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
+            arr.push(`<li id=join_member_${value.id}><button class='remove-btn' data-target='remove-member' value=${value.id}>${value.family_name}　${value.given_name}</button><li>`);
           });
           $('#join_member').html(arr);
         }else{
@@ -107,7 +107,6 @@ $(function($){
     });
   }
   function joinWork(){
-    // $(this).val() ? $data = {"type": 'join_work'}: $data = {"type": 'join_work', day: $(this).val()}
     $.ajax({
       url: "../classes/ajax.php",
       data: {"type": 'join_work'},
@@ -142,7 +141,7 @@ $(function($){
         }else if(data['err'] == null){
           let arr = []
           $.each(data, function(key, value){
-            arr.push(`<li id=member_${value.id}><button class='md-btn' data-target='modal-member' value=${value.id}>${value.last_name}　${value.first_name}</button><li>`);
+            arr.push(`<li id=member_${value.id}><button class='md-btn' data-target='modal-member' value=${value.id}>${value.family_name}　${value.given_name}</button><li>`);
             $('#member_show_result').html(arr);
           });
         }else{
@@ -189,8 +188,8 @@ $(function($){
 
   $('#submit_member').on('click',function(){
     let err = [];
-    if ($('#last_name').val() == "") err.push("性");
-    if ($('#first_name').val() == "") err.push("名");
+    if ($('#family_name').val() == "") err.push("性");
+    if ($('#given_name').val() == "") err.push("名");
     if ($('#kana_name').val() == "") err.push("ふりがな");
     if (err.length) {
       $('#member_result').html(`<p>${err.join("と")}が入力されていません</p>`);
@@ -203,14 +202,14 @@ $(function($){
           data: {
             "type": 'member_update',
             "id" : $("#member_id").val(),
-            "last_name" : $('#last_name').val(),
-            "first_name" : $('#first_name').val(),
+            "family_name" : $('#family_name').val(),
+            "given_name" : $('#given_name').val(),
             "kana_name" : $('#kana_name').val(),
             "archive" : Number($('#member_archive').prop("checked"))
           },
           success: function(data) {
             if (!data["err"]){
-              $('#member_result').html(`<p>${data[0].last_name}${data[0].first_name}(${data[0].kana_name})${data[0].archive}を更新しました。</p>`);
+              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${data[0].archive}を更新しました。</p>`);
               getAllMember();
             }else{
               $('#member_result').html(`<p>${data["err"]}</p>`);
@@ -229,16 +228,16 @@ $(function($){
           datatype: "json",
           data: {
             "type": 'member_add',
-            "last_name" : $('#last_name').val(),
-            "first_name" : $('#first_name').val(),
+            "family_name" : $('#family_name').val(),
+            "given_name" : $('#given_name').val(),
             "kana_name" : $('#kana_name').val(),
             "archive" : Number($('#member_archive').prop("checked"))
           },
           success: function(data) {
             if (!data["err"]){
-              $('#member_result').html(`<p>${data[0].last_name}${data[0].first_name}(${data[0].kana_name})${data[0].archive}を登録しました。</p>`);
-              $('#last_name').val("");
-              $('#first_name').val("");
+              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${data[0].archive}を登録しました。</p>`);
+              $('#family_name').val("");
+              $('#given_name').val("");
               $('#kana_name').val("");
               $('#member_archive').prop("checked", false);
               getAllMember();
@@ -351,7 +350,7 @@ $(function($){
       //   success: function(data) {
       //     if (!data["err"]){
       //       $.each(data, function(key, value){
-      //         if (confirm(`${value.last_name}　${value.first_name}さんは他のタスクに入っていますが、除外してもよろしいですか？`)) {
+      //         if (confirm(`${value.family_name}　${value.given_name}さんは他のタスクに入っていますが、除外してもよろしいですか？`)) {
       //           return false;
       //         } else {
       //           check.push(value.id)
@@ -374,7 +373,7 @@ $(function($){
         data: {
           "type": data_type,
           "select": check,
-          "day": $("#date").val(),
+          "date": $("#date").val(),
           work_id
         },
         success: function(data) {

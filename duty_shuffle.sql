@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- ホスト: localhost:8889
--- 生成日時: 2022 年 12 月 05 日 15:26
+-- 生成日時: 2022 年 12 月 11 日 06:54
 -- サーバのバージョン： 5.7.26
 -- PHP のバージョン: 7.4.2
 
@@ -29,18 +29,17 @@ SET time_zone = "+00:00";
 CREATE TABLE `history` (
   `id` int(11) NOT NULL,
   `work_id` int(11) DEFAULT NULL,
-  `day` date NOT NULL,
-  `member_id` int(11) NOT NULL
+  `member_id` int(11) NOT NULL,
+  `date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- テーブルのデータのダンプ `history`
 --
 
-INSERT INTO `history` (`id`, `work_id`, `day`, `member_id`) VALUES
-(1, NULL, '2022-11-30', 10),
-(2, NULL, '2022-11-30', 23),
-(3, NULL, '2022-11-30', 8);
+INSERT INTO `history` (`id`, `work_id`, `member_id`, `date`) VALUES
+(1, NULL, 23, '2022-11-30'),
+(2, NULL, 8, '2022-11-30');
 
 -- --------------------------------------------------------
 
@@ -50,8 +49,8 @@ INSERT INTO `history` (`id`, `work_id`, `day`, `member_id`) VALUES
 
 CREATE TABLE `member` (
   `id` int(11) NOT NULL,
-  `last_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `first_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `family_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `given_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `kana_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `archive` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -60,9 +59,9 @@ CREATE TABLE `member` (
 -- テーブルのデータのダンプ `member`
 --
 
-INSERT INTO `member` (`id`, `last_name`, `first_name`, `kana_name`, `archive`) VALUES
-(1, 'テスト', '太郎', 'てすとたろう', 0),
-(2, 'テスト', '花子', 'てすとはなこ', 0),
+INSERT INTO `member` (`id`, `family_name`, `given_name`, `kana_name`, `archive`) VALUES
+(1, 'テスト', '太郎', 'てすとたろう', 1),
+(2, 'テスト', '花子', 'てすとはなこ', 1),
 (3, '釘子', '津佳冴', 'くぎこつかさ', 0),
 (4, '長谷川', '異風', 'はせがわいふう', 0),
 (5, '樋口', '伊吹', 'ひぐちいぶき', 0),
@@ -100,6 +99,18 @@ CREATE TABLE `member_option` (
   `work_id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
   `status` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- テーブルの構造 `off_work`
+--
+
+CREATE TABLE `off_work` (
+  `id` int(11) NOT NULL,
+  `work_id` int(11) NOT NULL,
+  `date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -165,10 +176,11 @@ CREATE TABLE `_prisma_migrations` (
 --
 
 INSERT INTO `_prisma_migrations` (`id`, `checksum`, `finished_at`, `migration_name`, `logs`, `rolled_back_at`, `started_at`, `applied_steps_count`) VALUES
-('1aab7b72-1950-4b63-b51d-7b8d691f7311', 'aba0836c4317f85e27c2015630a03a04a53653e08f59dc0accc63994f7be6563', '2022-12-05 14:47:51.070', '20221122033658_add_collmun_reset_date_table_shuffle_option', NULL, NULL, '2022-12-05 14:47:51.036', 1),
-('47165b91-0785-4e24-bda8-386face3ffd4', '28244d4519d3b8827345e74995b17f19036adfeb80c15d3e9cfa06743a8c9eb5', '2022-12-05 14:47:50.746', '20221109015544_add_status_to_work', NULL, NULL, '2022-12-05 14:47:50.660', 1),
-('5c50a0d8-2d3c-44a9-95f8-0efbc6698147', '451340d883eb11d8038c4338a58576e7f84bf044d32f57551257e35cb1abaa46', '2022-12-05 14:47:51.036', '20221122025705_rename_table_member', NULL, NULL, '2022-12-05 14:47:50.746', 1),
-('61f9687c-e3d4-44f8-824d-f6eed43d53cb', '8c2a30f0e43c75a60963e647359c35b7f4c861b0594cf21363e8a85d6572f8dd', '2022-12-05 14:47:50.659', '20221108021909_init', NULL, NULL, '2022-12-05 14:47:50.288', 1);
+('21a4d0c3-0569-4aba-b6a4-1c12973f3992', '82bef6eaa9d0ac3aafd8b83161dc784eeac5e8191f41020427aea8136c7f8a0e', '2022-12-11 06:41:05.647', '20221211063311_add_off_work', NULL, NULL, '2022-12-11 06:41:05.380', 1),
+('2f4138af-d513-4e35-bb46-49f89edded04', 'aba0836c4317f85e27c2015630a03a04a53653e08f59dc0accc63994f7be6563', '2022-12-11 06:41:05.379', '20221122033658_add_collmun_reset_date_table_shuffle_option', NULL, NULL, '2022-12-11 06:41:05.343', 1),
+('74d6dfac-a6b7-4550-b668-e64b3287e830', '28244d4519d3b8827345e74995b17f19036adfeb80c15d3e9cfa06743a8c9eb5', '2022-12-11 06:41:04.936', '20221109015544_add_status_to_work', NULL, NULL, '2022-12-11 06:41:04.813', 1),
+('f171d8fd-7573-4090-a447-9a1235d7130c', '8c2a30f0e43c75a60963e647359c35b7f4c861b0594cf21363e8a85d6572f8dd', '2022-12-11 06:41:04.812', '20221108021909_init', NULL, NULL, '2022-12-11 06:41:04.493', 1),
+('f82226c0-5f8d-45d1-b49c-578f963e9bd2', '451340d883eb11d8038c4338a58576e7f84bf044d32f57551257e35cb1abaa46', '2022-12-11 06:41:05.342', '20221122025705_rename_table_member', NULL, NULL, '2022-12-11 06:41:04.936', 1);
 
 --
 -- ダンプしたテーブルのインデックス
@@ -197,6 +209,13 @@ ALTER TABLE `member_option`
   ADD KEY `member_option_member_id_fkey` (`member_id`);
 
 --
+-- テーブルのインデックス `off_work`
+--
+ALTER TABLE `off_work`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `off_work_work_id_fkey` (`work_id`);
+
+--
 -- テーブルのインデックス `shuffle_option`
 --
 ALTER TABLE `shuffle_option`
@@ -222,7 +241,7 @@ ALTER TABLE `_prisma_migrations`
 -- テーブルのAUTO_INCREMENT `history`
 --
 ALTER TABLE `history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- テーブルのAUTO_INCREMENT `member`
@@ -237,6 +256,12 @@ ALTER TABLE `member_option`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- テーブルのAUTO_INCREMENT `off_work`
+--
+ALTER TABLE `off_work`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- テーブルのAUTO_INCREMENT `shuffle_option`
 --
 ALTER TABLE `shuffle_option`
@@ -246,7 +271,7 @@ ALTER TABLE `shuffle_option`
 -- テーブルのAUTO_INCREMENT `work`
 --
 ALTER TABLE `work`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- ダンプしたテーブルの制約
@@ -265,6 +290,12 @@ ALTER TABLE `history`
 ALTER TABLE `member_option`
   ADD CONSTRAINT `member_option_member_id_fkey` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `member_option_work_id_fkey` FOREIGN KEY (`work_id`) REFERENCES `work` (`id`) ON UPDATE CASCADE;
+
+--
+-- テーブルの制約 `off_work`
+--
+ALTER TABLE `off_work`
+  ADD CONSTRAINT `off_work_work_id_fkey` FOREIGN KEY (`work_id`) REFERENCES `work` (`id`) ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
