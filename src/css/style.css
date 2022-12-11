@@ -330,5 +330,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 30px 60px;
   border: 1px solid black;
   border-radius: 10px;
-  min-height: 334px;
+  height: 334px;
+}
+
+.add_products{
+  overflow-y: scroll;
+  height: calc(100vh - 400px);
 }
