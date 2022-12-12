@@ -1,15 +1,14 @@
 @charset "UTF-8";
 body {
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   min-height: 100vh;
+  background-color: #EEFAF6;
 }
 
 main {
   -webkit-box-flex: 1;
-  -webkit-flex: 1;
       -ms-flex: 1;
           flex: 1;
 }
@@ -17,14 +16,15 @@ main {
 .sidebar {
   width: 100%;
   max-width: 198px;
-  border-right: 1px solid black;
   background: #B2C3FF;
 }
 
 header {
-  color: #333;
-  /* color: #fff; */
-  /* background: #FFCC66; */
+  color: #FFFFFF;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  font-weight: 700;
+  font-size: 48px;
+  background: #B2C3FF;
   font-size: 36px;
   text-align: center;
   line-height: 70px;
@@ -32,7 +32,6 @@ header {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-  border-bottom: 1px solid black;
   height: 70px;
 }
 
@@ -40,25 +39,39 @@ header {
   display: block;
   line-height: 70px;
   font-size: 24px;
-  color: #333;
+  color: #FFFFFF;
   /* color: #fff; */
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  -webkit-transition: 0.4s;
+  -o-transition: 0.4s;
+  transition: 0.4s;
+  background: #B2C3FF;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.sidebar ul a:hover {
+  text-decoration: none;
+  background: #7993D6;
+  -webkit-box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+          box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.sidebar ul p {
+  display: block;
+  line-height: 70px;
+  font-size: 24px;
+  color: #7993D6;
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid black;
   -webkit-transition: 0.4s;
+  -o-transition: 0.4s;
   transition: 0.4s;
-  background: #B2C3FF;
+  background: #EEFAF6;
 }
 .sidebar ul li {
   height: 70px;
 }
-
-ul li a:hover {
-  padding-left: 50px;
-  text-decoration: none;
-  background: #7993D6;
-}
-ul li a:active {
+.sidebar ul li.is-active {
   background: #EEFAF6;
 }
 
@@ -123,18 +136,14 @@ input[type=date]::-webkit-calendar-picker-indicator {
   height: 93px;
   position: relative;
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-flex-wrap: nowrap;
-      -ms-flex-wrap: nowrap;
-          flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
   -webkit-box-align: center;
-  -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
   font-size: 24px;
@@ -164,6 +173,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
   /* opacity: 0; */
   display: none;
   -webkit-transition: 0.3s;
+  -o-transition: 0.3s;
   transition: 0.3s;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -179,6 +189,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
   opacity: 1;
   visibility: visible;
   -webkit-transition: 0.4s;
+  -o-transition: 0.4s;
   transition: 0.4s;
 }
 
@@ -196,15 +207,12 @@ input[type=date]::-webkit-calendar-picker-indicator {
 .modal-close {
   position: absolute;
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
-  -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
   top: -40px;
@@ -233,7 +241,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
 /* サブ ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
 .blue-button {
   -webkit-box-align: center;
-  -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   background-color: #0A66C2;
@@ -244,13 +251,11 @@ input[type=date]::-webkit-calendar-picker-indicator {
   color: #ffffff;
   cursor: pointer;
   display: -webkit-inline-box;
-  display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
   font-size: 24px;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
   line-height: 20px;
@@ -266,6 +271,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
       touch-action: manipulation;
   -webkit-transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  -o-transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   -moz-user-select: none;
@@ -282,7 +288,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
 
 .red-button {
   -webkit-box-align: center;
-  -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   background-color: #e74c3c;
@@ -293,13 +298,11 @@ input[type=date]::-webkit-calendar-picker-indicator {
   color: #ffffff;
   cursor: pointer;
   display: -webkit-inline-box;
-  display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
   font-size: 16px;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
   line-height: 20px;
@@ -315,6 +318,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
       touch-action: manipulation;
   -webkit-transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  -o-transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   -moz-user-select: none;
@@ -330,7 +334,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
 
 .gray-button {
   -webkit-box-align: center;
-  -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   background-color: #4c586f;
@@ -341,13 +344,11 @@ input[type=date]::-webkit-calendar-picker-indicator {
   color: #ffffff;
   cursor: pointer;
   display: -webkit-inline-box;
-  display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
   font-size: 16px;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
   line-height: 20px;
@@ -363,6 +364,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
       touch-action: manipulation;
   -webkit-transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  -o-transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   -moz-user-select: none;
@@ -397,11 +399,9 @@ input[type=date]::-webkit-calendar-picker-indicator {
 /* 共通ボタン ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
 .btns {
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: end;
-  -webkit-justify-content: flex-end;
       -ms-flex-pack: end;
           justify-content: flex-end;
 }
