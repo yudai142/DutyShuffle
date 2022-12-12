@@ -17,7 +17,7 @@
       <i class="fas fa-arrow-alt-circle-right fa-2x"></i>
     </a>
   </div>
-  <span style="position: relative;"><a href="login.php" class="login-button blue-button">シャッフル</a></span>
+  <span style="position: relative;"><button class="login-button blue-button state-btn" data-target="shuffle_btn">シャッフル</button></span>
 </div>
 
 <div class="allocation-table" style="margin:50px 40px">

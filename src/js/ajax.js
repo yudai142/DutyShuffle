@@ -537,8 +537,32 @@ $(function($){
           }
         });
       }
-
+    }else if ($(this).attr("data-target") == "shuffle_btn") {
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        datatype: "json",
+        data: {
+          "type": "shuffle",
+          "date": $("#date").val()
+        },
+        success: function(data) {
+          if (data == null || !data["err"]){
+            if( location.pathname.indexOf("/top.php") != -1 ){
+              joinMember();
+            }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
+              allocationView();
+            }
+          }else{
+            $('#select_result').html(`<p>${data["err"]}</p>`);
+          }
+        },
+        error: function(data) {
+          $('#select_result').html("<p>入力エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
+        }
+      });
     }
   })
-
 });
