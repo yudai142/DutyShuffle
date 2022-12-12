@@ -2,19 +2,16 @@
   <header></header>
   <ul>
     <li>
-      <a href="#">トップ</a>
+      <a tabindex="1" href="./top.php">トップ</a>
     </li>
     <li>
-      <a href="#">割り当て</a>
+      <a href="./allocation.php">割り当て</a>
     </li>
     <li>
-      <a href="#">登録・編集</a>
+      <a href="./create-edit.php">登録・編集</a>
     </li>
     <li>
-      <a href="#">オプション</a>
-    </li>
-    <li>
-      <a href="#">ダウンロード</a>
+      <a href="./option.php">オプション</a>
     </li>
   </ul>
 </div>

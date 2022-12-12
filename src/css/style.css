@@ -18,7 +18,7 @@ main {
   width: 100%;
   max-width: 198px;
   border-right: 1px solid black;
-  /* background: #FFE5B2; */
+  background: #B2C3FF;
 }
 
 header {
@@ -38,7 +38,7 @@ header {
 
 .sidebar ul a {
   display: block;
-  line-height: 65px;
+  line-height: 70px;
   font-size: 24px;
   color: #333;
   /* color: #fff; */
@@ -47,14 +47,19 @@ header {
   border-bottom: 1px solid black;
   -webkit-transition: 0.4s;
   transition: 0.4s;
+  background: #B2C3FF;
 }
 .sidebar ul li {
   height: 70px;
 }
 
-ul li:hover a {
+ul li a:hover {
   padding-left: 50px;
   text-decoration: none;
+  background: #7993D6;
+}
+ul li a:active {
+  background: #EEFAF6;
 }
 
 /* date-form */
