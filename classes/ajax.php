@@ -504,11 +504,23 @@ try{
       echo json_encode($productList);
       exit;
     case 'work_select_definition':
-      if(isset($_REQUEST["select_work"], $_REQUEST["history_id"])){
+      if(isset($_REQUEST["select_work"], $_REQUEST["history_id"], $_REQUEST['date'], $_REQUEST["select_work"])){
+        $date = date('Y-m-d',  strtotime($_REQUEST['date']));
         if($_REQUEST["select_work"] == "0"){$_REQUEST["select_work"] = null;}
-        $sql = "UPDATE history SET work_id=? WHERE id=?";
+        if($_REQUEST["check-copy"] == "0"){
+          $sql = "UPDATE history SET work_id=? WHERE id=?";
+          $arr = array($_REQUEST["select_work"], $_REQUEST["history_id"]);
+        }else{
+          $stmt2 = dbc()->prepare("SELECT member_id FROM history WHERE id=?");
+          if (!($stmt2->execute(array($_REQUEST["history_id"])))) {
+            echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+            exit;
+          }
+          $sql = "INSERT INTO history(date, member_id, work_id) VALUES(?, ?, ?)";
+          $arr = array($_REQUEST["date"], $stmt2->fetchAll(PDO::FETCH_COLUMN)[0], $_REQUEST["select_work"]);
+        }
         $stmt = dbc()->prepare($sql);
-        if (!($stmt->execute(array($_REQUEST["select_work"], $_REQUEST["history_id"])))) {
+        if (!($stmt->execute($arr))) {
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
           exit;
         }

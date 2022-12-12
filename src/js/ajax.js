@@ -174,7 +174,7 @@ $(function($){
       },
       success: function(data) {
         if (data == null){
-          false
+          $('#work_show_result').html("")
         }else if(data['err'] == null){
           let arr = []
           $.each(data, function(key, value){
@@ -418,6 +418,8 @@ $(function($){
           "type": "work_select_definition",
           "select_work": $(this).attr("value"),
           "history_id": $(this).closest(".select-member").find(".select-member-button").attr("value"),
+          "date": $("#date").val(),
+          "check-copy" : Number($('#check-copy').prop("checked"))
         },
         success: function(data) {
           if (data == null || !data["err"]){
