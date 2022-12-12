@@ -7,9 +7,9 @@ generator client {
 
 datasource db {
   // provider = "postgresql"
+  // shadowDatabaseUrl = env("DATABASE_URL")
   provider = "mysql"
   url      = env("DATABASE_URL")
-  // shadowDatabaseUrl = env("DATABASE_URL")
 }
 
 model Work {
@@ -19,12 +19,13 @@ model Work {
   archive Boolean @default(false)
   memberOption MemberOption[]
   history History[]
+  offWork OffWork[]
   @@map("work")
 }
 model Member {
   id Int @id @default(autoincrement())
-  lastName String  @db.VarChar(30) @map("last_name")
-  firstName String  @db.VarChar(30) @map("first_name")
+  familyName String  @db.VarChar(30) @map("family_name")
+  givenName String  @db.VarChar(30) @map("given_name")
   kanaName String  @db.VarChar(255) @map("kana_name")
   archive Boolean @default(false)
   memberOption MemberOption[]
@@ -48,7 +49,7 @@ model History {
   workId Int? @map("work_id")
   member Member @relation(fields: [memberId], references: [id])
   memberId Int @map("member_id")
-  day DateTime @db.Date
+  date DateTime @db.Date
   @@map("history")
 }
 
@@ -57,4 +58,11 @@ model ShuffleOption {
   interval Int? @default(7)
   reset_date DateTime? @db.Date
   @@map("shuffle_option")
+}
+model OffWork {
+  id Int @id @default(autoincrement())
+  work Work @relation(fields: [workId], references: [id])
+  workId Int @map("work_id")
+  date DateTime @db.Date
+  @@map("off_work")
 }
