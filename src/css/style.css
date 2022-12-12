@@ -203,6 +203,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   height: 334px;
 }
 
+.add_products{
+  overflow-y: scroll;
+  height: 257px;
+}
+
 /* サブ ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
 
 .blue-button {
