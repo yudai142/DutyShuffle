@@ -1,10 +1,17 @@
+@charset "UTF-8";
 body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
   min-height: 100vh;
 }
 
 main {
-  flex: 1;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
 
 .sidebar {
@@ -21,7 +28,10 @@ header {
   font-size: 36px;
   text-align: center;
   line-height: 70px;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   border-bottom: 1px solid black;
   height: 70px;
 }
@@ -35,9 +45,9 @@ header {
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: 1px solid black;
+  -webkit-transition: 0.4s;
   transition: 0.4s;
 }
-
 .sidebar ul li {
   height: 70px;
 }
@@ -48,26 +58,25 @@ ul li:hover a {
 }
 
 /* date-form */
-
 .date-form label {
   position: relative;
   width: 100%;
   max-width: 415px;
-  margin-bottom: 0px!important;
+  margin-bottom: 0px !important;
 }
 
-input[type="date"] {
+input[type=date] {
   padding: 0 10px;
   width: 100%;
   max-width: 313px;
   height: 41px;
   border: 0;
   background: transparent;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   font-size: 35px;
 }
-
-input[type="date"]:focus {
+input[type=date]:focus {
   outline: 0;
 }
 
@@ -89,15 +98,10 @@ input[type="date"]:focus {
   border-radius: 10px;
 }
 
-input[type="date"]::-webkit-inner-spin-button {
+input[type=date]::-webkit-inner-spin-button, input[type=date]::-webkit-clear-button {
   -webkit-appearance: none;
 }
-
-input[type="date"]::-webkit-clear-button {
-  -webkit-appearance: none;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
+input[type=date]::-webkit-calendar-picker-indicator {
   position: absolute;
   right: 57px;
   top: -3px;
@@ -113,115 +117,137 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .date-form {
   height: 93px;
   position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: center;
+  -webkit-flex-wrap: nowrap;
+      -ms-flex-wrap: nowrap;
+          flex-wrap: nowrap;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   font-size: 24px;
   text-align: center;
   border-bottom: 1px solid black;
 }
 
-.icon-left a {
+.icon-left a, .icon-right a {
   color: #06c;
 }
-
-.icon-left a:hover {
-  color: #337ab7;
-}
-
-.icon-right a {
-  color: #06c;
-}
-
-.icon-right a:hover {
+.icon-left a:hover, .icon-right a:hover {
   color: #337ab7;
 }
 
 /* モーダル ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
-
 /*モーダル本体の指定 + モーダル外側の背景の指定*/
-.modal-container{
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	text-align: center;
-	background: rgba(0,0,0,50%);
-	/* padding: 40px 20px; */
-	overflow: auto;
-	/* opacity: 0; */
-	display: none;
-	transition: .3s;
-    box-sizing: border-box;
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  /* padding: 40px 20px; */
+  overflow: auto;
+  /* opacity: 0; */
+  display: none;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   padding-top: 66px;
 }
-/*モーダル本体の擬似要素の指定*/
-.modal-container:before{
-	content: "";
-	display: inline-block;
-	vertical-align: middle;
-	/* height: 100%; */
+.modal-container:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  /* height: 100%; */
 }
-/*モーダル本体に「active」クラス付与した時のスタイル*/
-.modal-container.active{
-	opacity: 1;
-	visibility: visible;
+.modal-container.active {
+  opacity: 1;
+  visibility: visible;
+  -webkit-transition: 0.4s;
   transition: 0.4s;
 }
-/*モーダル枠の指定*/
-.modal-body{
-	position: relative;
-	display: inline-block;
-	vertical-align: middle;
+
+.modal-body {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
   width: 100%;
   max-width: 1026px;
   height: 334px;
   /* margin: 66px auto; */
 }
+
 /*モーダルを閉じるボタンの指定*/
-.modal-close{
-	position: absolute;
-	display: flex;
-    align-items: center;
-    justify-content: center;
-	top: -40px;
-	right: -40px;
-	width: 40px;
-	height: 40px;
-	font-size: 40px;
-	color: #fff;
-	cursor: pointer;
+.modal-close {
+  position: absolute;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  top: -40px;
+  right: -40px;
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+  color: #fff;
+  cursor: pointer;
 }
+
 /*モーダル内のコンテンツの指定*/
-.modal-content{
-	background: #fff;
+.modal-content {
+  background: #fff;
   padding: 30px 60px;
   border: 1px solid black;
   border-radius: 10px;
   height: 334px;
 }
 
-.add_products{
+.add_products {
   overflow-y: scroll;
   height: 257px;
 }
 
 /* サブ ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
-
 .blue-button {
-  align-items: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   background-color: #0A66C2;
   border: 0;
   border-radius: 100px;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   color: #ffffff;
   cursor: pointer;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
   font-size: 24px;
-  justify-content: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   line-height: 20px;
   max-width: 480px;
   min-height: 40px;
@@ -231,13 +257,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding-left: 20px;
   padding-right: 20px;
   text-align: center;
-  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  -webkit-transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
-  user-select: none;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  -moz-user-select: none;
+   -ms-user-select: none;
+       user-select: none;
   -webkit-user-select: none;
   vertical-align: middle;
 }
-
 .blue-button:hover {
   color: #ffffff;
   background-color: #16437E;
@@ -245,17 +276,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .red-button {
-  align-items: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   background-color: #e74c3c;
   border: 0;
   border-radius: 100px;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   color: #ffffff;
   cursor: pointer;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
   font-size: 16px;
-  justify-content: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   line-height: 20px;
   max-width: 480px;
   min-height: 40px;
@@ -265,30 +306,45 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding-left: 20px;
   padding-right: 20px;
   text-align: center;
-  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  -webkit-transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
-  user-select: none;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  -moz-user-select: none;
+   -ms-user-select: none;
+       user-select: none;
   -webkit-user-select: none;
   vertical-align: middle;
 }
-
 .red-button:hover {
   color: #ffffff;
   background-color: #ff5341;
 }
 
 .gray-button {
-  align-items: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   background-color: #4c586f;
   border: 0;
   border-radius: 100px;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   color: #ffffff;
   cursor: pointer;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
   font-size: 16px;
-  justify-content: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   line-height: 20px;
   max-width: 480px;
   min-height: 40px;
@@ -298,16 +354,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding-left: 20px;
   padding-right: 20px;
   text-align: center;
-  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  -webkit-transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
-  user-select: none;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, -webkit-box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  -moz-user-select: none;
+   -ms-user-select: none;
+       user-select: none;
   -webkit-user-select: none;
   vertical-align: middle;
 }
-
 .gray-button:hover {
   color: #ffffff;
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .login-button {
@@ -322,13 +383,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   right: 0;
 }
 
-.list-button {
-  position: absolute;
-  top: -5px;
-  right: 130px;
-}
-
-.top-button {
+.list-button, .top-button {
   position: absolute;
   top: -5px;
   right: 130px;
@@ -336,8 +391,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* 共通ボタン ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
 .btns {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: flex-end;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 
 .btn {
@@ -347,11 +408,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border-radius: 60px;
   color: #FFFFFF;
   font-size: 24px;
-  box-shadow: 0px 2px black;
+  -webkit-box-shadow: 0px 2px black;
+          box-shadow: 0px 2px black;
 }
-
 .btn:active {
-  box-shadow: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
   position: relative;
   top: 2px;
 }
