@@ -629,6 +629,31 @@ try{
       }
       echo json_encode("shuffle");
       exit;
+    case 'option_list':
+      $sql = "SELECT id ,family_name, given_name, archive FROM member ORDER BY member.kana_name ASC";
+      $sql2 = "SELECT id ,name, archive FROM work";
+      $sql3 = "SELECT id ,member_id, work_id, status FROM member_option";
+
+      if (!($stmt = dbc()->query($sql))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+
+      if (!($stmt2 = dbc()->query($sql2))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+
+      if (!($stmt3 = dbc()->query($sql3))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+
+      $productList[] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $productList[] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+      $productList[] = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+      echo json_encode($productList);
+      exit;
   };
 }catch(PDOException $e){
   exit($e->getMessage());

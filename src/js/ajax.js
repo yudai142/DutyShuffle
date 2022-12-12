@@ -14,6 +14,8 @@ $(function($){
     joinWork();
   }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
     allocationView();
+  }else if ( location.pathname.indexOf("/option.php") != -1 ){
+    getOptionList();
   }
   
   function allocationView(){
@@ -192,6 +194,36 @@ $(function($){
       }
     });
     // return false
+  }
+
+  function getOptionList(){
+    $.ajax({
+      url: "../classes/ajax.php",
+      data: {
+        "type": 'option_list'
+      },
+      success: function(data) {
+        if (data == null){
+          $('#option_list').html("")
+        }else if(data['err'] == null){
+          console.log(data);
+          return
+          let member_list = []
+          let work_list = []
+          $.each(data, function(key, value){
+              arr.push(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
+          });
+          $('#option_list').html(arr)
+        }else{
+          $('#option_list').append(`<p>${data["err"]}</p>`);
+        }
+      },
+      error: function(){
+        $('#option_list').append("<p>通信エラー</p>");
+        console.log("通信失敗");
+        console.log(data);
+      }
+    });
   }
 
   $('#submit_member').on('click',function(){
