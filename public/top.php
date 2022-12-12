@@ -1,5 +1,6 @@
-<?php require_once "../component/head_component.php" ?>
+<?php date_default_timezone_set('Asia/Tokyo');(isset($_GET['ym']))? $title = "トップ(".date('Y/m/d',  strtotime($_GET['ym'])).")" : $title = "トップ(".date('Y/m/d').")" ; require_once "../component/head_component.php" ?>
 <link rel="stylesheet" href="../src/css/top.css" />
+<link rel="stylesheet" href="../src/css/select.css" />
 <?php $title = "トップ"; require_once "../component/sidebar_component.php"; ?>
 <div class="date-form">
   <div class="icon-left">
@@ -8,7 +9,7 @@
     </a>
   </div>
   <label>
-    <input type="date" id="month" value="<?php echo $ym ?>" />
+    <input type="date" id="date" value="<?php echo $ym ?>" />
   </label>
   <div class="icon-right">
     <a href="?ym=<?php echo $next; ?>">
@@ -23,3 +24,14 @@
   <?php endif;?>
 </div>
 
+<div class="join_work">
+  <ul id="join_work" style="display:flex;margin-bottom:30px;"></ul>
+</div><!-- /.work_list -->
+<div class="join_member">
+  <button class="md-btn" data-target="modal-select">参加</button>
+  <ul id="join_member" style="display: flex;flex-flow: column;"></ul>
+</div><!-- /.member_list -->
+<?php require_once "../public/modal/modal-select.php" ?>
+<script src="../src/js/ajax.js"></script>
+<script defer src="../src/js/modal.js"></script>
+<script src="../src/js/date.js"></script>

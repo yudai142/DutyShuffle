@@ -5,8 +5,8 @@
         <h1></h1>
         <div class="add_products">
           <form onsubmit="return false;">
-            姓:<input id="last_name" required><br>
-            名:<input id="first_name" required><br>
+            姓:<input id="family_name" required><br>
+            名:<input id="given_name" required><br>
             ふりがな:<input id="kana_name" pattern="[\u3041-\u3096]*" required><br>
             有効/無効:<input id="member_archive" type="checkbox" >
             <div id="member_result"></div>

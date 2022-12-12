@@ -1,0 +1,19 @@
+
+.container-select {
+  width: 100%;
+  max-width: 1026px;
+  margin: 66px auto;
+  padding: 30px 60px;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.select-header {
+  display: flex;
+  justify-content: center;
+}
+
+.select-buttons {
+  display: flex;
+  justify-content: space-between;
+}

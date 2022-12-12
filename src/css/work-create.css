@@ -3,68 +3,7 @@
 	font-family: "Inter";
   }
 
-/*モーダル本体の指定 + モーダル外側の背景の指定*/
-.modal-container{
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	text-align: center;
-	background: rgba(0,0,0,50%);
-	/* padding: 40px 20px; */
-	overflow: auto;
-	/* opacity: 0; */
-	display: none;
-	transition: .3s;
-    box-sizing: border-box;
-  padding-top: 66px;
-}
-/*モーダル本体の擬似要素の指定*/
-.modal-container:before{
-	content: "";
-	display: inline-block;
-	vertical-align: middle;
-	/* height: 100%; */
-}
-/*モーダル本体に「active」クラス付与した時のスタイル*/
-.modal-container.active{
-	opacity: 1;
-	visibility: visible;
-  transition: 0.4s;
-}
-/*モーダル枠の指定*/
-.modal-body{
-	position: relative;
-	display: inline-block;
-	vertical-align: middle;
-  width: 100%;
-  max-width: 1026px;
-  height: 334px;
-  /* margin: 66px auto; */
-}
-/*モーダルを閉じるボタンの指定*/
-.modal-close{
-	position: absolute;
-	display: flex;
-    align-items: center;
-    justify-content: center;
-	top: -40px;
-	right: -40px;
-	width: 40px;
-	height: 40px;
-	font-size: 40px;
-	color: #fff;
-	cursor: pointer;
-}
-/*モーダル内のコンテンツの指定*/
-.modal-content{
-	background: #fff;
-  padding: 30px 60px;
-  border: 1px solid black;
-  border-radius: 10px;
-  height: 334px;
-}
+
 
 .container-work {
 	width: 100%;
@@ -137,3 +76,5 @@
   .btn {
 	margin-top: 26px;
   }
+	
+	
