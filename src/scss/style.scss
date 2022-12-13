@@ -1,10 +1,14 @@
 body {
-  display: flex;
-  min-height: 100vh;
   background-color: #EEFAF6;
 }
 
 main {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 70px);
+}
+
+.main {
   flex: 1;
 }
 
@@ -15,7 +19,7 @@ main {
 }
 
 header {
-  color: #FFFFFF;
+  color: #fff;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   font-weight: 700;
   font-size: 48px;
@@ -32,10 +36,8 @@ header {
     display: block;
     line-height: 70px;
     font-size: 24px;
-    color: #FFFFFF;
-    /* color: #fff; */
+    color: #fff;
     text-align: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
     transition: 0.4s;
     background: #B2C3FF;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -52,8 +54,6 @@ header {
     font-size: 24px;
     color: #7993D6;
     text-align: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid black;
     transition: 0.4s;
     background: #EEFAF6;
   }
@@ -239,7 +239,7 @@ input[type="date"] {
   border: 0;
   border-radius: 100px;
   box-sizing: border-box;
-  color: #ffffff;
+  color: #fff;
   cursor: pointer;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -261,7 +261,7 @@ input[type="date"] {
   vertical-align: middle;
 
   &:hover {
-    color: #ffffff;
+    color: #fff;
     background-color: #16437E;
     text-decoration: none;
   }
@@ -273,7 +273,7 @@ input[type="date"] {
   border: 0;
   border-radius: 100px;
   box-sizing: border-box;
-  color: #ffffff;
+  color: #fff;
   cursor: pointer;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -295,7 +295,7 @@ input[type="date"] {
   vertical-align: middle;
 
   &:hover {
-    color: #ffffff;
+    color: #fff;
     background-color: #ff5341;
   }
 }
@@ -306,7 +306,7 @@ input[type="date"] {
   border: 0;
   border-radius: 100px;
   box-sizing: border-box;
-  color: #ffffff;
+  color: #fff;
   cursor: pointer;
   display: inline-flex;
   font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -328,7 +328,7 @@ input[type="date"] {
   vertical-align: middle;
 
   &:hover {
-    color: #ffffff;
+    color: #fff;
     opacity: .8;
   }
 }
@@ -363,7 +363,7 @@ input[type="date"] {
   width: 86px;
   height: 37px;
   border-radius: 60px;
-  color: #FFFFFF;
+  color: #fff;
   font-size: 24px;
   box-shadow: 0px 2px black;
 
