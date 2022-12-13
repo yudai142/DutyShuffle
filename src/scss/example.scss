@@ -1,4 +1,5 @@
 /* work-create */
+
 .container-work {
   width: 100%;
   height: 334px;
@@ -7,12 +8,14 @@
   padding: 30px 60px;
   border: 1px solid black;
   border-radius: 10px;
-}
-.container-work h1 {
-  text-align: center;
+
+  h1 {
+    text-align: center;
+  }
 }
 
 /* member-create */
+
 .container-member {
   width: 100%;
   height: 446px;
@@ -21,12 +24,14 @@
   padding: 30px 60px;
   border: 1px solid black;
   border-radius: 10px;
-}
-.container-member h1 {
-  text-align: center;
+
+  h1 {
+    text-align: center;
+  }
 }
 
 /* select */
+
 .container-select {
   width: 100%;
   max-width: 1026px;
@@ -37,39 +42,22 @@
 }
 
 .container-select-header {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  justify-content: space-between;
 }
 
 /* option */
+
 .option-form {
   border-bottom: 1px solid black;
   padding: 10px 40px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  justify-content: space-between;
 }
 
 .option-left {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
+  align-items: center;
 }
 
 .option-right {
