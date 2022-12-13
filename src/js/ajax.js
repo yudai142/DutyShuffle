@@ -210,9 +210,14 @@ $(function($){
         }else if(data['err'] == null){
           console.log(data);
           // return
-          let list = [];
+          let fixed_list = [];
+          let exclusion_list = [];
           data[2].push({
-            id:null
+            id:null,
+            status: 0
+          },{
+            id:null,
+            status: 1
           })
           $.each(data[2], function(option_key, option_value){
             let work_list = $("<select>", {
@@ -260,13 +265,22 @@ $(function($){
                 }))
               }
             }
-            list.push(
-              $("<li>", {style: "display:flex;"})
-              .append($("<form>", {onsubmit: "return false;"})
-              .append(work_list, member_list, $("<button>",{text:(option_value.id == null)?"追加":"削除", value: option_value.id})))
-            );
+            if(option_value.status == 0){
+              fixed_list.push(
+                $("<li>", {style: "display:flex;"})
+                .append($("<form>", {onsubmit: "return false;"})
+                .append(work_list, member_list, $("<button>",{text:(option_value.id == null)?"追加":"削除", value: (option_value.id == null)?option_value.status:option_value.id})))
+              );
+            }else{
+              exclusion_list.push(
+                $("<li>", {style: "display:flex;"})
+                .append($("<form>", {onsubmit: "return false;"})
+                .append(work_list, member_list, $("<button>",{text:(option_value.id == null)?"追加":"削除", value: (option_value.id == null)?option_value.status:option_value.id})))
+              );
+            }
           });
-          $('#option_list').html(list)
+          $('#fixed_list').html(fixed_list)
+          $('#exclusion_list').html(exclusion_list)
         }else{
           $('#option_list').append(`<p>${data["err"]}</p>`);
         }
