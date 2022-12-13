@@ -1,8 +1,4 @@
 @charset "UTF-8";
-body {
-  background-color: #EEFAF6;
-}
-
 main {
   display: -webkit-box;
   display: -webkit-flex;
@@ -16,6 +12,7 @@ main {
 }
 
 .main {
+  background-color: #EEFAF6;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
       -ms-flex: 1;
@@ -411,39 +408,49 @@ input[type=date]::-webkit-calendar-picker-indicator {
 }
 
 /* 共通ボタン ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
-.work-button {
+.button {
   width: 200px;
   height: 60px;
-  background-color: #99E16D;
   text-align: center;
   -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
           box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
-  color: #fff;
   font-size: 24px;
   line-height: 60px;
   border-radius: 20px;
 }
-.work-button a {
+.button:hover {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  position: relative;
+  top: 1px;
+  cursor: pointer;
+}
+
+.work {
+  color: #fff;
+  background-color: #99E16D;
+}
+.work a {
   color: #fff;
 }
-.work-button:hover {
+.work:hover {
   background-color: #55B01D;
   -webkit-box-shadow: none;
           box-shadow: none;
   padding-top: 3px;
   cursor: pointer;
 }
-.work-button:checked {
+.work:checked {
   background-color: #fff;
   color: #55B01D;
   -webkit-box-shadow: none;
           box-shadow: none;
   border: 3px solid #55B01D;
 }
-.work-button:checked a {
+.work:checked a {
   color: #55B01D;
 }
-.work-button:checked:hover {
+.work:checked:hover {
   background-color: #55B01D;
   color: #fff;
   -webkit-box-shadow: none;
@@ -452,36 +459,28 @@ input[type=date]::-webkit-calendar-picker-indicator {
   padding-top: 0;
   border: 3px solid #fff;
 }
-.work-button:checked:hover a {
+.work:checked:hover a {
   color: #fff;
 }
 
-.member-button {
-  width: 200px;
-  height: 60px;
+.member {
+  color: #fff;
   background-color: #839EFF;
-  text-align: center;
-  -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
-          box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
-  color: #fff;
-  font-size: 24px;
-  line-height: 60px;
-  border-radius: 20px;
 }
-.member-button a {
+.member a {
   color: #fff;
 }
-.member-button:checked {
+.member:checked {
   background-color: #fff;
   color: #4164DF;
   -webkit-box-shadow: none;
           box-shadow: none;
   border: 3px solid #4164DF;
 }
-.member-button:checked a {
+.member:checked a {
   color: #4164DF;
 }
-.member-button:checked:hover {
+.member:checked:hover {
   background-color: #4164DF;
   color: #fff;
   -webkit-box-shadow: none;
@@ -490,10 +489,10 @@ input[type=date]::-webkit-calendar-picker-indicator {
   padding-top: 0;
   border: 3px solid #fff;
 }
-.member-button:checked:hover a {
+.member:checked:hover a {
   color: #fff;
 }
-.member-button:hover {
+.member:hover {
   background-color: #4164DF;
   -webkit-box-shadow: none;
           box-shadow: none;
@@ -501,39 +500,31 @@ input[type=date]::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 
-.off-button {
-  width: 200px;
-  height: 60px;
+.off {
+  color: #fff;
   background-color: #979797;
-  text-align: center;
-  -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
-          box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
-  color: #fff;
-  font-size: 24px;
-  line-height: 60px;
-  border-radius: 20px;
 }
-.off-button a {
+.off a {
   color: #fff;
 }
-.off-button:hover {
+.off:hover {
   background-color: #C9C9C9;
   -webkit-box-shadow: none;
           box-shadow: none;
   padding-top: 3px;
   cursor: pointer;
 }
-.off-button:checked {
+.off:checked {
   background-color: #fff;
   color: #979797;
   -webkit-box-shadow: none;
           box-shadow: none;
   border: 3px solid #979797;
 }
-.off-button:checked a {
+.off:checked a {
   color: #979797;
 }
-.off-button:checked:hover {
+.off:checked:hover {
   background-color: #979797;
   color: #fff;
   -webkit-box-shadow: none;
@@ -542,7 +533,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
   padding-top: 0;
   border: 3px solid #fff;
 }
-.off-button:checked:hover a {
+.off:checked:hover a {
   color: #fff;
 }
 
@@ -565,7 +556,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
   font-size: 24px;
   -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
           box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
-  margin-left: 30px;
 }
 .btn:hover {
   -webkit-box-shadow: none;
@@ -581,4 +571,8 @@ input[type=date]::-webkit-calendar-picker-indicator {
 
 .green {
   background-color: #1E9097;
+}
+
+.yello {
+  background-color: #FFC738;
 }

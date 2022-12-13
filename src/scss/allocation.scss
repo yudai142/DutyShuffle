@@ -21,16 +21,15 @@
   border-bottom: 1px #1e90ff solid;
   display: block;
   background-color: white;
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
 }
 
 .select-work {
   background: white;
-}
-.select-work:hover {
-  cursor: pointer;
-  background-color: #1e90ff;
-  color: white;
+  &:hover {
+    cursor: pointer;
+    background-color: #1e90ff;
+    color: white;
+  }
 }
