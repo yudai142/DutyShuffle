@@ -3,11 +3,20 @@
     font-family: "Inter";
   }
 
-  .btn {
-    color: black;
-    padding: 0;
+  .select {
+    padding:  39px 53px 64px 53px;
   }
 
-  .b-areal {
-    width: 147px;
+  .btn-list {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .b-conf {
+    margin-left: 12px;
+  }
+
+  .button {
+    margin-top: 40px;
   }
