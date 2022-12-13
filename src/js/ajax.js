@@ -207,13 +207,30 @@ $(function($){
           $('#option_list').html("")
         }else if(data['err'] == null){
           console.log(data);
-          return
-          let member_list = []
-          let work_list = []
-          $.each(data, function(key, value){
-              arr.push(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
+          // return
+          let values = data[1];
+          let null_list = []
+          let null_member = ["dog", "cat", "parrot", "rabbit"];
+          $.each(null_member, function(null_key, null_value){
+            let option_list = $(document.createElement('select')).prop({
+              id: 'pets',
+              name: 'pets'
+            })
+            for (const val of values) {
+                $(option_list).append($(document.createElement('option')).prop({
+                    value: val["id"],
+                    text: val["name"]
+                }))
+            }
+            null_list.push(option_list);
           });
-          $('#option_list').html(arr)
+          
+          // let member_list = []
+          // let work_list = []
+          // $.each(data, function(key, value){
+          //     arr.push(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
+          // });
+          $('#option_list').html(null_list)
         }else{
           $('#option_list').append(`<p>${data["err"]}</p>`);
         }
