@@ -53,7 +53,9 @@ $(function($){
             }else{
               arr.push(`
                 <div class="content" style="display:flex;flex-flow: column;">
-                  <div class="work-title"><button class="md-btn" data-target="modal-select" ${style}>${work_value.name}</button></div>
+                  <div class="work-title">
+                    <button class="md-btn" data-target="modal-select" ${style}>${work_value.name}</button>
+                  </div>
                   <ul class="work-member"></ul>
                 </div>
               `);
@@ -208,29 +210,63 @@ $(function($){
         }else if(data['err'] == null){
           console.log(data);
           // return
-          let values = data[1];
-          let null_list = []
-          let null_member = ["dog", "cat", "parrot", "rabbit"];
-          $.each(null_member, function(null_key, null_value){
-            let option_list = $(document.createElement('select')).prop({
-              id: 'pets',
-              name: 'pets'
+          let list = [];
+          data[2].push({
+            id:null
+          })
+          $.each(data[2], function(option_key, option_value){
+            let work_list = $("<select>", {
+              id: `works_${(option_value.id == null)?"new":option_value.id}`,
+              name: 'works'
             })
-            for (const val of values) {
-                $(option_list).append($(document.createElement('option')).prop({
-                    value: val["id"],
-                    text: val["name"]
-                }))
+            if(option_value.id == null){
+              work_list.append($('<option>')
+              .prop({
+                hidden: true,
+                text: "ーー",
+              }))
             }
-            null_list.push(option_list);
+            for (const val of data[1]) {
+              if(val["archive"] == 0 || val["id"] == option_value.work_id){
+                let selected = (val["id"] == option_value.work_id)?true : false;
+                $(work_list).append($('<option>')
+                .prop({
+                  value: val["id"],
+                  text: val["name"],
+                  selected: selected
+                }))
+              }
+            }
+
+            let member_list = $("<select>", {
+              id: `members_${(option_value.id == null)?"new":option_value.id}`,
+              name: 'members'
+            })
+            if(option_value.id == null){
+              member_list.append($('<option>')
+              .prop({
+                hidden: true,
+                text: "ーー",
+              }))
+            }
+            for (const val of data[0]) {
+              if(val["archive"] == 0 || val["id"] == option_value.member_id){
+                let selected = (val["id"] == option_value.member_id)?true : false;
+                $(member_list).append($('<option>')
+                .prop({
+                  value: val["id"],
+                  text: `${val["family_name"]}　${val["given_name"]}`,
+                  selected: selected
+                }))
+              }
+            }
+            list.push(
+              $("<li>", {style: "display:flex;"})
+              .append($("<form>", {onsubmit: "return false;"})
+              .append(work_list, member_list, $("<button>",{text:(option_value.id == null)?"追加":"削除", value: option_value.id})))
+            );
           });
-          
-          // let member_list = []
-          // let work_list = []
-          // $.each(data, function(key, value){
-          //     arr.push(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
-          // });
-          $('#option_list').html(null_list)
+          $('#option_list').html(list)
         }else{
           $('#option_list').append(`<p>${data["err"]}</p>`);
         }
