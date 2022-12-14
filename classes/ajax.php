@@ -617,12 +617,51 @@ try{
     case 'shuffle':
       if(isset($_REQUEST["date"])){
         $date = date('Y-m-d', strtotime($_REQUEST['date']));
-        // $sql = "UPDATE history SET work_id=null WHERE date=?";
-        // $stmt = dbc()->prepare($sql);
-        // if (!($stmt->execute(array($date)))) {
-        //   echo json_encode(array("err" => "処理が正しく実行されませんでした"));
-        //   exit;
-        // }
+        $sql = "SELECT id, multiple FROM work WHERE archive=0";
+        $sql2 = "SELECT id, member_id, work_id FROM history WHERE date=?";
+        
+        if (!($stmt = dbc()->query($sql))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $stmt2 = dbc()->prepare($sql2);
+        if (!($stmt2->execute(array($date)))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $work_list = [];
+        foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+          for($i = 0; $i < $row["multiple"]; $i++){
+            $work_list[] = $row["id"];
+          };
+        }
+
+        $history_list = [];
+        foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
+          $history_list[] = $row["id"];
+        }
+        shuffle($work_list);
+        shuffle($history_list);
+        $work_stock = $work_list;
+
+        foreach($history_list as $row) {
+          $sql3 = "UPDATE history SET work_id=? WHERE id=?";
+          $stmt = dbc()->prepare($sql3);
+          if(count($work_list) != 0){
+            if (!($stmt->execute(array($work_list[0], $row)))) {
+              echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+              exit;
+            }
+            array_shift($work_list);
+          }else{
+            if (!($stmt->execute(array(null,$date)))) {
+              echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+              exit;
+            }
+          }
+        }
+        echo json_encode(array($history_list, $work_stock,$work_list));
+        exit;
       }else{
         echo json_encode(array("err" => "入力情報が不正です"));
         exit;
