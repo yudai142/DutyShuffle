@@ -243,6 +243,68 @@ input[type=date]::-webkit-calendar-picker-indicator {
   height: 257px;
 }
 
+/* 切り替えタブ ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
+/*タブ切り替え全体のスタイル*/
+.tabs {
+  /* margin-top: 50px;
+  padding-bottom: 40px; */
+  /* width: 700px; */
+  background-color: #fff;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;
+  height: calc(100vh - 70px);
+}
+
+/*タブのスタイル*/
+.tab_item {
+  width: 50%;
+  height: 50px;
+  /* border-bottom: 3px solid #5ab4bd; */
+  background-color: #84DBBE;
+  line-height: 50px;
+  font-size: 16px;
+  text-align: center;
+  color: #fff;
+  display: block;
+  float: left;
+  text-align: center;
+  font-weight: bold;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+/*ラジオボタンを全て消す*/
+input[name=tab_item] {
+  display: none;
+}
+
+/*タブ切り替えの中身のスタイル*/
+.tab_content {
+  display: none;
+  clear: both;
+  overflow: hidden;
+  height: calc(100vh - 120px);
+  background-color: #EEFFF9;
+  /* overflow: auto; */
+}
+
+/*選択されているタブのコンテンツのみを表示*/
+#all:checked ~ #all_content, #programming:checked ~ #programming_content, #design:checked ~ #design_content {
+  display: block;
+}
+
+/*選択されているタブのスタイルを変える*/
+.tabs input:checked + .tab_item {
+  background-color: #c9fae8;
+  color: rgb(84, 80, 80);
+  font-weight: bold;
+}
+
+.tabs input:checked:hover {
+  cursor: pointer;
+}
+
 /* サブ ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
 .blue-button {
   -webkit-box-align: center;
@@ -536,24 +598,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
 .off:checked:hover a {
   color: #fff;
 }
-/* 都留 */
-
-.container  {
-	width: 100%;
-	max-width: 1026px;
-	margin: 66px auto;
-	border: 1px solid black;
-	border-radius: 10px;
-	background-color: #D2DAF6;
-}
-
-.title {
-	font-size: 48px;
-	text-align: center;
-	line-height: 58px;
-	color: #FFFFFF;
-	text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
-  }
 
 .btns {
   display: -webkit-box;
