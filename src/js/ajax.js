@@ -269,8 +269,7 @@ $(function($){
                 text:(option_value.id == null)?"追加":"解除", 
                 value: (option_value.id == null)?option_value.status:option_value.id,
                 class: "state-btn",
-                "data-target": (option_value.id == null)?"add-member_option":"delete-member_option",
-                "data-status": (option_value.status == 0)?"0":"1"
+                "data-target": (option_value.id == null)?"add-member_option":"delete-member_option"
               })))
             if(option_value.status == 0){
               fixed_list.push(option_list);
@@ -695,40 +694,54 @@ $(function($){
       }
     }else if ($(this).attr("data-target") == "delete-member_option") {
       let err = [];
-      // if (isNaN($(this).closest('form').find(`#works_${$(this).val}`).val())) err.push("作業");
-      // if (isNaN($(this).closest('form').find(`#members_${$(this).val}`).val())) err.push("メンバー");
       if (err.length) {
         console.log(`${err.join("と")}が入力されていません`)
         $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
       }else{
-        let work = $(this).closest('form').find(`#works_${$(this).val()} option:selected`).text()
-        let member = $(this).closest('form').find(`#members_${$(this).val()} option:selected`).text()
-        let status = ($(this).attr("data-status") == 0)?"固定":"除外";
-        if (confirm(`${member}の${work}の${status}設定を解除します。よろしいですか？`)) {
-          $.ajax({
-            type: "POST",
-            url: "../classes/ajax.php",
-            datatype: "json",
-            data: {
-              "type": "delete-member_option",
-              // "member_id": $(this).closest('form').find('#members_new').val(),
-              // "work_id": $(this).closest('form').find('#works_new').val(),
-              "option_id": $(this).val()
-            },
-            success: function(data) {
-              if (data == null || !data["err"]){
-                getOptionList();
-              }else{
-                $('#select_result').html(`<p>${data["err"]}</p>`);
+        $.ajax({
+          type: "POST",
+          url: "../classes/ajax.php",
+          datatype: "json",
+          data: {
+            "type": "confirm-member_option",
+            "option_id": $(this).val()
+          },
+          success: function(data) {
+            if (data == null || !data["err"]){
+              let status = (data[0].status == 0)?"固定":"除外";
+              if (confirm(`${data[0].family_name}${data[0].given_name}さんの${data[0].name}の${status}設定を解除します。よろしいですか？`)) {
+                $.ajax({
+                  type: "POST",
+                  url: "../classes/ajax.php",
+                  datatype: "json",
+                  data: {
+                    "type": "delete-member_option",
+                    "option_id": data[0].id
+                  },
+                  success: function(data) {
+                    if (data == null || !data["err"]){
+                      getOptionList();
+                    }else{
+                      $('#select_result').html(`<p>${data["err"]}</p>`);
+                    }
+                  },
+                  error: function(data) {
+                    $('#select_result').html("<p>入力エラー</p>");
+                    console.log("通信失敗");
+                    console.log(data);
+                  }
+                })
               }
-            },
-            error: function(data) {
-              $('#select_result').html("<p>入力エラー</p>");
-              console.log("通信失敗");
-              console.log(data);
+            }else{
+              $('#select_result').html(`<p>${data["err"]}</p>`);
             }
-          })
-        }
+          },
+          error: function(data) {
+            $('#select_result').html("<p>情報の取得に失敗しました</p>");
+            console.log("通信失敗");
+            console.log(data);
+          }
+        })
       }
     }
   })

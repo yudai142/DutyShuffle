@@ -668,6 +668,20 @@ try{
       }
       echo json_encode("option");
       exit;
+    case 'confirm-member_option':
+      if(is_numeric($_REQUEST["option_id"])){
+        $sql = "SELECT member_option.id, family_name, given_name, name, status FROM member_option, work, member WHERE member_option.id=? AND member.id=member_option.member_id AND work.id=member_option.work_id";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["option_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+      exit;
     case 'delete-member_option':
       if(is_numeric($_REQUEST["option_id"])){
         $sql = "DELETE FROM member_option WHERE id=?";
