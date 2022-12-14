@@ -220,7 +220,8 @@ $(function($){
           $.each(data[2], function(option_key, option_value){
             let work_list = $("<select>", {
               id: `works_${(option_value.id == null)?"new":option_value.id}`,
-              name: 'works'
+              name: 'works',
+              class: (option_value.id == null)?"add_option":"change_option"
             })
             if(option_value.id == null){
               work_list.append($('<option>')
@@ -243,7 +244,8 @@ $(function($){
 
             let member_list = $("<select>", {
               id: `members_${(option_value.id == null)?"new":option_value.id}`,
-              name: 'members'
+              name: 'members',
+              class: (option_value.id == null)?"add_option":"change_option"
             })
             if(option_value.id == null){
               member_list.append($('<option>')
@@ -743,6 +745,42 @@ $(function($){
           }
         })
       }
+    }
+  })
+
+  $(document).on('change', '.change_option', function(){
+    let err = [];
+    if (isNaN($(this).closest('form').find('select[name="works"]').val())) err.push("作業");
+    if (isNaN($(this).closest('form').find('select[name="members"]').val())) err.push("メンバー");
+    if (err.length) {
+      console.log(`${err.join("と")}が入力されていません`)
+      $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
+    }else{
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        datatype: "json",
+        data: {
+          "type": "update-member_option",
+          "member_id": $(this).closest('form').find('select[name="members"]').val(),
+          "work_id": $(this).closest('form').find('select[name="works"]').val(),
+          "option_id": $(this).closest('form').find('button').val(),
+          "change_tag": $(this).attr("name"),
+        },
+        success: function(data) {
+          if (data == null || !data["err"]){
+            console.log(data)
+            getOptionList();
+          }else{
+            $('#select_result').html(`<p>${data["err"]}</p>`);
+          }
+        },
+        error: function(data) {
+          $('#select_result').html("<p>入力エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
+        }
+      })
     }
   })
 });

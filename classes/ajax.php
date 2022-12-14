@@ -696,6 +696,33 @@ try{
       }
       echo json_encode("option");
       exit;
+    case "update-member_option":
+      if(is_numeric($_REQUEST["work_id"]) && is_numeric($_REQUEST["member_id"]) && is_numeric($_REQUEST["option_id"])){
+        $sql = "UPDATE member_option SET work_id=?, member_id=?  WHERE id=?";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["work_id"], $_REQUEST["member_id"], $_REQUEST["option_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $sql2 = "SELECT member_option.id, family_name, given_name, name, status FROM member_option, work, member WHERE member_option.id=? AND member.id=member_option.member_id AND work.id=member_option.work_id";
+        $stmt2 = dbc()->prepare($sql2);
+        if (!($stmt2->execute(array($_REQUEST["option_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $update = ($stmt2->fetch(PDO::FETCH_ASSOC));
+        $status = ($update["status"] == 0)?"固定":"除外";
+        if($_REQUEST["change_tag"] == "works"){
+          $update_message = $update["family_name"].$update["given_name"]."さんの".$status."作業を".$update["name"]."に変更しました";
+        }else{
+          $update_message = $update["name"]."の".$status."対象を".$update["family_name"].$update["given_name"]."さんに変更しました";
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode($update_message);
+      exit;
   };
 }catch(PDOException $e){
   exit($e->getMessage());
