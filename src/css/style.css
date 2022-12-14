@@ -133,7 +133,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
 }
 
 .date-form {
-  height: 93px;
+  height: 125px;
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;

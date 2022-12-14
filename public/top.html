@@ -30,13 +30,46 @@
     </div>
     <div class="main">
       <!-- ↓ここからコーディングしてください -->
-      <ul>
-        <li>
-          <div class="button work is-active">
-            <p>ハンディモップ</p>
-          </div>
-        </li>
-      </ul>
+      <div class="date-form">
+        <div class="icon-left">
+          <a href="?ym=<?php echo $prev; ?>">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+          </a>
+        </div>
+        <label>
+          <input type="date" id="date" value="<?php echo $ym ?>" />
+        </label>
+        <div class="icon-right">
+          <a href="?ym=<?php echo $next; ?>">
+            <i class="fas fa-arrow-alt-circle-right fa-2x"></i>
+          </a>
+        </div>
+        <span style="position: relative;"><a href="login.php" class="login-button blue-button">割り当てへ</a></span>
+      </div>
+      <div class="join-work">
+        <h1>作業</h1>
+        <div class="join-form">
+          <ul>
+            <li>
+              <div class="button work is-active">
+                <p>ハンディモップ</p>
+              </div>
+            </li>
+          </ul>
+        </div><!-- /.join-form -->
+      </div><!-- /.join-work -->
+      <div class="join-member">
+        <h1>メンバー</h1>
+        <div class="join-form">
+          <ul>
+            <li>
+              <div class="button work is-active">
+                <p>ハンディモップ</p>
+              </div>
+            </li>
+          </ul>
+        </div><!-- /.join-form -->
+      </div><!-- /.join-work -->
     </div>
   </main>
 </body>

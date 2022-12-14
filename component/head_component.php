@@ -17,7 +17,7 @@
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
     <script src="../src/js/jquery-3.6.1.min.js"></script>
     
-    <!-- <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
-    <!-- <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script> -->
+    <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
   </head>
   <body>
