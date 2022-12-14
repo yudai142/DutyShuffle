@@ -614,60 +614,6 @@ try{
       }
       echo json_encode("member");
       exit;
-    case 'shuffle':
-      if(isset($_REQUEST["date"])){
-        $date = date('Y-m-d', strtotime($_REQUEST['date']));
-        $sql = "SELECT id, multiple FROM work WHERE archive=0";
-        $sql2 = "SELECT id, member_id, work_id FROM history WHERE date=?";
-        
-        if (!($stmt = dbc()->query($sql))) {
-          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
-          exit;
-        }
-        $stmt2 = dbc()->prepare($sql2);
-        if (!($stmt2->execute(array($date)))) {
-          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
-          exit;
-        }
-        $work_list = [];
-        foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-          for($i = 0; $i < $row["multiple"]; $i++){
-            $work_list[] = $row["id"];
-          };
-        }
-
-        $history_list = [];
-        foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
-          $history_list[] = $row["id"];
-        }
-        shuffle($work_list);
-        shuffle($history_list);
-        $work_stock = $work_list;
-
-        foreach($history_list as $row) {
-          $sql3 = "UPDATE history SET work_id=? WHERE id=?";
-          $stmt = dbc()->prepare($sql3);
-          if(count($work_list) != 0){
-            if (!($stmt->execute(array($work_list[0], $row)))) {
-              echo json_encode(array("err" => "処理が正しく実行されませんでした"));
-              exit;
-            }
-            array_shift($work_list);
-          }else{
-            if (!($stmt->execute(array(null,$date)))) {
-              echo json_encode(array("err" => "処理が正しく実行されませんでした"));
-              exit;
-            }
-          }
-        }
-        echo json_encode(array($history_list, $work_stock,$work_list));
-        exit;
-      }else{
-        echo json_encode(array("err" => "入力情報が不正です"));
-        exit;
-      }
-      echo json_encode("shuffle");
-      exit;
     case 'option_list':
       $sql = "SELECT id ,family_name, given_name, archive FROM member ORDER BY member.kana_name ASC";
       $sql2 = "SELECT id ,name, archive FROM work";
@@ -761,6 +707,64 @@ try{
         exit;
       }
       echo json_encode($update_message);
+      exit;
+    case 'shuffle':
+      if(isset($_REQUEST["date"])){
+        $date = date('Y-m-d', strtotime($_REQUEST['date']));
+        $sql = "SELECT id, multiple FROM work WHERE archive=0";
+        $sql2 = "SELECT id, member_id, work_id FROM history WHERE date=?";
+        
+        if (!($stmt = dbc()->query($sql))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $stmt2 = dbc()->prepare($sql2);
+        if (!($stmt2->execute(array($date)))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $work_list = [];
+        foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+          for($i = 0; $i < $row["multiple"]; $i++){
+            $work_list[] = $row["id"];
+          };
+        }
+
+        $history_list = [];
+        foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
+          $history_list[] = $row["id"];
+        }
+        shuffle($work_list);
+        shuffle($history_list);
+        $work_stock = $work_list;
+
+        $column_data = "";
+        foreach($history_list as $row) {
+          if(count($work_list) != 0){
+            $column_data = $column_data . "WHEN {$row} THEN {$work_list[0]} ";
+            array_shift($work_list);
+          }else{
+            $column_data = $column_data . "WHEN {$row} THEN null";
+          }
+        }
+        $ids =implode($history_list,',');
+
+        echo json_encode(array($column_data,$ids,$work_list,count($work_stock),count($history_list)));
+        exit;
+        $sql3 = "UPDATE history SET work_id = CASE id ? END WHERE id IN (?)";
+        $stmt3 = dbc()->prepare($sql3);
+        if (!($stmt3->execute(array($column_data, $ids)))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        
+        echo json_encode(array($history_list, $work_stock,$work_list));
+        exit;
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode("shuffle");
       exit;
   };
 }catch(PDOException $e){
