@@ -749,11 +749,15 @@ try{
         }
         $ids =implode($history_list,',');
 
-        echo json_encode(array($column_data,$ids,$work_list,count($work_stock),count($history_list)));
-        exit;
-        $sql3 = "UPDATE history SET work_id = CASE id ? END WHERE id IN (?)";
-        $stmt3 = dbc()->prepare($sql3);
-        if (!($stmt3->execute(array($column_data, $ids)))) {
+        $sql3 = "UPDATE history SET work_id = CASE id ".$column_data." END WHERE id IN (".$ids.")";
+        // echo json_encode(array($sql3,$work_list,count($work_stock),count($history_list)));
+        // exit;
+        // $stmt3 = dbc()->prepare($sql3);
+        // if (!($stmt3->execute(array($column_data, $ids)))) {
+        //   echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+        //   exit;
+        // }
+        if (!(dbc()->query($sql3))) {
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
           exit;
         }
