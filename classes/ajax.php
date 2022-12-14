@@ -654,6 +654,20 @@ try{
       $productList[] = $stmt3->fetchAll(PDO::FETCH_ASSOC);
       echo json_encode($productList);
       exit;
+    case 'add-member_option':
+      if(is_numeric($_REQUEST["work_id"]) && is_numeric($_REQUEST["member_id"]) && is_numeric($_REQUEST["status"])){
+        $sql = "INSERT INTO member_option(work_id, member_id, status) VALUES(?, ?, ?)";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["work_id"], $_REQUEST["member_id"], $_REQUEST["status"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode("option");
+      exit;
   };
 }catch(PDOException $e){
   exit($e->getMessage());

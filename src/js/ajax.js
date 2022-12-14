@@ -212,7 +212,7 @@ $(function($){
           // return
           let fixed_list = [];
           let exclusion_list = [];
-          data[2].push({
+          data[2].unshift({
             id:null,
             status: 0
           },{
@@ -228,7 +228,7 @@ $(function($){
               work_list.append($('<option>')
               .prop({
                 hidden: true,
-                text: "ーー",
+                text: "ーー"
               }))
             }
             for (const val of data[1]) {
@@ -251,7 +251,7 @@ $(function($){
               member_list.append($('<option>')
               .prop({
                 hidden: true,
-                text: "ーー",
+                text: "ーー"
               }))
             }
             for (const val of data[0]) {
@@ -265,18 +265,18 @@ $(function($){
                 }))
               }
             }
+            let option_list = $("<li>", {style: "display:flex;"})
+              .append($("<form>", {onsubmit: "return false;"})
+              .append(work_list, member_list, $("<button>",{
+                text:(option_value.id == null)?"追加":"削除", 
+                value: (option_value.id == null)?option_value.status:option_value.id,
+                class: "state-btn",
+                "data-target": (option_value.id == null)?"add-member_option":"delete-member_option"
+              })))
             if(option_value.status == 0){
-              fixed_list.push(
-                $("<li>", {style: "display:flex;"})
-                .append($("<form>", {onsubmit: "return false;"})
-                .append(work_list, member_list, $("<button>",{text:(option_value.id == null)?"追加":"削除", value: (option_value.id == null)?option_value.status:option_value.id})))
-              );
+              fixed_list.push(option_list);
             }else{
-              exclusion_list.push(
-                $("<li>", {style: "display:flex;"})
-                .append($("<form>", {onsubmit: "return false;"})
-                .append(work_list, member_list, $("<button>",{text:(option_value.id == null)?"追加":"削除", value: (option_value.id == null)?option_value.status:option_value.id})))
-              );
+              exclusion_list.push(option_list);
             }
           });
           $('#fixed_list').html(fixed_list)
@@ -662,6 +662,38 @@ $(function($){
           console.log(data);
         }
       });
+    }else if ($(this).attr("data-target") == "add-member_option") {
+      let err = [];
+      if (isNaN($(this).closest('form').find('#works_new').val())) err.push("作業");
+      if (isNaN($(this).closest('form').find('#members_new').val())) err.push("メンバー");
+      if (err.length) {
+        console.log(`${err.join("と")}が入力されていません`)
+        $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
+      }else{
+        $.ajax({
+          type: "POST",
+          url: "../classes/ajax.php",
+          datatype: "json",
+          data: {
+            "type": "add-member_option",
+            "member_id": $(this).closest('form').find('#members_new').val(),
+            "work_id": $(this).closest('form').find('#works_new').val(),
+            "status": $(this).val()
+          },
+          success: function(data) {
+            if (data == null || !data["err"]){
+              getOptionList();
+            }else{
+              $('#select_result').html(`<p>${data["err"]}</p>`);
+            }
+          },
+          error: function(data) {
+            $('#select_result').html("<p>入力エラー</p>");
+            console.log("通信失敗");
+            console.log(data);
+          }
+        })
+      }
     }
   })
 });

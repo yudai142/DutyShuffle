@@ -9,11 +9,15 @@
   <label class="tab_item" for="programming">除外</label>
   <div class="tab_content" id="all_content">
     <div class="tab_content_selects">
+      <h3>シャッフルの際に設定した担当に必ず割り当てる設定です</h3>
+      <p>セレクトボックスを変更すると自動で保存されます</p>
       <ul id="fixed_list"></ul>
     </div>
   </div>
   <div class="tab_content" id="programming_content">
     <div class="tab_content_selects">
+      <h3>シャッフルの際に設定した担当に割り当てない設定です</h3>
+      <p>セレクトボックスを変更すると自動で保存されます</p>
       <ul id="exclusion_list"></ul>
     </div>
   </div>
