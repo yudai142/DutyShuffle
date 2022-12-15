@@ -97,8 +97,8 @@ $(function($){
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
-            let work_name = (value.work_name != null)?`<br><span>${value.work_name}を担当しています</span>`:"";
-            arr.push(`<li id=join_member_${value.history_id}><button class='state-btn' data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</button>${work_name}<li>`);
+            let work_name = (value.work_name != null)?`<span>${value.work_name}を担当しています</span>`:"";
+            arr.push(`<li id=join_member_${value.history_id}><div class="button member state-btn" data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</div>${work_name}</li>`);
           });
           $('#join_member').html(arr);
         }else{
@@ -125,8 +125,8 @@ $(function($){
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
-            let style = (value.status == 1)? "" : `style="background:yellow;"`
-            arr.push(`<li id=join_work_${value.id}><button class='state-btn' data-target='work-change' ${style} value=${value.id}>${value.name}</button><li>`);
+            let style = (value.status == 1)? 'work' : 'off'
+            arr.push(`<li id=join_work_${value.id}><div class="button ${style} state-btn" data-target='work-change' value=${value.id}>${value.name}</div></li>`);
           });
           $('#join_work').html(arr);
         }else{

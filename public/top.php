@@ -24,13 +24,46 @@
   <?php endif;?>
 </div>
 
-<div class="join_work">
+<div class="main_visual">
+  <div class="join_container join_container-work">
+    <div class="join_header">
+      <h1>作業</h1>
+      <!-- <div class="button_collection">
+        <p>割り当て枠数合計：3枠</p>
+        <p>参加人数合計：3人</p>
+        <p>余り人数・不足枠：2人</p>
+      </div> -->
+    </div>
+    <div class="join_form">
+      <ul id="join_work">
+        <!-- <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li> -->
+      </ul>
+    </div><!-- /.join-form -->
+  </div><!-- /.join -->
+  <div class="join_container join_container-member">
+    <div class="join_header">
+      <h1>メンバー</h1>
+      <div class="button_collection">
+        <span class="btn yellow">クリア</span><!-- /.btn yellow -->
+        <span class="btn green md-btn" data-target="modal-select">参加</span><!-- /.btn green -->
+      </div><!-- /.button_collection -->
+    </div><!-- /.join_header -->
+    <div class="join_form">
+      <ul id="join_member">
+        <!-- <li><div class="button member">ハンディモップ</div></li> -->
+      </ul>
+    </div><!-- /.join-form -->
+  </div><!-- /.join-work -->
+</div>
+
+<!-- <div class="join_work">
   <ul id="join_work" style="display:flex;margin-bottom:30px;"></ul>
-</div><!-- /.work_list -->
+</div>
 <div class="join_member">
   <button class="md-btn" data-target="modal-select">参加</button>
   <ul id="join_member" style="display: flex;flex-flow: column;"></ul>
-</div><!-- /.member_list -->
+</div> -->
+
 <?php require_once "../public/modal/modal-select.php" ?>
 <script src="../src/js/ajax.js"></script>
 <script defer src="../src/js/modal.js"></script>

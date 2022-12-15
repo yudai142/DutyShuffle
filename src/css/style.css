@@ -210,14 +210,13 @@ input[type=date]::-webkit-calendar-picker-indicator {
           flex-wrap: wrap;
 }
 .join_form li {
-  width: calc(20% - 24px);
-  margin-right: 30px;
+  margin-right: 63px;
   margin-top: 20px;
 }
-.join_form li:nth-child(5n) {
+.join_form li:nth-child(4n) {
   margin-right: 0;
 }
-.join_form li:nth-child(-n+5) {
+.join_form li:nth-child(-n+4) {
   margin-top: 0;
 }
 .join_form li .button:nth-child(n+3) {
@@ -733,7 +732,7 @@ input[name=tab_item] {
   background-color: #1E9097;
 }
 
-.yello {
+.yellow {
   background-color: #FFC738;
 }
 
