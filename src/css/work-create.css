@@ -4,15 +4,8 @@
   font-family: "Inter";
 }
 
-.container-work {
-  width: 100%;
+.work-create {
   height: 334px;
-  max-width: 1026px;
-  margin: 66px auto;
-  padding: 20px 90px;
-  border: 1px solid black;
-  border-radius: 10px;
-  background-color: #D2DAF6;
 }
 
 h1 {
