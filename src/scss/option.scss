@@ -1,1 +1,124 @@
+.shuffle_option{
+  &-form{
+    p {
+      font-size: 24px;
+    }
+    padding: 30px;
+    display: flex;
+    flex-flow: row;
+    .btn {
+      margin-top: auto;
+      margin-left: auto;
+      margin-bottom: 5px;
+      font-size: 24px;
+      height: 31px;
+      line-height: 31px;
+    }
+  }
+  &-content{
+    p {
+      .btn{
+        margin-left: 10px;
+      }
+      &:not(:last-child) {
+        margin-bottom: 32px;
+      }
+    }
+  }
+}
+.input-tx {
+  &.sm {
+    width: 54px;
+  }
+  width: 199px;
+}
 
+.tab_container {
+  margin: 0 250px 60px 250px;
+  h3 {
+    margin: 25px 0;
+  }
+}
+
+.tab_option {
+  display: none;
+  clear: both;
+  overflow: hidden;
+  height: calc(100vh - 310px);
+  background-color: #EEFFF9;
+  overflow: auto;
+}
+
+.option {
+  &-title{
+    display: flex;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 70px;
+    text-align: center;
+    p {
+      width: 200px;
+      margin-right: 48px;
+      color: #60ADBD;
+      &:nth-child(-n+1) {
+        margin-left: 25px;
+        color: #7DCB7B;
+      }
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+    }
+  }
+  &-group{
+    height: 50px;
+    background-color: #D2DAF6;
+    border-radius: 10px;
+    display: flex;
+    padding-top: 8px;
+    &:nth-child(n+2) {
+      margin-top: 10px;
+    }
+    li {
+      margin-right: 48px;
+      margin-top: 20px;
+      &:nth-child(-n+1) {
+        margin-left: 25px;
+      }
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+      &:nth-child(-n+5) {
+        margin-top: 0;
+      }
+      .button:nth-child(n+3) {
+        margin-top: 8px;
+      }
+    }
+  }
+  &-form{
+    background : none;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    padding-top: 8px;
+    &:nth-child(n+2) {
+      margin-top: 10px;
+    }
+    li {
+      margin-right: 48px;
+      margin-top: 20px;
+      &:nth-child(-n+1) {
+        margin-left: 25px;
+      }
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+      &:nth-child(-n+5) {
+        margin-top: 0;
+      }
+      .button:nth-child(n+3) {
+        margin-top: 8px;
+      }
+    }
+  }
+}

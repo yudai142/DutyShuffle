@@ -1,0 +1,133 @@
+.shuffle_option-form {
+  padding: 30px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: row;
+      -ms-flex-flow: row;
+          flex-flow: row;
+}
+.shuffle_option-form p {
+  font-size: 24px;
+}
+.shuffle_option-form .btn {
+  margin-top: auto;
+  margin-left: auto;
+  margin-bottom: 5px;
+  font-size: 24px;
+  height: 31px;
+  line-height: 31px;
+}
+.shuffle_option-content p .btn {
+  margin-left: 10px;
+}
+.shuffle_option-content p:not(:last-child) {
+  margin-bottom: 32px;
+}
+
+.input-tx {
+  width: 199px;
+}
+.input-tx.sm {
+  width: 54px;
+}
+
+.tab_container {
+  margin: 0 250px 60px 250px;
+}
+.tab_container h3 {
+  margin: 25px 0;
+}
+
+.tab_option {
+  display: none;
+  clear: both;
+  overflow: hidden;
+  height: calc(100vh - 310px);
+  background-color: #EEFFF9;
+  overflow: auto;
+}
+
+.option-title {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 70px;
+  text-align: center;
+}
+.option-title p {
+  width: 200px;
+  margin-right: 48px;
+  color: #60ADBD;
+}
+.option-title p:nth-child(-n+1) {
+  margin-left: 25px;
+  color: #7DCB7B;
+}
+.option-title p:nth-child(3n) {
+  margin-right: 0;
+}
+.option-group {
+  height: 50px;
+  background-color: #D2DAF6;
+  border-radius: 10px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  padding-top: 8px;
+}
+.option-group:nth-child(n+2) {
+  margin-top: 10px;
+}
+.option-group li {
+  margin-right: 48px;
+  margin-top: 20px;
+}
+.option-group li:nth-child(-n+1) {
+  margin-left: 25px;
+}
+.option-group li:nth-child(3n) {
+  margin-right: 0;
+}
+.option-group li:nth-child(-n+5) {
+  margin-top: 0;
+}
+.option-group li .button:nth-child(n+3) {
+  margin-top: 8px;
+}
+.option-form {
+  background: none;
+  height: 50px;
+  border-radius: 10px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  padding-top: 8px;
+}
+.option-form:nth-child(n+2) {
+  margin-top: 10px;
+}
+.option-form li {
+  margin-right: 48px;
+  margin-top: 20px;
+}
+.option-form li:nth-child(-n+1) {
+  margin-left: 25px;
+}
+.option-form li:nth-child(3n) {
+  margin-right: 0;
+}
+.option-form li:nth-child(-n+5) {
+  margin-top: 0;
+}
+.option-form li .button:nth-child(n+3) {
+  margin-top: 8px;
+}

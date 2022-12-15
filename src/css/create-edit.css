@@ -1,5 +1,6 @@
 * {
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   font-family: "Inter";
 }
 
@@ -16,13 +17,13 @@ tab_content_selects {
   overflow: auto;
 }
 
-.btns { 
+.btns {
   padding-right: 52px;
   padding-top: 37px;
 }
 
 .btn {
-  margin-left:  12px;
+  margin-left: 12px;
 }
 
 .green1 {
