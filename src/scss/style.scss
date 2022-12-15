@@ -244,12 +244,12 @@ input[type="date"] {
 
 .tab_item {
   width: calc(100%/2);
-  height: 50px;
+  height: 60px;
 
   /* border-bottom: 3px solid #5ab4bd; */
   background-color: #84DBBE;
-  line-height: 50px;
-  font-size: 16px;
+  line-height: 60px;
+  font-size: 24px;
   text-align: center;
   color: #fff;
   display: block;
@@ -289,9 +289,8 @@ input[name="tab_item"] {
 .tabs input:checked + .tab_item {
   background-color: #c9fae8;
   color: rgb(84, 80, 80);
-  font-weight: bold;
 }
-.tabs input:checked {
+.tabs input:not(:checked) + .tab_item {
   &:hover {
     cursor: pointer;
   }
