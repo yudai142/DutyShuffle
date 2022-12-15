@@ -744,19 +744,11 @@ try{
             $column_data = $column_data . "WHEN {$row} THEN {$work_list[0]} ";
             array_shift($work_list);
           }else{
-            $column_data = $column_data . "WHEN {$row} THEN null";
+            $column_data = $column_data . "WHEN {$row} THEN null ";
           }
         }
-        $ids =implode($history_list,',');
-
+        $ids = implode(",", $history_list);
         $sql3 = "UPDATE history SET work_id = CASE id ".$column_data." END WHERE id IN (".$ids.")";
-        // echo json_encode(array($sql3,$work_list,count($work_stock),count($history_list)));
-        // exit;
-        // $stmt3 = dbc()->prepare($sql3);
-        // if (!($stmt3->execute(array($column_data, $ids)))) {
-        //   echo json_encode(array("err" => "処理が正しく実行されませんでした"));
-        //   exit;
-        // }
         if (!(dbc()->query($sql3))) {
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
           exit;
