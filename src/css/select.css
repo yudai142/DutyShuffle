@@ -18,17 +18,5 @@
     margin-left: 12px;
   }
 
-  .name-group {
-    display: flex;
-    flex-wrap: wrap;
-  }
 
-  .member {
-    margin-top: 40px;
-    margin-left: 40px; 
-    width: calc(25% - 40px * 3 / 4);
-  }
 
-  .member:nth-child(4n+1) {
-    margin-left: 0px;
-  }
