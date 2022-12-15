@@ -650,7 +650,7 @@ $(function($){
             if( location.pathname.indexOf("/top.php") != -1 ){
               joinMember();
             }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
-              console.log(data)
+              // console.log(data)
               allocationView();
             }
           }else{

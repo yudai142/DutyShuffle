@@ -753,9 +753,6 @@ try{
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
           exit;
         }
-        
-        echo json_encode(array($history_list, $work_stock,$work_list));
-        exit;
       }else{
         echo json_encode(array("err" => "入力情報が不正です"));
         exit;
