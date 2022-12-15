@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../src/css/style.css" />
+  <link rel="stylesheet" href="../src/css/reset.css" />
+  <link rel="stylesheet" href="../src/css/allocation.css" />
+  <!-- <link rel="stylesheet" href="../src/css/select.css" /> -->
+  <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+</head>
+<body>
+  <header>トップ</header>
+  <main>
+    <div class="sidebar">
+      <ul>
+        <li class="is-active">
+          <a href="./top.php">トップ</a>
+        </li>
+        <li>
+          <p>割り当て</p>
+        </li>
+        <li>
+          <a href="./create-edit.php">登録・編集</a>
+        </li>
+        <li>
+          <a href="./option.php">オプション</a>
+        </li>
+      </ul>
+    </div>
+    <div class="main">
+      <!-- ↓ここからコーディングしてください -->
+      <div class="date-form">
+        <div class="icon-left">
+          <a href="?ym=<?php echo $prev; ?>">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+          </a>
+        </div>
+        <label>
+          <input type="date" id="date" value="<?php echo $ym ?>" />
+        </label>
+        <div class="icon-right">
+          <a href="?ym=<?php echo $next; ?>">
+            <i class="fas fa-arrow-alt-circle-right fa-2x"></i>
+          </a>
+        </div>
+        <span style="position: relative;"><a href="login.php" class="login-button blue-button">割り当てへ</a></span>
+      </div>
+      <div class="mainvisual">
+        <div class="join_container join_container-work">
+          <div class="join_hedder">
+            <h1>担当</h1>
+            <div class="button_collection">
+              <span class="btn yello">担当全解除</span><!-- /.btn yello -->
+              <span class="btn green">メンバー追加</span><!-- /.btn green -->
+            </div><!-- /.button_collection -->
+          </div><!-- /.join_hedder -->
+          <div class="join_form">
+            <ul>
+              <li>
+                <div>+　割り当て人数：３人　-</div>
+                <div class="button work square">ハンディモップ</div>
+                <div class="button member">ハンディモップ</div>
+                <p>4日前に担当</p>
+                <div class="button member">ハンディモップ</div>
+                <p>4日前に担当</p>
+              </li>
+              <li><div class="button work square">ハンディモップ</div></li>
+              <li><div class="button work square">ハンディモップ</div></li>
+              <li><div class="button work square">ハンディモップ</div></li>
+              <li><div class="button work square">ハンディモップ</div></li>
+              <li><div class="button work square">ハンディモップ</div></li>
+              <li><div class="button work square">ハンディモップ</div></li>
+              <li>
+                <div class="button work square">ハンディモップ</div>
+                <div class="button member">ハンディモップ</div>
+                <p>四日前</p>
+                <div class="button member">ハンディモップ</div>
+                <p>四日前</p>
+              </li>
+            </ul>
+          </div><!-- /.join-form -->
+        </div><!-- /.join -->
+        <div class="join_container join_container-member">
+          <h1>サポート</h1>
+          <div class="join_form">
+            <ul>
+              <li><div class="button member">ハンディモップ</div></li>
+              <li><div class="button member">ハンディモップ</div></li>
+              <li><div class="button member">ハンディモップ</div></li>
+              <li><div class="button member">ハンディモップ</div></li>
+              <li><div class="button member">ハンディモップ</div></li>
+              <li><div class="button member">ハンディモップ</div></li>
+              <li><div class="button member">ハンディモップ</div></li>
+              <li><div class="button member">ハンディモップ</div></li>
+              <li><div class="button member">ハンディモップ</div></li>
+              <li><div class="button member">ハンディモップ</div></li>
+            </ul>
+          </div><!-- /.join-form -->
+        </div><!-- /.join-work -->
+      </div><!-- /.mainvisual -->
+    </div>
+  </main>
+</body>
+</html>

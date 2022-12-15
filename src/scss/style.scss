@@ -52,13 +52,13 @@ header {
     color: #7993D6;
     text-align: center;
     transition: 0.4s;
-    background: #EEFFF9;
+    background: #EEFAF6;
   }
 
   li {
     height: 70px;
     &.is-active {
-      background: #EEFFF9;
+      background: #EEFAF6;
     }
   }
 }
@@ -138,7 +138,7 @@ input[type="date"] {
   justify-content: center;
   font-size: 24px;
   text-align: center;
-  border-bottom: 1px solid black;
+  // border-bottom: 1px solid black;
 }
 
 .icon-left a, .icon-right a {
@@ -147,6 +147,70 @@ input[type="date"] {
   &:hover {
     color: #337ab7;
   }
+}
+
+/* トップ・割り当て共有 ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
+.mainvisual {
+  height: calc(100vh - 195px);
+  overflow-y: scroll;
+}
+.join{
+  &_container{
+    margin: 26px 30px 0 30px;
+    &:nth-child(-n+2) {
+      margin-top: 0;
+    }
+    h1 {
+      font-weight: normal;
+    }
+    &-work h1{
+      color: #5CC09E;
+    }
+    &-member h1{
+      color: #5D80FE;
+    }
+  }
+  &_hedder {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.join_form{
+  background-color: #D2DAF6;
+  padding: 30px;
+  padding: 0 auto;
+  border-radius: 20px;
+  &:nth-child(n+2) {
+    margin-bottom: 80px;
+  }
+  ul{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  li {
+    width: calc(20% - 30px * 4 / 5);
+    margin-right: 30px;
+    margin-top: 20px;
+    &:nth-child(5n) {
+      margin-right: 0;
+    }
+    &:nth-child(-n+5) {
+      margin-top: 0;
+    }
+    .button:nth-child(n+2) {
+      margin-top: 10px;
+    }
+    p {
+      color: #1E9097;
+      text-align: center;
+      margin-top: 8px;
+    }
+  }
+}
+
+.button_collection .green {
+  margin-left: 30px;
 }
 
 /* モーダル ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
@@ -234,7 +298,7 @@ input[type="date"] {
   /* margin-top: 50px;
   padding-bottom: 40px; */
   /* width: 700px; */
-  background-color: #fff;
+  background-color: #EEFAF6;
   // box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   margin: 0 auto;
   height: calc(100vh - 70px);
@@ -559,7 +623,9 @@ input[name="tab_item"] {
     cursor: pointer;
   }
 }
-
+.square{
+  border-radius: 0;
+}
 .orange {
   background-color: #FE975D;
 }
