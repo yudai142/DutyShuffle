@@ -130,7 +130,7 @@ input[type="date"] {
 }
 
 .date-form {
-  height: 93px;
+  height: 125px;
   position: relative;
   display: flex;
   flex-wrap: nowrap;
@@ -444,7 +444,8 @@ input[name="tab_item"] {
   &:hover{
     background-color: #55B01D;
     box-shadow: none;
-    padding-top: 3px;
+    position: relative;
+    top: 1px;
     cursor: pointer;
   }
   &:checked {
@@ -472,6 +473,13 @@ input[name="tab_item"] {
 .member{
   color: #fff;
   background-color: #839EFF;
+  &:hover{
+    background-color: #4164DF;
+    box-shadow: none;
+    position: relative;
+    top: 1px;
+    cursor: pointer;
+  }
   a {
     color: #fff;
   }
@@ -495,12 +503,6 @@ input[name="tab_item"] {
       }
     }
   }
-  &:hover{
-    background-color: #4164DF;
-    box-shadow: none;
-    padding-top: 3px;
-    cursor: pointer;
-  }
 }
 
 .off{
@@ -512,7 +514,8 @@ input[name="tab_item"] {
   &:hover{
     background-color: #C9C9C9;
     box-shadow: none;
-    padding-top: 3px;
+    position: relative;
+    top: 1px;
     cursor: pointer;
   }
   &:checked {

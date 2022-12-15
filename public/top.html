@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="../src/css/style.css" />
   <link rel="stylesheet" href="../src/css/reset.css" />
   <link rel="stylesheet" href="../src/css/top.css" />
+  <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
 </head>
 <body>
   <header>トップ</header>
@@ -30,13 +32,60 @@
     </div>
     <div class="main">
       <!-- ↓ここからコーディングしてください -->
-      <ul>
-        <li>
-          <div class="button work is-active">
-            <p>ハンディモップ</p>
-          </div>
-        </li>
-      </ul>
+      <div class="date-form">
+        <div class="icon-left">
+          <a href="?ym=<?php echo $prev; ?>">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+          </a>
+        </div>
+        <label>
+          <input type="date" id="date" value="<?php echo $ym ?>" />
+        </label>
+        <div class="icon-right">
+          <a href="?ym=<?php echo $next; ?>">
+            <i class="fas fa-arrow-alt-circle-right fa-2x"></i>
+          </a>
+        </div>
+        <span style="position: relative;"><a href="login.php" class="login-button blue-button">割り当てへ</a></span>
+      </div>
+      <div class="join_container join_container-work">
+        <h1>作業</h1>
+        <div class="join_form">
+          <ul>
+            <li><div class="button work">ハンディモップ</div></li>
+            <li><div class="button work">ハンディモップ</div></li>
+            <li><div class="button work">ハンディモップ</div></li>
+            <li><div class="button work">ハンディモップ</div></li>
+            <li><div class="button work">ハンディモップ</div></li>
+            <li><div class="button work">ハンディモップ</div></li>
+            <li><div class="button work">ハンディモップ</div></li>
+            <li><div class="button work">ハンディモップ</div></li>
+          </ul>
+        </div><!-- /.join-form -->
+      </div><!-- /.join -->
+      <div class="join_container join_container-member">
+        <div class="join_hedder">
+          <h1>メンバー</h1>
+          <div class="button_collection">
+            <span class="btn yello">クリア</span><!-- /.btn yello -->
+            <span class="btn green">参加</span><!-- /.btn green -->
+          </div><!-- /.button_collection -->
+        </div><!-- /.join_hedder -->
+        <div class="join_form">
+          <ul>
+            <li><div class="button member">ハンディモップ</div></li>
+            <li><div class="button member">ハンディモップ</div></li>
+            <li><div class="button member">ハンディモップ</div></li>
+            <li><div class="button member">ハンディモップ</div></li>
+            <li><div class="button member">ハンディモップ</div></li>
+            <li><div class="button member">ハンディモップ</div></li>
+            <li><div class="button member">ハンディモップ</div></li>
+            <li><div class="button member">ハンディモップ</div></li>
+            <li><div class="button member">ハンディモップ</div></li>
+            <li><div class="button member">ハンディモップ</div></li>
+          </ul>
+        </div><!-- /.join-form -->
+      </div><!-- /.join-work -->
     </div>
   </main>
 </body>
