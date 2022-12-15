@@ -33,31 +33,16 @@ $(function($){
         }else if(data["err"] == null){
           let arr = []
           $.each(data[0], function(work_key, work_value){
+            let style = (work_value.status == 1)? 'work' : 'off'
             if(data[1] != null){
               let member = data[1].filter(value => {if(value.work_id == work_value.id){return true;}});
-              let style = (work_value.status == 1)? `style="color:blue;"` : `style="color:blue;background:yellow;"`
               let list = [];
               $.each(member, function(member_key, member_value){
-                list.push(`
-                  <li class="select-member" id="history_${member_value.history_id}"><button class="select-member-button" value="${member_value.history_id}" style="color:red;">${member_value.family_name}　${member_value.given_name}</button></li>
-                `);
+                list.push(`<div class="button member select-member select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}">${member_value.family_name}　${member_value.given_name}</div>`);
               });
-              arr.push(`
-                <div class="content" style="display:flex;flex-flow: column;white-space: nowrap;">
-                  <div class="work-title"><button class="md-btn" data-target="modal-select" data-type="work" value="${work_value.id}" ${style}">${work_value.name}</button></div>
-                  <ul class="work-member">
-                    ${list.join("")}
-                  </ul>
-                </div>
-              `);
+              arr.push(`<li><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div>${list.join("")}</li>`);
             }else{
-              arr.push(`
-                <div class="content" style="display:flex;flex-flow: column;">
-                  <div class="work-title">
-                    <button class="md-btn" data-target="modal-select" ${style}>${work_value.name}</button>
-                  </div>
-                  <ul class="work-member"></ul>
-                </div>
+              arr.push(`<li><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div></li>
               `);
             }
           });
@@ -65,9 +50,7 @@ $(function($){
             let null_member = data[1].filter(value => {if(value.work_id == null){return true;}});
             let null_list = [];
             $.each(null_member, function(null_key, null_value){
-              null_list.push(`
-                <li class="select-member" id="history_${null_value.history_id}"><button class="select-member-button" value="${null_value.history_id}" style="color:red;">${null_value.family_name}　${null_value.given_name}</button></li>
-              `);
+              null_list.push(`<li class="select-member" id="history_${null_value.history_id}"><div class="button member select-member-button" value="${null_value.history_id}">${null_value.family_name}　${null_value.given_name}</div></li>`);
             });
             $('#null-member-list').html(null_list);
           }

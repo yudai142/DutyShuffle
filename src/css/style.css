@@ -219,7 +219,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
 .join_form li:nth-child(-n+4) {
   margin-top: 0;
 }
-.join_form li .button:nth-child(n+3) {
+.join_form li .button:nth-child(n+2) {
   margin-top: 8px;
 }
 .join_form li p {
