@@ -201,10 +201,11 @@ $(function($){
             status: 1
           })
           $.each(data[2], function(option_key, option_value){
+            let work_class = (option_value.id == null)?"add_option":"change_option";
             let work_list = $("<select>", {
               id: `works_${(option_value.id == null)?"new":option_value.id}`,
               name: 'works',
-              class: (option_value.id == null)?"add_option":"change_option"
+              class:`button work square ${work_class}`,
             })
             if(option_value.id == null){
               work_list.append($('<option>')
@@ -225,10 +226,11 @@ $(function($){
               }
             }
 
+            let member_class = (option_value.id == null)?"add_option":"change_option";
             let member_list = $("<select>", {
               id: `members_${(option_value.id == null)?"new":option_value.id}`,
               name: 'members',
-              class: (option_value.id == null)?"add_option":"change_option"
+              class:`button member square ${member_class}`
             })
             if(option_value.id == null){
               member_list.append($('<option>')
@@ -248,14 +250,14 @@ $(function($){
                 }))
               }
             }
-            let option_list = $("<li>", {style: "display:flex;"})
-              .append($("<form>", {onsubmit: "return false;"})
-              .append(work_list, member_list, $("<button>",{
+            let option_list = $("<form>", {onsubmit: "return false;"})
+              .append($("<ul>", {class: "option-group"})
+              .append($("<li>").append(work_list), $("<li>").append(member_list), $("<li>").append($("<div>",{
                 text:(option_value.id == null)?"追加":"解除", 
                 value: (option_value.id == null)?option_value.status:option_value.id,
-                class: "state-btn",
+                class: "button work state-btn",
                 "data-target": (option_value.id == null)?"add-member_option":"delete-member_option"
-              })))
+              }))))
             if(option_value.status == 0){
               fixed_list.push(option_list);
             }else{
