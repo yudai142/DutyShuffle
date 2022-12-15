@@ -133,7 +133,8 @@ input[type=date]::-webkit-calendar-picker-indicator {
 }
 
 .date-form {
-  height: 125px;
+  margin-top: 40px;
+  margin-bottom: 20px;
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -162,27 +163,27 @@ input[type=date]::-webkit-calendar-picker-indicator {
 }
 
 /* トップ・割り当て共有 ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
-.mainvisual {
-  height: calc(100vh - 195px);
+.main_visual {
+  height: calc(100vh - 180px);
   overflow-y: scroll;
 }
 
-.join_container {
-  margin: 26px 30px 0 30px;
-}
-.join_container:nth-child(-n+2) {
-  margin-top: 0;
-}
 .join_container h1 {
   font-weight: normal;
+}
+.join_container-work {
+  margin: 30px;
 }
 .join_container-work h1 {
   color: #5CC09E;
 }
+.join_container-member {
+  margin: 26px 30px 80px 30px;
+}
 .join_container-member h1 {
   color: #5D80FE;
 }
-.join_hedder {
+.join_header {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -198,9 +199,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
   padding: 30px;
   padding: 0 auto;
   border-radius: 20px;
-}
-.join_form:nth-child(n+2) {
-  margin-bottom: 80px;
 }
 .join_form ul {
   display: -webkit-box;
@@ -222,17 +220,22 @@ input[type=date]::-webkit-calendar-picker-indicator {
 .join_form li:nth-child(-n+5) {
   margin-top: 0;
 }
-.join_form li .button:nth-child(n+2) {
-  margin-top: 10px;
+.join_form li .button:nth-child(n+3) {
+  margin-top: 8px;
 }
 .join_form li p {
   color: #1E9097;
   text-align: center;
-  margin-top: 8px;
 }
 
+.button_collection p {
+  margin-left: 10px;
+  line-height: 48px;
+  display: inline-block;
+  color: black;
+}
 .button_collection .green {
-  margin-left: 30px;
+  margin-left: 10px;
 }
 
 /* モーダル ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
@@ -542,12 +545,12 @@ input[name=tab_item] {
 /* 共通ボタン ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
 .button {
   width: 200px;
-  height: 60px;
+  height: 40px;
   text-align: center;
   -webkit-box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
           box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
   font-size: 24px;
-  line-height: 60px;
+  line-height: 40px;
   border-radius: 20px;
 }
 .button:hover {

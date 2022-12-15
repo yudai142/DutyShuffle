@@ -130,7 +130,8 @@ input[type="date"] {
 }
 
 .date-form {
-  height: 125px;
+  margin-top: 40px;
+  margin-bottom: 20px;
   position: relative;
   display: flex;
   flex-wrap: nowrap;
@@ -150,27 +151,32 @@ input[type="date"] {
 }
 
 /* トップ・割り当て共有 ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
-.mainvisual {
-  height: calc(100vh - 195px);
+.main_visual {
+  height: calc(100vh - 180px);
   overflow-y: scroll;
 }
 .join{
   &_container{
-    margin: 26px 30px 0 30px;
-    &:nth-child(-n+2) {
-      margin-top: 0;
-    }
+    // &:nth-child(-n+2) {
+    //   margin-top: 0;
+    // }
     h1 {
       font-weight: normal;
     }
-    &-work h1{
-      color: #5CC09E;
+    &-work {
+      margin: 30px;
+      h1{
+        color: #5CC09E;
+      }
     }
-    &-member h1{
-      color: #5D80FE;
+    &-member {
+      margin: 26px 30px 80px 30px;
+      h1{
+        color: #5D80FE;
+      }
     }
   }
-  &_hedder {
+  &_header {
     display: flex;
     justify-content: space-between;
   }
@@ -181,9 +187,6 @@ input[type="date"] {
   padding: 30px;
   padding: 0 auto;
   border-radius: 20px;
-  &:nth-child(n+2) {
-    margin-bottom: 80px;
-  }
   ul{
     display: flex;
     flex-wrap: wrap;
@@ -198,19 +201,26 @@ input[type="date"] {
     &:nth-child(-n+5) {
       margin-top: 0;
     }
-    .button:nth-child(n+2) {
-      margin-top: 10px;
+    .button:nth-child(n+3) {
+      margin-top: 8px;
     }
     p {
       color: #1E9097;
       text-align: center;
-      margin-top: 8px;
     }
   }
 }
 
-.button_collection .green {
-  margin-left: 30px;
+.button_collection {
+  p {
+    margin-left: 10px;
+    line-height: 48px;
+    display: inline-block;
+    color: black;
+  }
+  .green {
+    margin-left: 10px;
+  }
 }
 
 /* モーダル ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
@@ -485,11 +495,11 @@ input[name="tab_item"] {
 
 .button{
   width: 200px;
-  height: 60px;
+  height: 40px;
   text-align: center;
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
   font-size: 24px;
-  line-height:60px;
+  line-height:40px;
   border-radius: 20px;
   &:hover{
     box-shadow: none;
