@@ -92,7 +92,7 @@ $(document).on('click', '.md-btn', function(e) {
         data: {
           "type": 'member_select_work',
           "date": $("#date").val(),
-          "work_id" : $(this).val()
+          "work_id" : $(this).attr("value")
         },
         success: function(data) {
           if (!data["err"]){
@@ -179,62 +179,62 @@ $(document).on('click','input[name="area[]"]' , function() {
   }
 });
 
-$(document).on('click', function(e) {
-  if($(e.target).closest('.select-member-button').length && $(e.target).closest('.select-member').attr('id') != $('#checkboxes').closest('.select-member').attr('id')){
-    let off = "#"+$('#checkboxes').closest('.select-member').attr('id');
-    let add = "#"+$(e.target).closest('.select-member').attr('id');
-    let button_value = $(e.target).closest('.select-member').find('.select-member-button').attr('value');
-    if($('#checkboxes').length){
-      $(off).find('#checkboxes').fadeOut().queue(function() {
-        this.remove();
-      });
-    }
-    $.ajax({
-      type: "POST",
-      url: "../classes/ajax.php",
-      datatype: "json",
-      data: {
-        "type": 'work_select_list',
-        "history_id": button_value
-      },
-      success: function(data) {
-        if (data == null){
-          $(add).append(`
-            <div id="checkboxes">作業内容が登録されていません</div>
-          `)
-          $(add).find('#checkboxes').fadeIn();
-        }else if(data["err"] == null){
-          let list = [];
-          $.each(data, function(work_key, work_value){
-            list.push(`
-              <div class="select-work" value="${work_value.id}">${work_value.name}</div>
-            `);
-          });
-          $(add).append(`
-            <div id="checkboxes">
-              <div id="check-form">
-                <span>移動先を選んでください</span>
-                <br>
-                <button><label for="check-copy"><input type="checkbox" name="check-copy" id="check-copy" />複製して追加</label></button>
-                <button class='state-btn' data-target='remove-member' value=${button_value}>削除</button>
-              </div>
-              ${list.join("")}
-            </div>
-          `)
-          $(add).find('#checkboxes').fadeIn();
-        }else{
-          $('#allocation-form').html(`<p>${data["err"]}</p>`);
-        }
-      },
-      error: function(data) {
-        $('#allocation-form').html("<p>通信エラー</p>");
-        console.log("通信失敗");
-        console.log(data);
-      }
-    });
-	}else if($('#checkboxes').length && !($(e.target).closest('#check-form').attr('id') == "check-form")){
-    $('#checkboxes').fadeOut().queue(function() {
-      this.remove();
-    });
-	}
-});
+// $(document).on('click', function(e) {
+//   if($(e.target).closest('.select-member-button').length && $(e.target).closest('.select-member').attr('id') != $('#checkboxes').closest('.select-member').attr('id')){
+//     let off = "#"+$('#checkboxes').closest('.select-member').attr('id');
+//     let add = "#"+$(e.target).closest('.select-member').attr('id');
+//     let button_value = $(e.target).closest('.select-member').find('.select-member-button').attr('value');
+//     if($('#checkboxes').length){
+//       $(off).find('#checkboxes').fadeOut().queue(function() {
+//         this.remove();
+//       });
+//     }
+//     $.ajax({
+//       type: "POST",
+//       url: "../classes/ajax.php",
+//       datatype: "json",
+//       data: {
+//         "type": 'work_select_list',
+//         "history_id": button_value
+//       },
+//       success: function(data) {
+//         if (data == null){
+//           $(add).append(`
+//             <div id="checkboxes">作業内容が登録されていません</div>
+//           `)
+//           $(add).find('#checkboxes').fadeIn();
+//         }else if(data["err"] == null){
+//           let list = [];
+//           $.each(data, function(work_key, work_value){
+//             list.push(`
+//               <div class="select-work" value="${work_value.id}">${work_value.name}</div>
+//             `);
+//           });
+//           $(add).append(`
+//             <div id="checkboxes">
+//               <div id="check-form">
+//                 <span>移動先を選んでください</span>
+//                 <br>
+//                 <button><label for="check-copy"><input type="checkbox" name="check-copy" id="check-copy" />複製して追加</label></button>
+//                 <button class='state-btn' data-target='remove-member' value=${button_value}>削除</button>
+//               </div>
+//               ${list.join("")}
+//             </div>
+//           `)
+//           $(add).find('#checkboxes').fadeIn();
+//         }else{
+//           $('#allocation-form').html(`<p>${data["err"]}</p>`);
+//         }
+//       },
+//       error: function(data) {
+//         $('#allocation-form').html("<p>通信エラー</p>");
+//         console.log("通信失敗");
+//         console.log(data);
+//       }
+//     });
+// 	}else if($('#checkboxes').length && !($(e.target).closest('#check-form').attr('id') == "check-form")){
+//     $('#checkboxes').fadeOut().queue(function() {
+//       this.remove();
+//     });
+// 	}
+// });
