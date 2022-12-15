@@ -21,7 +21,7 @@
           <a href="#">割り当て</a>
         </li>
         <li>
-          <a href="#">登録・編集</a>
+          <p href="#">登録・編集</p>
         </li>
         <li>
           <a href="#">オプション</a>
@@ -32,7 +32,22 @@
       </ul>
     </div>
     <div class="main">
-      <!-- ↓ここからコーディングしてください -->
+      <div class="tabs">
+        <input id="all" type="radio" name="tab_item" checked>
+        <label class="tab_item" for="all">メンバー</label>
+        <input id="programming" type="radio" name="tab_item">
+        <label class="tab_item" for="programming">作業</label>
+        
+        <div class="tab_content" id="all_content">
+          <!-- ↓ここからコーディングしてください -->
+          <p>メンバー</p>
+        </div>
+        <div class="tab_content" id="programming_content">
+          <!-- ↓ここからコーディングしてください -->
+          <p>作業</p>
+        </div>
+        
+      </div>
     </div>
   </main>
 </body>

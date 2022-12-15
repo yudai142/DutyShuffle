@@ -614,6 +614,151 @@ try{
       }
       echo json_encode("member");
       exit;
+    case 'option_list':
+      $sql = "SELECT id ,family_name, given_name, archive FROM member ORDER BY member.kana_name ASC";
+      $sql2 = "SELECT id ,name, archive FROM work";
+      $sql3 = "SELECT id ,member_id, work_id, status FROM member_option";
+
+      if (!($stmt = dbc()->query($sql))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+
+      if (!($stmt2 = dbc()->query($sql2))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+
+      if (!($stmt3 = dbc()->query($sql3))) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+
+      $productList[] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $productList[] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+      $productList[] = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+      echo json_encode($productList);
+      exit;
+    case 'add-member_option':
+      if(is_numeric($_REQUEST["work_id"]) && is_numeric($_REQUEST["member_id"]) && is_numeric($_REQUEST["status"])){
+        $sql = "INSERT INTO member_option(work_id, member_id, status) VALUES(?, ?, ?)";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["work_id"], $_REQUEST["member_id"], $_REQUEST["status"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode("option");
+      exit;
+    case 'confirm-member_option':
+      if(is_numeric($_REQUEST["option_id"])){
+        $sql = "SELECT member_option.id, family_name, given_name, name, status FROM member_option, work, member WHERE member_option.id=? AND member.id=member_option.member_id AND work.id=member_option.work_id";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["option_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+      exit;
+    case 'delete-member_option':
+      if(is_numeric($_REQUEST["option_id"])){
+        $sql = "DELETE FROM member_option WHERE id=?";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["option_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode("option");
+      exit;
+    case "update-member_option":
+      if(is_numeric($_REQUEST["work_id"]) && is_numeric($_REQUEST["member_id"]) && is_numeric($_REQUEST["option_id"])){
+        $sql = "UPDATE member_option SET work_id=?, member_id=?  WHERE id=?";
+        $stmt = dbc()->prepare($sql);
+        if (!($stmt->execute(array($_REQUEST["work_id"], $_REQUEST["member_id"], $_REQUEST["option_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $sql2 = "SELECT member_option.id, family_name, given_name, name, status FROM member_option, work, member WHERE member_option.id=? AND member.id=member_option.member_id AND work.id=member_option.work_id";
+        $stmt2 = dbc()->prepare($sql2);
+        if (!($stmt2->execute(array($_REQUEST["option_id"])))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $update = ($stmt2->fetch(PDO::FETCH_ASSOC));
+        $status = ($update["status"] == 0)?"固定":"除外";
+        if($_REQUEST["change_tag"] == "works"){
+          $update_message = $update["family_name"].$update["given_name"]."さんの".$status."作業を".$update["name"]."に変更しました";
+        }else{
+          $update_message = $update["name"]."の".$status."対象を".$update["family_name"].$update["given_name"]."さんに変更しました";
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode($update_message);
+      exit;
+    case 'shuffle':
+      if(isset($_REQUEST["date"])){
+        $date = date('Y-m-d', strtotime($_REQUEST['date']));
+        $sql = "SELECT id, multiple FROM work WHERE archive=0";
+        $sql2 = "SELECT id, member_id, work_id FROM history WHERE date=?";
+        
+        if (!($stmt = dbc()->query($sql))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $stmt2 = dbc()->prepare($sql2);
+        if (!($stmt2->execute(array($date)))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $work_list = [];
+        foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+          for($i = 0; $i < $row["multiple"]; $i++){
+            $work_list[] = $row["id"];
+          };
+        }
+
+        $history_list = [];
+        foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
+          $history_list[] = $row["id"];
+        }
+        shuffle($work_list);
+        shuffle($history_list);
+        $work_stock = $work_list;
+
+        $column_data = "";
+        foreach($history_list as $row) {
+          if(count($work_list) != 0){
+            $column_data = $column_data . "WHEN {$row} THEN {$work_list[0]} ";
+            array_shift($work_list);
+          }else{
+            $column_data = $column_data . "WHEN {$row} THEN null ";
+          }
+        }
+        $ids = implode(",", $history_list);
+        $sql3 = "UPDATE history SET work_id = CASE id ".$column_data." END WHERE id IN (".$ids.")";
+        if (!(dbc()->query($sql3))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+      }else{
+        echo json_encode(array("err" => "入力情報が不正です"));
+        exit;
+      }
+      echo json_encode("shuffle");
+      exit;
   };
 }catch(PDOException $e){
   exit($e->getMessage());

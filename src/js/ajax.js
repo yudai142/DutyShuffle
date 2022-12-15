@@ -14,6 +14,8 @@ $(function($){
     joinWork();
   }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
     allocationView();
+  }else if ( location.pathname.indexOf("/option.php") != -1 ){
+    getOptionList();
   }
   
   function allocationView(){
@@ -51,7 +53,9 @@ $(function($){
             }else{
               arr.push(`
                 <div class="content" style="display:flex;flex-flow: column;">
-                  <div class="work-title"><button class="md-btn" data-target="modal-select" ${style}>${work_value.name}</button></div>
+                  <div class="work-title">
+                    <button class="md-btn" data-target="modal-select" ${style}>${work_value.name}</button>
+                  </div>
                   <ul class="work-member"></ul>
                 </div>
               `);
@@ -192,6 +196,101 @@ $(function($){
       }
     });
     // return false
+  }
+
+  function getOptionList(){
+    $.ajax({
+      url: "../classes/ajax.php",
+      data: {
+        "type": 'option_list'
+      },
+      success: function(data) {
+        if (data == null){
+          $('#option_list').html("")
+        }else if(data['err'] == null){
+          let fixed_list = [];
+          let exclusion_list = [];
+          data[2].unshift({
+            id:null,
+            status: 0
+          },{
+            id:null,
+            status: 1
+          })
+          $.each(data[2], function(option_key, option_value){
+            let work_list = $("<select>", {
+              id: `works_${(option_value.id == null)?"new":option_value.id}`,
+              name: 'works',
+              class: (option_value.id == null)?"add_option":"change_option"
+            })
+            if(option_value.id == null){
+              work_list.append($('<option>')
+              .prop({
+                hidden: true,
+                text: "ーー"
+              }))
+            }
+            for (const val of data[1]) {
+              if(val["archive"] == 0 || val["id"] == option_value.work_id){
+                let selected = (val["id"] == option_value.work_id)?true : false;
+                $(work_list).append($('<option>')
+                .prop({
+                  value: val["id"],
+                  text: val["name"],
+                  selected: selected
+                }))
+              }
+            }
+
+            let member_list = $("<select>", {
+              id: `members_${(option_value.id == null)?"new":option_value.id}`,
+              name: 'members',
+              class: (option_value.id == null)?"add_option":"change_option"
+            })
+            if(option_value.id == null){
+              member_list.append($('<option>')
+              .prop({
+                hidden: true,
+                text: "ーー"
+              }))
+            }
+            for (const val of data[0]) {
+              if(val["archive"] == 0 || val["id"] == option_value.member_id){
+                let selected = (val["id"] == option_value.member_id)?true : false;
+                $(member_list).append($('<option>')
+                .prop({
+                  value: val["id"],
+                  text: `${val["family_name"]}　${val["given_name"]}`,
+                  selected: selected
+                }))
+              }
+            }
+            let option_list = $("<li>", {style: "display:flex;"})
+              .append($("<form>", {onsubmit: "return false;"})
+              .append(work_list, member_list, $("<button>",{
+                text:(option_value.id == null)?"追加":"解除", 
+                value: (option_value.id == null)?option_value.status:option_value.id,
+                class: "state-btn",
+                "data-target": (option_value.id == null)?"add-member_option":"delete-member_option"
+              })))
+            if(option_value.status == 0){
+              fixed_list.push(option_list);
+            }else{
+              exclusion_list.push(option_list);
+            }
+          });
+          $('#fixed_list').html(fixed_list)
+          $('#exclusion_list').html(exclusion_list)
+        }else{
+          $('#option_list').append(`<p>${data["err"]}</p>`);
+        }
+      },
+      error: function(){
+        $('#option_list').append("<p>通信エラー</p>");
+        console.log("通信失敗");
+        console.log(data);
+      }
+    });
   }
 
   $('#submit_member').on('click',function(){
@@ -537,8 +636,152 @@ $(function($){
           }
         });
       }
-
+    }else if ($(this).attr("data-target") == "shuffle_btn") {
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        datatype: "json",
+        data: {
+          "type": "shuffle",
+          "date": $("#date").val()
+        },
+        success: function(data) {
+          if (data == null || !data["err"]){
+            if( location.pathname.indexOf("/top.php") != -1 ){
+              joinMember();
+            }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
+              // console.log(data)
+              allocationView();
+            }
+          }else{
+            $('#select_result').html(`<p>${data["err"]}</p>`);
+          }
+        },
+        error: function(data) {
+          $('#select_result').html("<p>入力エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
+        }
+      });
+    }else if ($(this).attr("data-target") == "add-member_option") {
+      let err = [];
+      if (isNaN($(this).closest('form').find('#works_new').val())) err.push("作業");
+      if (isNaN($(this).closest('form').find('#members_new').val())) err.push("メンバー");
+      if (err.length) {
+        console.log(`${err.join("と")}が入力されていません`)
+        $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
+      }else{
+        $.ajax({
+          type: "POST",
+          url: "../classes/ajax.php",
+          datatype: "json",
+          data: {
+            "type": "add-member_option",
+            "member_id": $(this).closest('form').find('#members_new').val(),
+            "work_id": $(this).closest('form').find('#works_new').val(),
+            "status": $(this).val()
+          },
+          success: function(data) {
+            if (data == null || !data["err"]){
+              getOptionList();
+            }else{
+              $('#select_result').html(`<p>${data["err"]}</p>`);
+            }
+          },
+          error: function(data) {
+            $('#select_result').html("<p>入力エラー</p>");
+            console.log("通信失敗");
+            console.log(data);
+          }
+        })
+      }
+    }else if ($(this).attr("data-target") == "delete-member_option") {
+      let err = [];
+      if (err.length) {
+        console.log(`${err.join("と")}が入力されていません`)
+        $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
+      }else{
+        $.ajax({
+          type: "POST",
+          url: "../classes/ajax.php",
+          datatype: "json",
+          data: {
+            "type": "confirm-member_option",
+            "option_id": $(this).val()
+          },
+          success: function(data) {
+            if (data == null || !data["err"]){
+              let status = (data[0].status == 0)?"固定":"除外";
+              if (confirm(`${data[0].family_name}${data[0].given_name}さんの${data[0].name}の${status}設定を解除します。よろしいですか？`)) {
+                $.ajax({
+                  type: "POST",
+                  url: "../classes/ajax.php",
+                  datatype: "json",
+                  data: {
+                    "type": "delete-member_option",
+                    "option_id": data[0].id
+                  },
+                  success: function(data) {
+                    if (data == null || !data["err"]){
+                      getOptionList();
+                    }else{
+                      $('#select_result').html(`<p>${data["err"]}</p>`);
+                    }
+                  },
+                  error: function(data) {
+                    $('#select_result').html("<p>入力エラー</p>");
+                    console.log("通信失敗");
+                    console.log(data);
+                  }
+                })
+              }
+            }else{
+              $('#select_result').html(`<p>${data["err"]}</p>`);
+            }
+          },
+          error: function(data) {
+            $('#select_result').html("<p>情報の取得に失敗しました</p>");
+            console.log("通信失敗");
+            console.log(data);
+          }
+        })
+      }
     }
   })
 
+  $(document).on('change', '.change_option', function(){
+    let err = [];
+    if (isNaN($(this).closest('form').find('select[name="works"]').val())) err.push("作業");
+    if (isNaN($(this).closest('form').find('select[name="members"]').val())) err.push("メンバー");
+    if (err.length) {
+      console.log(`${err.join("と")}が入力されていません`)
+      $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
+    }else{
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        datatype: "json",
+        data: {
+          "type": "update-member_option",
+          "member_id": $(this).closest('form').find('select[name="members"]').val(),
+          "work_id": $(this).closest('form').find('select[name="works"]').val(),
+          "option_id": $(this).closest('form').find('button').val(),
+          "change_tag": $(this).attr("name"),
+        },
+        success: function(data) {
+          if (data == null || !data["err"]){
+            console.log(data)
+            getOptionList();
+          }else{
+            $('#select_result').html(`<p>${data["err"]}</p>`);
+          }
+        },
+        error: function(data) {
+          $('#select_result').html("<p>入力エラー</p>");
+          console.log("通信失敗");
+          console.log(data);
+        }
+      })
+    }
+  })
 });
