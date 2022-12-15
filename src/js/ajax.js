@@ -300,6 +300,7 @@ $(function($){
           success: function(data) {
             if (!data["err"]){
               $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${data[0].archive}を更新しました。</p>`);
+              $('.modal-container').fadeOut();
               getAllMember();
             }else{
               $('#member_result').html(`<p>${data["err"]}</p>`);
@@ -368,6 +369,7 @@ $(function($){
           success: function(data) {
             if (!data["err"]){
               $('#work_result').html(`<p>${data[0].name}が${data[0].multiple}人の${data[0].archive}のデータを更新しました。</p>`);
+              $('.modal-container').fadeOut();
               getAllWork();
             }else{
               $('#work_result').html(`<p>${data["err"]}</p>`);
