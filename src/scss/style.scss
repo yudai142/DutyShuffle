@@ -375,7 +375,8 @@ input[type="date"] {
   &:hover{
     background-color: #55B01D;
     box-shadow: none;
-    padding-top: 3px;
+    position: relative;
+    top: 1px;
     cursor: pointer;
   }
   &:checked {
@@ -403,6 +404,13 @@ input[type="date"] {
 .member{
   color: #fff;
   background-color: #839EFF;
+  &:hover{
+    background-color: #4164DF;
+    box-shadow: none;
+    position: relative;
+    top: 1px;
+    cursor: pointer;
+  }
   a {
     color: #fff;
   }
@@ -426,12 +434,6 @@ input[type="date"] {
       }
     }
   }
-  &:hover{
-    background-color: #4164DF;
-    box-shadow: none;
-    padding-top: 3px;
-    cursor: pointer;
-  }
 }
 
 .off{
@@ -443,7 +445,8 @@ input[type="date"] {
   &:hover{
     background-color: #C9C9C9;
     box-shadow: none;
-    padding-top: 3px;
+    position: relative;
+    top: 1px;
     cursor: pointer;
   }
   &:checked {

@@ -437,7 +437,8 @@ input[type=date]::-webkit-calendar-picker-indicator {
   background-color: #55B01D;
   -webkit-box-shadow: none;
           box-shadow: none;
-  padding-top: 3px;
+  position: relative;
+  top: 1px;
   cursor: pointer;
 }
 .work:checked {
@@ -467,6 +468,14 @@ input[type=date]::-webkit-calendar-picker-indicator {
   color: #fff;
   background-color: #839EFF;
 }
+.member:hover {
+  background-color: #4164DF;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  position: relative;
+  top: 1px;
+  cursor: pointer;
+}
 .member a {
   color: #fff;
 }
@@ -492,13 +501,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
 .member:checked:hover a {
   color: #fff;
 }
-.member:hover {
-  background-color: #4164DF;
-  -webkit-box-shadow: none;
-          box-shadow: none;
-  padding-top: 3px;
-  cursor: pointer;
-}
 
 .off {
   color: #fff;
@@ -511,7 +513,8 @@ input[type=date]::-webkit-calendar-picker-indicator {
   background-color: #C9C9C9;
   -webkit-box-shadow: none;
           box-shadow: none;
-  padding-top: 3px;
+  position: relative;
+  top: 1px;
   cursor: pointer;
 }
 .off:checked {
