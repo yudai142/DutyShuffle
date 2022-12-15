@@ -1,8 +1,39 @@
-.tab_content_selects {
+* {
+  box-sizing: border-box;
+  font-family: "Inter";
+}
+
+.tab_content {
+  padding-left: 88px;
+}
+
+tab_content_selects {
   padding: 30px 0;
 }
 
 .tab_content_description {
   height: calc(100vh - 120px);
   overflow: auto;
+}
+
+.btns { 
+  padding-right: 52px;
+  padding-top: 37px;
+}
+
+.btn {
+  margin-left:  12px;
+}
+
+.green1 {
+  background-color: #1E777D;
+}
+
+.w-color {
+  background-color: #99E16D;
+}
+
+.button-group {
+  padding-right: 72px;
+  padding-bottom: 39px;
 }

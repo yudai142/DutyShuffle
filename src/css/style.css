@@ -599,6 +599,8 @@ input[name=tab_item] {
   color: #fff;
 }
 
+/* 都留 */
+
 .btns {
   display: -webkit-box;
   display: -webkit-flex;
@@ -637,4 +639,19 @@ input[name=tab_item] {
 
 .yello {
   background-color: #FFC738;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.b-select {
+  margin-top: 40px;
+  margin-left: 40px; 
+  width: calc(25% - 40px * 3 / 4);
+}
+
+.b-select:nth-child(4n+1) {
+  margin-left: 0px;
 }
