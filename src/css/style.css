@@ -675,6 +675,26 @@ input[name=tab_item] {
   color: #fff;
 }
 
+/* 都留 */
+
+.container {
+  width: 100%;
+  max-width: 1026px;
+  margin: 66px auto;
+  padding: 20px 80px;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: #D2DAF6;
+}
+
+.title {
+  font-size: 48px;
+  text-align: center;
+  line-height: 58px;
+  color: #FFFFFF;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+}
+
 .btns {
   display: -webkit-box;
   display: -webkit-flex;
@@ -717,4 +737,19 @@ input[name=tab_item] {
 
 .yello {
   background-color: #FFC738;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.b-select {
+  margin-top: 40px;
+  margin-left: 40px; 
+  width: calc(25% - 40px * 3 / 4);
+}
+
+.b-select:nth-child(4n+1) {
+  margin-left: 0px;
 }
