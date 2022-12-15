@@ -80,7 +80,7 @@ $(function($){
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
-            let work_name = (value.work_name != null)?`<span>${value.work_name}を担当しています</span>`:"";
+            let work_name = (value.work_name != null)?`<p style="color:green;text-aline:center;">${value.work_name}</p>`:"";
             arr.push(`<li id=join_member_${value.history_id}><div class="button member state-btn" data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</div>${work_name}</li>`);
           });
           $('#join_member').html(arr);

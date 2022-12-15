@@ -99,7 +99,7 @@ $(document).on('click', '.md-btn', function(e) {
             let arr = [];
             $.each(data[1], function(key, value){
               checked = (value.work_name == data[0]["name"]) ? "checked" : ""
-              style = (value.work_name && value.work_name != data[0]["name"])?"style=color:green;":"";
+              style = (value.work_name && value.work_name != data[0]["name"])?"style=color:orange;":"";
               // work_name = (value.work_name && value.work_name != data[0]["name"])?`<span style=color:orange;>${value.work_name}を担当しています</span>`:"";
               arr.push(`<label class="button member b-select" id=history_${value.history_id}><input type='checkbox' name="area[]" value='${value.history_id}'${checked}><span ${style}>${value.family_name}　${value.given_name}</span></label>`);
             });
@@ -122,9 +122,7 @@ $(document).on('click', '.md-btn', function(e) {
     }else{
       $(modal).find('h1').text("参加メンバー選択");
       $(modal).find('#submit_select').text("確定");
-      $(modal).find('#bool-check').html(`
-      <label class="btn yellow"><input id="checkAll" type="checkbox" value="">全部選択</label>
-      `);
+      $(modal).find('#bool-check').html(`<label class="btn yellow"><input id="checkAll" type="checkbox" value="">全部選択</label>`);
       $(modal).find('#submit_select').attr("data-type", "");
       $(modal).find('#select_result p').remove();
       $.ajax({
