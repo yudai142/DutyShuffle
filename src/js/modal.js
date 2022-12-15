@@ -3,7 +3,7 @@ $(document).on('click', '.md-btn', function(e) {
   const target = $(this).attr('data-target');
   const modal = document.getElementById(target);
   if(target == "modal-work"){
-    if($(this).val()){
+    if($(this).attr("value")){
       $(modal).find('h1').text("作業編集");
       $(modal).find('#submit_work').text("変更");
       $.ajax({
@@ -11,7 +11,7 @@ $(document).on('click', '.md-btn', function(e) {
         datatype: "json",
         data: {
           "type": 'work_edit',
-          "id" : $(this).val()
+          "id" : $(this).attr("value")
         },
         success: function(data) {
           if (!data["err"]){
@@ -41,7 +41,7 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('#submit_work').text("追加");
     }
   }else if(target == "modal-member"){
-    if($(this).val()){
+    if($(this).attr("value")){
       $(modal).find('h1').text("メンバー編集");
       $(modal).find('#submit_member').text("変更");
       $.ajax({
@@ -49,7 +49,7 @@ $(document).on('click', '.md-btn', function(e) {
         datatype: "json",
         data: {
           "type": 'member_edit',
-          "id" : $(this).val()
+          "id" : $(this).attr("value")
         },
         success: function(data) {
           if (!data["err"]){

@@ -355,10 +355,9 @@ input[name=tab_item] {
 .tab_content {
   display: none;
   clear: both;
-  overflow: hidden;
   height: calc(100vh - 130px);
   background-color: #EEFFF9;
-  /* overflow: auto; */
+  overflow: auto;
 }
 
 /*選択されているタブのコンテンツのみを表示*/

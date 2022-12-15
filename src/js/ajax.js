@@ -136,7 +136,7 @@ $(function($){
         }else if(data['err'] == null){
           let arr = []
           $.each(data, function(key, value){
-            arr.push(`<li id=member_${value.id}><button class='md-btn' data-target='modal-member' value=${value.id}>${value.family_name}　${value.given_name}</button><li>`);
+            arr.push(`<div id=member_${value.id} class="button member b-select md-btn" data-target='modal-member' value=${value.id}>${value.family_name}　${value.given_name}</div>`);
             $('#member_show_result').html(arr);
           });
         }else{
@@ -165,7 +165,7 @@ $(function($){
         }else if(data['err'] == null){
           let arr = []
           $.each(data, function(key, value){
-              arr.push(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
+              arr.push(`<div id=work_${value.id} class="button work b-select md-btn" data-target='modal-work' value=${value.id}>${value.name}</div>`);
           });
           $('#work_show_result').html(arr)
         }else{
