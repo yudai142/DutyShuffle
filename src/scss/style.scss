@@ -1,0 +1,570 @@
+main {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 70px);
+}
+
+.main {
+  background-color: #EEFAF6;
+  flex: 1;
+}
+
+.sidebar {
+  width: 100%;
+  max-width: 198px;
+  background: #B2C3FF;
+}
+
+header {
+  color: #fff;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  font-weight: 700;
+  font-size: 48px;
+  background: #B2C3FF;
+  font-size: 36px;
+  text-align: center;
+  line-height: 70px;
+  user-select: none;
+  height: 70px;
+}
+
+.sidebar ul {
+  a {
+    display: block;
+    line-height: 70px;
+    font-size: 24px;
+    color: #fff;
+    text-align: center;
+    transition: 0.4s;
+    background: #B2C3FF;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    &:hover{
+      // padding-left: 50px;
+      text-decoration: none;
+      background: #7993D6;
+      box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+  }
+  p {
+    display: block;
+    line-height: 70px;
+    font-size: 24px;
+    color: #7993D6;
+    text-align: center;
+    transition: 0.4s;
+    background: #EEFFF9;
+  }
+
+  li {
+    height: 70px;
+    &.is-active {
+      background: #EEFFF9;
+    }
+  }
+}
+
+
+/* date-form */
+
+.date-form label {
+  position: relative;
+  width: 100%;
+  max-width: 415px;
+  margin-bottom: 0px !important;
+}
+
+input[type="date"] {
+  padding: 0 10px;
+  width: 100%;
+  max-width: 313px;
+  height: 41px;
+  border: 0;
+  background: transparent;
+  box-sizing: border-box;
+  font-size: 35px;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+.date-form label::before {
+  position: absolute;
+  content: "";
+  top: -3px;
+  right: 57px;
+  width: 50px;
+  height: 50px;
+  background-color: #06c;
+  background-image: url("../image/icon_calendar.png");
+  background-repeat: no-repeat;
+
+  /* 画像の繰り返しを指定  */
+  background-position: center center;
+
+  /* 画像の表示位置を指定  */
+  background-size: contain;
+
+  /* 画像のサイズを指定    */
+  border-radius: 10px;
+}
+
+input[type="date"] {
+  &::-webkit-inner-spin-button, &::-webkit-clear-button {
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 57px;
+    top: -3px;
+    padding: 0;
+    width: 50px;
+    height: 50px;
+
+    /* background: rgba(255, 0, 0, 0.5); // 一旦背景色を付けて、見やすくします */
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+  }
+}
+
+.date-form {
+  height: 93px;
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  text-align: center;
+  border-bottom: 1px solid black;
+}
+
+.icon-left a, .icon-right a {
+  color: #06c;
+
+  &:hover {
+    color: #337ab7;
+  }
+}
+
+/* モーダル ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
+
+/*モーダル本体の指定 + モーダル外側の背景の指定*/
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  text-align: center;
+  background: rgba(0, 0, 0, 50%);
+
+  /* padding: 40px 20px; */
+  overflow: auto;
+
+  /* opacity: 0; */
+  display: none;
+  transition: .3s;
+  box-sizing: border-box;
+  padding-top: 66px;
+
+  &:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+
+    /* height: 100%; */
+  }
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    transition: 0.4s;
+  }
+}
+
+.modal-body {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  width: 100%;
+  max-width: 1026px;
+  height: 334px;
+
+  /* margin: 66px auto; */
+}
+
+/*モーダルを閉じるボタンの指定*/
+
+.modal-close {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: -40px;
+  right: -40px;
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/*モーダル内のコンテンツの指定*/
+
+.modal-content {
+  background: #fff;
+  padding: 30px 60px;
+  border: 1px solid black;
+  border-radius: 10px;
+  height: 334px;
+}
+
+.add_products {
+  overflow-y: scroll;
+  height: 257px;
+}
+/* 切り替えタブ ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
+/*タブ切り替え全体のスタイル*/
+
+.tabs {
+  /* margin-top: 50px;
+  padding-bottom: 40px; */
+  /* width: 700px; */
+  background-color: #fff;
+  // box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;
+  height: calc(100vh - 70px);
+}
+
+/*タブのスタイル*/
+
+.tab_item {
+  width: calc(100%/2);
+  height: 60px;
+
+  /* border-bottom: 3px solid #5ab4bd; */
+  background-color: #84DBBE;
+  line-height: 60px;
+  font-size: 24px;
+  text-align: center;
+  color: #fff;
+  display: block;
+  float: left;
+  text-align: center;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  // box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  // filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+/*ラジオボタンを全て消す*/
+
+input[name="tab_item"] {
+  display: none;
+}
+
+/*タブ切り替えの中身のスタイル*/
+
+.tab_content {
+  display: none;
+  clear: both;
+  overflow: hidden;
+  height: calc(100vh - 130px);
+  background-color: #EEFFF9;
+  /* overflow: auto; */
+}
+
+/*選択されているタブのコンテンツのみを表示*/
+
+#all:checked ~ #all_content, #programming:checked ~ #programming_content, #design:checked ~ #design_content {
+  display: block;
+}
+
+/*選択されているタブのスタイルを変える*/
+
+.tabs input:checked + .tab_item {
+  background-color: #EEFFF9;
+  color: #808080;
+}
+.tabs input:not(:checked) + .tab_item {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+
+/* サブ ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
+
+.blue-button {
+  align-items: center;
+  background-color: #0A66C2;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 24px;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+
+  &:hover {
+    color: #fff;
+    background-color: #16437E;
+    text-decoration: none;
+  }
+}
+
+.red-button {
+  align-items: center;
+  background-color: #e74c3c;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+
+  &:hover {
+    color: #fff;
+    background-color: #ff5341;
+  }
+}
+
+.gray-button {
+  align-items: center;
+  background-color: #4c586f;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+
+  &:hover {
+    color: #fff;
+    opacity: .8;
+  }
+}
+
+.login-button {
+  position: absolute;
+  top: -21px;
+  right: -236px;
+}
+
+.logout-button {
+  position: absolute;
+  top: -5px;
+  right: 0;
+}
+
+.list-button, .top-button {
+  position: absolute;
+  top: -5px;
+  right: 130px;
+}
+
+/* 共通ボタン ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
+
+.button{
+  width: 200px;
+  height: 60px;
+  text-align: center;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+  font-size: 24px;
+  line-height:60px;
+  border-radius: 20px;
+  &:hover{
+    box-shadow: none;
+    position: relative;
+    top: 1px;
+    cursor: pointer;
+  }
+}
+
+.work{
+  color: #fff;
+  background-color: #99E16D;
+  a {
+    color: #fff;
+  }
+  &:hover{
+    background-color: #55B01D;
+    box-shadow: none;
+    padding-top: 3px;
+    cursor: pointer;
+  }
+  &:checked {
+    background-color: #fff;
+    color: #55B01D;
+    box-shadow: none;
+    border: 3px solid #55B01D;
+    a {
+      color: #55B01D;
+    }
+    &:hover{
+      background-color: #55B01D;
+      color: #fff;
+      box-shadow: none;
+      cursor: pointer;
+      padding-top: 0;
+      border: 3px solid #fff;
+      a {
+        color: #fff;
+      }
+    }
+  }
+}
+
+.member{
+  color: #fff;
+  background-color: #839EFF;
+  a {
+    color: #fff;
+  }
+  &:checked {
+    background-color: #fff;
+    color: #4164DF;
+    box-shadow: none;
+    border: 3px solid #4164DF;
+    a {
+      color: #4164DF;
+    }
+    &:hover{
+      background-color: #4164DF;
+      color: #fff;
+      box-shadow: none;
+      cursor: pointer;
+      padding-top: 0;
+      border: 3px solid #fff;
+      a {
+        color: #fff;
+      }
+    }
+  }
+  &:hover{
+    background-color: #4164DF;
+    box-shadow: none;
+    padding-top: 3px;
+    cursor: pointer;
+  }
+}
+
+.off{
+  color: #fff;
+  background-color: #979797;
+  a {
+    color: #fff;
+  }
+  &:hover{
+    background-color: #C9C9C9;
+    box-shadow: none;
+    padding-top: 3px;
+    cursor: pointer;
+  }
+  &:checked {
+    background-color: #fff;
+    color: #979797;
+    box-shadow: none;
+    border: 3px solid #979797;
+    a {
+      color: #979797;
+    }
+    &:hover{
+      background-color: #979797;
+      color: #fff;
+      box-shadow: none;
+      cursor: pointer;
+      padding-top: 0;
+      border: 3px solid #fff;
+      a {
+        color: #fff;
+      }
+    }
+  }
+}
+
+.btns {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 3.5px 19px;
+  height: 40px;
+  border-radius: 60px;
+  color: #fff;
+  font-size: 24px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+  &:hover {
+    box-shadow: none;
+    position: relative;
+    top: 2px;
+    cursor: pointer;
+  }
+}
+
+.orange {
+  background-color: #FE975D;
+}
+
+.green {
+  background-color: #1E9097;
+}
+
+.yello {
+  background-color: #FFC738;
+}

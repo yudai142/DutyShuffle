@@ -1,6 +1,5 @@
 * {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   font-family: "Inter";
 }
 
@@ -24,28 +23,18 @@ h1 {
 }
 
 .form-lists {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   padding-top: 40px;
 }
 
 .form-list {
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-flow: column;
-      -ms-flex-flow: column;
-          flex-flow: column;
+  flex-flow: column;
   width: 50%;
 }
 
 .form {
   padding-bottom: 36px;
   margin-right: 30px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
 }
 
@@ -79,9 +68,10 @@ h1 {
 
 .form-list:last-of-type .form {
   margin-right: 0px;
-}
-.form-list:last-of-type .form:last-of-type {
-  padding-bottom: 23px;
+
+  &:last-of-type {
+    padding-bottom: 23px;
+  }
 }
 
 .btn {

@@ -8,6 +8,7 @@
     TODO will need to remove settings on HTML since we can't namespace it.
     TODO with the prefix, should I group by selector or property for weight savings?
 */
+
 html {
   color: #000;
   background: #FFF;
@@ -20,6 +21,7 @@ html {
   TODO test putting a class on HEAD.
       - Fails on FF.
 */
+
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {
   margin: 0;
   padding: 0;
@@ -37,6 +39,7 @@ fieldset, img {
 /*
   TODO think about hanlding inheritence differently, maybe letting IE6 fail a bit...
 */
+
 address, caption, cite, code, dfn, em, strong, th, var {
   font-style: normal;
   font-weight: normal;
@@ -59,8 +62,11 @@ h6 {
   font-size:100%;
   font-weight:normal;
 } */
-q:before, q:after {
-  content: "";
+
+q {
+  &:before, &:after {
+    content: '';
+  }
 }
 
 abbr, acronym {
@@ -69,6 +75,7 @@ abbr, acronym {
 }
 
 /* to preserve line-height and selector appearance */
+
 sup {
   vertical-align: text-top;
 }
@@ -84,23 +91,27 @@ input, textarea, select {
 }
 
 /*to enable resizing for IE*/
+
 input, textarea, select {
   *font-size: 100%;
 }
 
 /*because legend doesn't inherit in IE */
+
 legend {
   color: #000;
 }
 
 /* YUI CSS Detection Stamp */
+
 #yui3-css-stamp.cssreset {
   display: none;
 }
 
 a {
   text-decoration: none;
-}
-a:hover {
-  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
 }

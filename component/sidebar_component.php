@@ -1,22 +1,20 @@
-<div class="sidebar">
-  <header></header>
-  <ul>
-    <li>
-      <a href="#">トップ</a>
-    </li>
-    <li>
-      <a href="#">割り当て</a>
-    </li>
-    <li>
-      <a href="#">登録・編集</a>
-    </li>
-    <li>
-      <a href="#">オプション</a>
-    </li>
-    <li>
-      <a href="#">ダウンロード</a>
-    </li>
-  </ul>
-</div>
+<header><?php echo $title; ?></header>
 <main>
-  <header><?php echo $title; ?></header>
+  <div class="sidebar">
+    <ul>
+      <li>
+        <a href="./top.php">トップ</a>
+      </li>
+      <li>
+        <a href="./allocation.php">割り当て</a>
+      </li>
+      <li>
+        <a href="./create-edit.php">登録・編集</a>
+      </li>
+      <li>
+        <a href="./option.php">オプション</a>
+      </li>
+    </ul>
+  </div>
+  <div class="main">
+  
