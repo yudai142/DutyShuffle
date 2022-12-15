@@ -66,13 +66,13 @@ header {
   text-align: center;
   -webkit-transition: 0.4s;
   transition: 0.4s;
-  background: #EEFAF6;
+  background: #EEFFF9;
 }
 .sidebar ul li {
   height: 70px;
 }
 .sidebar ul li.is-active {
-  background: #EEFAF6;
+  background: #EEFFF9;
 }
 
 /* date-form */
@@ -250,8 +250,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
   padding-bottom: 40px; */
   /* width: 700px; */
   background-color: #fff;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   margin: 0 auto;
   height: calc(100vh - 70px);
 }
@@ -284,7 +282,7 @@ input[name=tab_item] {
   display: none;
   clear: both;
   overflow: hidden;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 130px);
   background-color: #EEFFF9;
   /* overflow: auto; */
 }
@@ -296,8 +294,8 @@ input[name=tab_item] {
 
 /*選択されているタブのスタイルを変える*/
 .tabs input:checked + .tab_item {
-  background-color: #c9fae8;
-  color: rgb(84, 80, 80);
+  background-color: #EEFFF9;
+  color: #808080;
 }
 
 .tabs input:not(:checked) + .tab_item:hover {
