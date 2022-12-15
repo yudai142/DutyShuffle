@@ -538,10 +538,13 @@ $(function($){
             }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
               allocationView();
               if(data=="1"){
-                $('#bool-check').find('.state-btn').attr('style','background:yellow;')
+                $('#bool-check').find('.state-btn').removeClass('work')
+                $('#bool-check').find('.state-btn').addClass('off')
                 $('#bool-check').find('.state-btn').text('シャッフルの対称にする')
               }else{
-                $('#bool-check').find('.state-btn').attr('style','')
+                
+                $('#bool-check').find('.state-btn').removeClass('off')
+                $('#bool-check').find('.state-btn').addClass('work')
                 $('#bool-check').find('.state-btn').text('シャッフルの非対称にする')
               }
             }
