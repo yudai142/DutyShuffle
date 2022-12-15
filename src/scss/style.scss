@@ -52,13 +52,13 @@ header {
     color: #7993D6;
     text-align: center;
     transition: 0.4s;
-    background: #EEFFF9;
+    background: #EEFAF6;
   }
 
   li {
     height: 70px;
     &.is-active {
-      background: #EEFFF9;
+      background: #EEFAF6;
     }
   }
 }
@@ -130,7 +130,8 @@ input[type="date"] {
 }
 
 .date-form {
-  height: 125px;
+  margin-top: 40px;
+  margin-bottom: 20px;
   position: relative;
   display: flex;
   flex-wrap: nowrap;
@@ -138,7 +139,7 @@ input[type="date"] {
   justify-content: center;
   font-size: 24px;
   text-align: center;
-  border-bottom: 1px solid black;
+  // border-bottom: 1px solid black;
 }
 
 .icon-left a, .icon-right a {
@@ -146,6 +147,76 @@ input[type="date"] {
 
   &:hover {
     color: #337ab7;
+  }
+}
+
+/* トップ・割り当て共有 ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
+.main_visual {
+  height: calc(100vh - 180px);
+  overflow-y: scroll;
+}
+.join{
+  &_container{
+    h1 {
+      font-weight: normal;
+    }
+    &-work {
+      margin: 30px;
+      h1{
+        color: #5CC09E;
+      }
+    }
+    &-member {
+      margin: 26px 30px 80px 30px;
+      h1{
+        color: #5D80FE;
+      }
+    }
+  }
+  &_header {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.join_form{
+  background-color: #D2DAF6;
+  padding: 30px;
+  padding: 0 auto;
+  border-radius: 20px;
+  ul{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  li {
+    width: calc(20% - 30px * 4 / 5);
+    margin-right: 30px;
+    margin-top: 20px;
+    &:nth-child(5n) {
+      margin-right: 0;
+    }
+    &:nth-child(-n+5) {
+      margin-top: 0;
+    }
+    .button:nth-child(n+3) {
+      margin-top: 8px;
+    }
+    p {
+      color: #1E9097;
+      text-align: center;
+    }
+  }
+}
+
+.button_collection {
+  p {
+    margin-left: 10px;
+    line-height: 48px;
+    display: inline-block;
+    color: black;
+  }
+  .green {
+    margin-left: 10px;
   }
 }
 
@@ -234,7 +305,7 @@ input[type="date"] {
   /* margin-top: 50px;
   padding-bottom: 40px; */
   /* width: 700px; */
-  background-color: #fff;
+  background-color: #EEFAF6;
   // box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   margin: 0 auto;
   height: calc(100vh - 70px);
@@ -421,11 +492,11 @@ input[name="tab_item"] {
 
 .button{
   width: 200px;
-  height: 60px;
+  height: 40px;
   text-align: center;
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
   font-size: 24px;
-  line-height:60px;
+  line-height:40px;
   border-radius: 20px;
   &:hover{
     box-shadow: none;
@@ -559,7 +630,9 @@ input[name="tab_item"] {
     cursor: pointer;
   }
 }
-
+.square{
+  border-radius: 0;
+}
 .orange {
   background-color: #FE975D;
 }
