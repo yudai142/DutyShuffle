@@ -180,16 +180,11 @@ $(document).on('click','input[name="area[]"]' , function() {
 });
 
 $(document).on('click', ".select-member-button", function(e) {
-  if($(this).closest('.select-member').length
-  //  && $(this).attr('value') != $('#checkboxes').closest('.select-member').find('.select-member-button').attr('value')
-   ){
-    // console.log($(this).attr('value'))
-    // return
-    let off = "#"+$('#checkboxes').closest('.select-member').find('.select-member-button').attr('id');
+  if($(this).closest('.select-member').length && $(this).attr('value') != $('#checkboxes').closest('.select-member-button').attr('value') ){
+    let off = "#"+$('#checkboxes').closest('.select-member-button').attr('id');
     let click_id = "#"+$(this).attr('id');
-    console.log(click_id)
-    return
-    let button_value = $(this).closest('.select-member').find('.select-member-button').attr('value');
+    
+    let button_value = $(this).attr('value');
     if($('#checkboxes').length){
       $(off).find('#checkboxes').fadeOut().queue(function() {
         this.remove();
@@ -205,10 +200,10 @@ $(document).on('click', ".select-member-button", function(e) {
       },
       success: function(data) {
         if (data == null){
-          $(add).append(`
+          $(click_id).append(`
             <div id="checkboxes">作業内容が登録されていません</div>
           `)
-          $(add).find('#checkboxes').fadeIn();
+          $(click_id).find('#checkboxes').fadeIn();
         }else if(data["err"] == null){
           let list = [];
           $.each(data, function(work_key, work_value){
@@ -216,7 +211,7 @@ $(document).on('click', ".select-member-button", function(e) {
               <div class="select-work" value="${work_value.id}">${work_value.name}</div>
             `);
           });
-          $(add).append(`
+          $(click_id).append(`
             <div id="checkboxes">
               <div id="check-form">
                 <span>移動先を選んでください</span>
@@ -227,7 +222,7 @@ $(document).on('click', ".select-member-button", function(e) {
               ${list.join("")}
             </div>
           `)
-          $(add).find('#checkboxes').fadeIn();
+          $(click_id).find('#checkboxes').fadeIn();
         }else{
           $('#allocation-form').html(`<p>${data["err"]}</p>`);
         }
@@ -242,5 +237,13 @@ $(document).on('click', ".select-member-button", function(e) {
     $('#checkboxes').fadeOut().queue(function() {
       this.remove();
     });
-	}
+  }
+});
+
+$(document).on('click', function() {
+  if($('#checkboxes').length){
+    $('#checkboxes').fadeOut().queue(function() {
+      this.remove();
+    });
+  }
 });
