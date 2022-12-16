@@ -28,6 +28,7 @@
           </div>
         </div>
         <div class="btns">
+          <div id="member_result" style="color:orange"></div>
           <div class="btn orange md-close">
             戻る
           </div>

@@ -19,6 +19,7 @@
               <input  type="checkbox" class="checkbox" id="work_archive" value="">
               <span class="supple upper">※チェックで無効</span>
             </div>
+            <div id="work_result" style="color:orange;"></div>
             <div class="btns">
               <div class="btn orange md-close">
                 戻る

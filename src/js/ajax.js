@@ -38,11 +38,11 @@ $(function($){
               let member = data[1].filter(value => {if(value.work_id == work_value.id){return true;}});
               let list = [];
               $.each(member, function(member_key, member_value){
-                list.push(`<div class="button member select-member select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}">${member_value.family_name}　${member_value.given_name}</div>`);
+                list.push(`<div class="button member select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}">${member_value.family_name}　${member_value.given_name}</div>`);
               });
-              arr.push(`<li><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div>${list.join("")}</li>`);
+              arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div>${list.join("")}</li>`);
             }else{
-              arr.push(`<li><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div></li>
+              arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div></li>
               `);
             }
           });
@@ -50,7 +50,7 @@ $(function($){
             let null_member = data[1].filter(value => {if(value.work_id == null){return true;}});
             let null_list = [];
             $.each(null_member, function(null_key, null_value){
-              null_list.push(`<li class="select-member" id="history_${null_value.history_id}"><div class="button member select-member-button" value="${null_value.history_id}">${null_value.family_name}　${null_value.given_name}</div></li>`);
+              null_list.push(`<li class="select-member"><div class="button member select-member-button" id="history_${null_value.history_id}" value="${null_value.history_id}">${null_value.family_name}　${null_value.given_name}</div></li>`);
             });
             $('#null-member-list').html(null_list);
           }
@@ -301,7 +301,7 @@ $(function($){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${data[0].archive}を更新しました。</p>`);
+              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${(data[0].archive==0)?"有効":"無効"}を更新しました。</p>`);
               $('.modal-container').fadeOut();
               getAllMember();
             }else{
@@ -328,10 +328,10 @@ $(function($){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${data[0].archive}を登録しました。</p>`);
-              $('#family_name').val("");
-              $('#given_name').val("");
-              $('#kana_name').val("");
+              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${(data[0].archive==0)?"有効":"無効"}を登録しました。</p>`);
+              $('#family_name').attr("value","");
+              $('#given_name').attr("value","");
+              $('#kana_name').attr("value","");
               $('#member_archive').prop("checked", false);
               getAllMember();
             }else{
@@ -370,7 +370,7 @@ $(function($){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#work_result').html(`<p>${data[0].name}が${data[0].multiple}人の${data[0].archive}のデータを更新しました。</p>`);
+              $('#work_result').html(`<p>${data[0].name}(${data[0].multiple}人)${(data[0].archive==0)?"有効":"無効"}に更新しました。</p>`);
               $('.modal-container').fadeOut();
               getAllWork();
             }else{
@@ -396,8 +396,8 @@ $(function($){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#work_result').html(`<p>${data[0].name}が${data[0].multiple}人の${data[0].archive}のデータを登録しました。</p>`);
-              $('#name').val("");
+              $('#work_result').html(`<p>${data[0].name}(${data[0].multiple}人)${(data[0].archive==0)?"有効":"無効"}を登録しました。</p>`);
+              $('#name').attr("value","");
               $('#multiple').val(1);
               $('#work_archive').prop("checked", false);
               getAllWork();
