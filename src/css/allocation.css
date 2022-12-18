@@ -15,7 +15,7 @@
   /* top:30px; */
   display: none;
   border: 1px #dadada solid;
-  overflow: scroll;
+  overflow-y: scroll;
   max-height: 230px;
   z-index: 1;
 }

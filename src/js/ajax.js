@@ -333,9 +333,9 @@ $(function($){
           success: function(data) {
             if (!data["err"]){
               $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${(data[0].archive==0)?"有効":"無効"}を登録しました。</p>`);
-              $('#family_name').attr("value","");
-              $('#given_name').attr("value","");
-              $('#kana_name').attr("value","");
+              $('#family_name').val("");
+              $('#given_name').val("");
+              $('#kana_name').val("");
               $('#member_archive').prop("checked", false);
               getAllMember();
             }else{
@@ -401,7 +401,7 @@ $(function($){
           success: function(data) {
             if (!data["err"]){
               $('#work_result').html(`<p>${data[0].name}(${data[0].multiple}人)${(data[0].archive==0)?"有効":"無効"}を登録しました。</p>`);
-              $('#name').attr("value","");
+              $('#name').val("");
               $('#multiple').val(1);
               $('#work_archive').prop("checked", false);
               getAllWork();

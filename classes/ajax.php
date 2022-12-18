@@ -160,7 +160,7 @@ try{
       exit;
     case 'member_select_check':
       $date = date('Y-m-d',  strtotime($_REQUEST['date']));
-      $select = $_REQUEST['select'];
+      $select = (isset($_REQUEST['select'])) ? $_REQUEST['select'] : [];
       $sql = "SELECT member_id work_id family_name given_name FROM history, member WHERE date=? AND member.id = history.member_id group by member_id ORDER BY kana_name ASC";
       $stmt = dbc()->prepare($sql);
       $stmt->execute(array($date));
@@ -179,7 +179,7 @@ try{
       exit;
     case 'member_select_definition':
       $date = date('Y-m-d',  strtotime($_REQUEST['date']));
-      $select = ($_REQUEST['select']) ? $_REQUEST['select'] : [];
+      $select = (isset($_REQUEST['select'])) ? $_REQUEST['select'] : [];
       $sql = "SELECT member_id FROM history WHERE date=? group by member_id";
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($date)))) {
@@ -255,7 +255,7 @@ try{
       exit;
     case 'member_select_work_definition':
       $date = date('Y-m-d',  strtotime($_REQUEST['date']));
-      $select = ($_REQUEST['select']) ? $_REQUEST['select'] : [];
+      $select = (isset($_REQUEST['select'])) ? $_REQUEST['select'] : [];
       $sql = "SELECT id, member_id, work_id FROM history WHERE date=?";
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($date)))) {
@@ -343,6 +343,7 @@ try{
       echo json_encode($productList);
       exit;
     case 'member_add':
+      $err = [];
       if(!isset($_POST['family_name']) || empty($_POST['family_name'])) $err[] = "姓";
       if(!isset($_POST['given_name']) || empty($_POST['given_name'])) $err[] = "名";
       if(!isset($_POST['kana_name']) || empty($_POST['kana_name']) || !(preg_match("/^[ぁ-んー]+$/u", $_POST['kana_name']))) $err[] = "ふりがな";
@@ -447,6 +448,7 @@ try{
       echo json_encode($productList);
       exit;
     case 'member_update':
+      $err = [];
       if(!isset($_POST['family_name']) || empty($_POST['family_name'])) $err[] = "姓";
       if(!isset($_POST['given_name']) || empty($_POST['given_name'])) $err[] = "名";
       if(!isset($_POST['kana_name']) || empty($_POST['kana_name']) || !(preg_match("/^[ぁ-んー]+$/u", $_POST['kana_name']))) $err[] = "ふりがな";
