@@ -3,22 +3,22 @@
     font-family: "Inter";
   }
 
-  .select {
-    padding:  39px 53px 64px 53px;
-  }
+.select {
+  padding: 30px 50px;
+}
 
-  .btn-list {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 24px;
-  }
+.btn-list {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
 
-  .b-conf {
-    margin-left: 12px;
-  }
+.b-conf {
+  margin-left: 12px;
+}
 
 .btn-names{
-  max-height: 300px;
+  max-height: 450px;
   overflow: scroll;
 }
 

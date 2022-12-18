@@ -152,7 +152,7 @@ input[type="date"] {
 
 /* トップ・割り当て共有 ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
 .main_visual {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 181px);
   overflow-y: scroll;
 }
 .join{
@@ -240,7 +240,6 @@ input[type="date"] {
   display: none;
   transition: .3s;
   box-sizing: border-box;
-  padding-top: 66px;
 
   &:before {
     content: "";

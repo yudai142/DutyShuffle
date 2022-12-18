@@ -164,7 +164,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
 
 /* トップ・割り当て共有 ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
 .main_visual {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 181px);
   overflow-y: scroll;
 }
 
@@ -255,7 +255,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
   transition: 0.3s;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
-  padding-top: 66px;
 }
 .modal-container:before {
   content: "";
