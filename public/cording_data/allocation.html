@@ -7,20 +7,21 @@
   <title>Document</title>
   <link rel="stylesheet" href="../src/css/style.css" />
   <link rel="stylesheet" href="../src/css/reset.css" />
-  <link rel="stylesheet" href="../src/css/top.css" />
+  <link rel="stylesheet" href="../src/css/allocation.css" />
+  <!-- <link rel="stylesheet" href="../src/css/select.css" /> -->
   <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
 </head>
 <body>
-  <header>トップ</header>
+  <header>割り当て</header>
   <main>
     <div class="sidebar">
       <ul>
         <li class="is-active">
-          <p>トップ</p>
+          <a href="./top.php">トップ</a>
         </li>
         <li>
-          <a href="./allocation.php">割り当て</a>
+          <p>割り当て</p>
         </li>
         <li>
           <a href="./create-edit.php">登録・編集</a>
@@ -46,40 +47,50 @@
             <i class="fas fa-arrow-alt-circle-right fa-2x"></i>
           </a>
         </div>
-        <span style="position: relative;"><a href="./allocation.php" class="login-button blue-button">割り当てへ</a></span>
+        <span style="position: relative;"><a href="#" class="login-button blue-button">シャッフル</a></span>
       </div>
       <div class="main_visual">
         <div class="join_container join_container-work">
           <div class="join_header">
-            <h1>作業</h1>
+            <h1>担当</h1>
             <div class="button_collection">
-              <p>割り当て枠数合計：3枠</p><!-- /.btn yello -->
+              <p>参加枠数合計：3枠</p><!-- /.btn yellow -->
               <p>参加人数合計：3人</p><!-- /.btn green -->
               <p>余り人数・不足枠：2人</p><!-- /.btn green -->
+              <span class="btn yellow">担当全解除</span><!-- /.btn yellow -->
+              <span class="btn green">メンバー追加</span><!-- /.btn green -->
             </div><!-- /.button_collection -->
-          </div>
+          </div><!-- /.join_header -->
           <div class="join_form">
             <ul>
-              <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li>
-              <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li>
-              <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li>
-              <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li>
-              <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li>
-              <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li>
-              <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li>
-              <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li>
-              <li><div>+　参加人数：３人　-</div><div class="button work square">ハンディモップ</div></li>
+              <li>
+                <div>+　参加枠数：３人　-</div>
+                <div class="button work square">ハンディモップ</div>
+                <div class="button member">ハンディモップ</div>
+                <p>4日前に担当</p>
+                <div class="button member">ハンディモップ</div>
+                <p>4日前に担当</p>
+              </li>
+              <li><div>+　参加枠数：３人　-</div><div class="button work square">ハンディモップ</div></li>
+              <li><div>+　参加枠数：３人　-</div><div class="button work square">ハンディモップ</div></li>
+              <li><div>+　参加枠数：３人　-</div><div class="button work square">ハンディモップ</div></li>
+              <li><div>+　参加枠数：３人　-</div><div class="button work square">ハンディモップ</div></li>
+              <li><div>+　参加枠数：３人　-</div><div class="button work square">ハンディモップ</div></li>
+              <li><div>+　参加枠数：３人　-</div><div class="button work square">ハンディモップ</div></li>
+              <li><div>+　参加枠数：３人　-</div><div class="button work square">ハンディモップ</div></li>
+              <li>
+                <div>+　参加枠数：３人　-</div>
+                <div class="button work square">ハンディモップ</div>
+                <div class="button member">ハンディモップ</div>
+                <p>3日前に担当</p>
+                <div class="button member">ハンディモップ</div>
+                <p>3日前に担当</p>
+              </li>
             </ul>
           </div><!-- /.join-form -->
         </div><!-- /.join -->
         <div class="join_container join_container-member">
-          <div class="join_header">
-            <h1>メンバー</h1>
-            <div class="button_collection">
-              <span class="btn yello">クリア</span><!-- /.btn yello -->
-              <span class="btn green">参加</span><!-- /.btn green -->
-            </div><!-- /.button_collection -->
-          </div><!-- /.join_header -->
+          <h1>サポート</h1>
           <div class="join_form">
             <ul>
               <li><div class="button member">ハンディモップ</div></li>
@@ -95,7 +106,7 @@
             </ul>
           </div><!-- /.join-form -->
         </div><!-- /.join-work -->
-      </div>
+      </div><!-- /.main_visual -->
     </div>
   </main>
 </body>

@@ -5,7 +5,6 @@
 
   .select {
     padding:  39px 53px 64px 53px;
-    height: 704px;
   }
 
   .btn-list {
@@ -18,5 +17,8 @@
     margin-left: 12px;
   }
 
-
+.btn-names{
+  max-height: 300px;
+  overflow: scroll;
+}
 

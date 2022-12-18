@@ -3,7 +3,7 @@ $(document).on('click', '.md-btn', function(e) {
   const target = $(this).attr('data-target');
   const modal = document.getElementById(target);
   if(target == "modal-work"){
-    if($(this).val()){
+    if($(this).attr("value")){
       $(modal).find('h1').text("作業編集");
       $(modal).find('#submit_work').text("変更");
       $.ajax({
@@ -11,7 +11,7 @@ $(document).on('click', '.md-btn', function(e) {
         datatype: "json",
         data: {
           "type": 'work_edit',
-          "id" : $(this).val()
+          "id" : $(this).attr("value")
         },
         success: function(data) {
           if (!data["err"]){
@@ -41,7 +41,7 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('#submit_work').text("追加");
     }
   }else if(target == "modal-member"){
-    if($(this).val()){
+    if($(this).attr("value")){
       $(modal).find('h1').text("メンバー編集");
       $(modal).find('#submit_member').text("変更");
       $.ajax({
@@ -49,7 +49,7 @@ $(document).on('click', '.md-btn', function(e) {
         datatype: "json",
         data: {
           "type": 'member_edit',
-          "id" : $(this).val()
+          "id" : $(this).attr("value")
         },
         success: function(data) {
           if (!data["err"]){
@@ -92,23 +92,23 @@ $(document).on('click', '.md-btn', function(e) {
         data: {
           "type": 'member_select_work',
           "date": $("#date").val(),
-          "work_id" : $(this).val()
+          "work_id" : $(this).attr("value")
         },
         success: function(data) {
           if (!data["err"]){
             let arr = [];
             $.each(data[1], function(key, value){
               checked = (value.work_name == data[0]["name"]) ? "checked" : ""
-              style = (value.work_name && value.work_name != data[0]["name"])?"style=color:green;":"";
-              work_name = (value.work_name && value.work_name != data[0]["name"])?`<br><span style=color:orange;>${value.work_name}を担当しています</span>`:"";
-              arr.push(`<li id=history_${value.history_id}><label><input type='checkbox' name="area[]" value='${value.history_id}'${checked}>：<span ${style}>${value.family_name}　${value.given_name}</span>${work_name}</label><li>`);
+              style = (value.work_name && value.work_name != data[0]["name"])?"style=color:orange;":"";
+              // work_name = (value.work_name && value.work_name != data[0]["name"])?`<span style=color:orange;>${value.work_name}を担当しています</span>`:"";
+              arr.push(`<label class="button member b-select" id=history_${value.history_id}><input type='checkbox' name="area[]" value='${value.history_id}'${checked}><span ${style}>${value.family_name}　${value.given_name}</span></label>`);
             });
             $('#select_list').html(arr);
             $(modal).find('h1').text(`${data[0]["name"]}に参加するメンバーの選択`);
             $(modal).find('form').append(`<input type='hidden' id=select_work_id value=${data[0]["id"]}>`);
-            style = (data[0]["status"]==1)?`style="background:yellow;"`:"";
+            style = (data[0]["status"]==1)?"off":"work";
             status_text = (data[0]["status"]==1)?"シャッフルの対称にする":"シャッフルの非対称にする";
-            $(modal).find('#bool-check').html(`<button class='state-btn' data-target='work-change' ${style} value=${data[0]["id"]}>${status_text}</button>`);
+            $(modal).find('#bool-check').html(`<div class='button ${style} state-btn' data-target='work-change' value=${data[0]["id"]} style="width:auto;font-size:16px;">${status_text}</div>`);
           }else{
             $('#select_list').html(`<p>${data["err"]}</p>`);
           }
@@ -122,7 +122,7 @@ $(document).on('click', '.md-btn', function(e) {
     }else{
       $(modal).find('h1').text("参加メンバー選択");
       $(modal).find('#submit_select').text("確定");
-      $(modal).find('#bool-check').html(`<button><label><input id="checkAll" type="checkbox" value="">全部選択</label></button>`);
+      $(modal).find('#bool-check').html(`<label class="btn yellow"><input id="checkAll" type="checkbox" value="">全部選択</label>`);
       $(modal).find('#submit_select').attr("data-type", "");
       $(modal).find('#select_result p').remove();
       $.ajax({
@@ -136,7 +136,7 @@ $(document).on('click', '.md-btn', function(e) {
           if (!data["err"]){
             let arr = [];
             $.each(data, function(key, value){
-              arr.push(`<li id=member_${value.id}><label><input type='checkbox' name="area[]" value='${value.id}'${value.checked}>：${value.family_name}　${value.given_name}</label><li>`);
+              arr.push(`<label class="button member b-select" id=member_${value.id}><input type='checkbox' name="area[]" value='${value.id}'${value.checked}>${value.family_name}　${value.given_name}</label>`);
             });
             $('#select_list').html(arr);
             var boxCount = $( 'input[name="area[]"]' ).length;
@@ -179,11 +179,12 @@ $(document).on('click','input[name="area[]"]' , function() {
   }
 });
 
-$(document).on('click', function(e) {
-  if($(e.target).closest('.select-member-button').length && $(e.target).closest('.select-member').attr('id') != $('#checkboxes').closest('.select-member').attr('id')){
-    let off = "#"+$('#checkboxes').closest('.select-member').attr('id');
-    let add = "#"+$(e.target).closest('.select-member').attr('id');
-    let button_value = $(e.target).closest('.select-member').find('.select-member-button').attr('value');
+$(document).on('click', ".select-member-button", function(e) {
+  if($(this).closest('.select-member').length && $(this).attr('value') != $('#checkboxes').closest('.select-member-button').attr('value') ){
+    let off = "#"+$('#checkboxes').closest('.select-member-button').attr('id');
+    let click_id = "#"+$(this).attr('id');
+    
+    let button_value = $(this).attr('value');
     if($('#checkboxes').length){
       $(off).find('#checkboxes').fadeOut().queue(function() {
         this.remove();
@@ -199,10 +200,10 @@ $(document).on('click', function(e) {
       },
       success: function(data) {
         if (data == null){
-          $(add).append(`
+          $(click_id).append(`
             <div id="checkboxes">作業内容が登録されていません</div>
           `)
-          $(add).find('#checkboxes').fadeIn();
+          $(click_id).find('#checkboxes').fadeIn();
         }else if(data["err"] == null){
           let list = [];
           $.each(data, function(work_key, work_value){
@@ -210,7 +211,7 @@ $(document).on('click', function(e) {
               <div class="select-work" value="${work_value.id}">${work_value.name}</div>
             `);
           });
-          $(add).append(`
+          $(click_id).append(`
             <div id="checkboxes">
               <div id="check-form">
                 <span>移動先を選んでください</span>
@@ -221,7 +222,7 @@ $(document).on('click', function(e) {
               ${list.join("")}
             </div>
           `)
-          $(add).find('#checkboxes').fadeIn();
+          $(click_id).find('#checkboxes').fadeIn();
         }else{
           $('#allocation-form').html(`<p>${data["err"]}</p>`);
         }
@@ -236,5 +237,13 @@ $(document).on('click', function(e) {
     $('#checkboxes').fadeOut().queue(function() {
       this.remove();
     });
-	}
+  }
+});
+
+$(document).on('click', function() {
+  if($('#checkboxes').length){
+    $('#checkboxes').fadeOut().queue(function() {
+      this.remove();
+    });
+  }
 });

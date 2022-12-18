@@ -33,31 +33,16 @@ $(function($){
         }else if(data["err"] == null){
           let arr = []
           $.each(data[0], function(work_key, work_value){
+            let style = (work_value.status == 1)? 'work' : 'off'
             if(data[1] != null){
               let member = data[1].filter(value => {if(value.work_id == work_value.id){return true;}});
-              let style = (work_value.status == 1)? `style="color:blue;"` : `style="color:blue;background:yellow;"`
               let list = [];
               $.each(member, function(member_key, member_value){
-                list.push(`
-                  <li class="select-member" id="history_${member_value.history_id}"><button class="select-member-button" value="${member_value.history_id}" style="color:red;">${member_value.family_name}　${member_value.given_name}</button></li>
-                `);
+                list.push(`<div class="button member select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}"><p style="color:white;">${member_value.family_name}　${member_value.given_name}</p></div>`);
               });
-              arr.push(`
-                <div class="content" style="display:flex;flex-flow: column;white-space: nowrap;">
-                  <div class="work-title"><button class="md-btn" data-target="modal-select" data-type="work" value="${work_value.id}" ${style}">${work_value.name}</button></div>
-                  <ul class="work-member">
-                    ${list.join("")}
-                  </ul>
-                </div>
-              `);
+              arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div>${list.join("")}</li>`);
             }else{
-              arr.push(`
-                <div class="content" style="display:flex;flex-flow: column;">
-                  <div class="work-title">
-                    <button class="md-btn" data-target="modal-select" ${style}>${work_value.name}</button>
-                  </div>
-                  <ul class="work-member"></ul>
-                </div>
+              arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div></li>
               `);
             }
           });
@@ -65,9 +50,7 @@ $(function($){
             let null_member = data[1].filter(value => {if(value.work_id == null){return true;}});
             let null_list = [];
             $.each(null_member, function(null_key, null_value){
-              null_list.push(`
-                <li class="select-member" id="history_${null_value.history_id}"><button class="select-member-button" value="${null_value.history_id}" style="color:red;">${null_value.family_name}　${null_value.given_name}</button></li>
-              `);
+              null_list.push(`<li class="select-member"><div class="button member select-member-button" id="history_${null_value.history_id}" value="${null_value.history_id}"><p style="color:white;">${null_value.family_name}　${null_value.given_name}</p></div></li>`);
             });
             $('#null-member-list').html(null_list);
           }
@@ -97,8 +80,8 @@ $(function($){
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
-            let work_name = (value.work_name != null)?`<br><span>${value.work_name}を担当しています</span>`:"";
-            arr.push(`<li id=join_member_${value.history_id}><button class='state-btn' data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</button>${work_name}<li>`);
+            let work_name = (value.work_name != null)?`<p style="color:green;text-aline:center;">${value.work_name}</p>`:"";
+            arr.push(`<li id=join_member_${value.history_id}><div class="button member state-btn" data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</div>${work_name}</li>`);
           });
           $('#join_member').html(arr);
         }else{
@@ -125,8 +108,8 @@ $(function($){
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
-            let style = (value.status == 1)? "" : `style="background:yellow;"`
-            arr.push(`<li id=join_work_${value.id}><button class='state-btn' data-target='work-change' ${style} value=${value.id}>${value.name}</button><li>`);
+            let style = (value.status == 1)? 'work' : 'off'
+            arr.push(`<li id=join_work_${value.id}><div class="button ${style} state-btn" data-target='work-change' value=${value.id}>${value.name}</div></li>`);
           });
           $('#join_work').html(arr);
         }else{
@@ -153,7 +136,7 @@ $(function($){
         }else if(data['err'] == null){
           let arr = []
           $.each(data, function(key, value){
-            arr.push(`<li id=member_${value.id}><button class='md-btn' data-target='modal-member' value=${value.id}>${value.family_name}　${value.given_name}</button><li>`);
+            arr.push(`<div id=member_${value.id} class="button member b-select md-btn" data-target='modal-member' value=${value.id}>${value.family_name}　${value.given_name}</div>`);
             $('#member_show_result').html(arr);
           });
         }else{
@@ -182,7 +165,7 @@ $(function($){
         }else if(data['err'] == null){
           let arr = []
           $.each(data, function(key, value){
-              arr.push(`<li id=work_${value.id}><button class='md-btn' data-target='modal-work' value=${value.id}>${value.name}</button><li>`);
+              arr.push(`<div id=work_${value.id} class="button work b-select md-btn" data-target='modal-work' value=${value.id}>${value.name}</div>`);
           });
           $('#work_show_result').html(arr)
         }else{
@@ -218,10 +201,11 @@ $(function($){
             status: 1
           })
           $.each(data[2], function(option_key, option_value){
+            let work_class = (option_value.id == null)?"add_option":"change_option";
             let work_list = $("<select>", {
               id: `works_${(option_value.id == null)?"new":option_value.id}`,
               name: 'works',
-              class: (option_value.id == null)?"add_option":"change_option"
+              class:`button work square ${work_class}`,
             })
             if(option_value.id == null){
               work_list.append($('<option>')
@@ -242,10 +226,11 @@ $(function($){
               }
             }
 
+            let member_class = (option_value.id == null)?"add_option":"change_option";
             let member_list = $("<select>", {
               id: `members_${(option_value.id == null)?"new":option_value.id}`,
               name: 'members',
-              class: (option_value.id == null)?"add_option":"change_option"
+              class:`button member square ${member_class}`
             })
             if(option_value.id == null){
               member_list.append($('<option>')
@@ -265,14 +250,14 @@ $(function($){
                 }))
               }
             }
-            let option_list = $("<li>", {style: "display:flex;"})
-              .append($("<form>", {onsubmit: "return false;"})
-              .append(work_list, member_list, $("<button>",{
+            let option_list = $("<form>", {onsubmit: "return false;"})
+              .append($("<ul>", {class: "option-group"})
+              .append($("<li>").append(work_list), $("<li>").append(member_list), $("<li>").append($("<div>",{
                 text:(option_value.id == null)?"追加":"解除", 
                 value: (option_value.id == null)?option_value.status:option_value.id,
-                class: "state-btn",
+                class: "button work state-btn",
                 "data-target": (option_value.id == null)?"add-member_option":"delete-member_option"
-              })))
+              }))))
             if(option_value.status == 0){
               fixed_list.push(option_list);
             }else{
@@ -316,7 +301,8 @@ $(function($){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${data[0].archive}を更新しました。</p>`);
+              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${(data[0].archive==0)?"有効":"無効"}を更新しました。</p>`);
+              $('.modal-container').fadeOut();
               getAllMember();
             }else{
               $('#member_result').html(`<p>${data["err"]}</p>`);
@@ -342,10 +328,10 @@ $(function($){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${data[0].archive}を登録しました。</p>`);
-              $('#family_name').val("");
-              $('#given_name').val("");
-              $('#kana_name').val("");
+              $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${(data[0].archive==0)?"有効":"無効"}を登録しました。</p>`);
+              $('#family_name').attr("value","");
+              $('#given_name').attr("value","");
+              $('#kana_name').attr("value","");
               $('#member_archive').prop("checked", false);
               getAllMember();
             }else{
@@ -384,7 +370,8 @@ $(function($){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#work_result').html(`<p>${data[0].name}が${data[0].multiple}人の${data[0].archive}のデータを更新しました。</p>`);
+              $('#work_result').html(`<p>${data[0].name}(${data[0].multiple}人)${(data[0].archive==0)?"有効":"無効"}に更新しました。</p>`);
+              $('.modal-container').fadeOut();
               getAllWork();
             }else{
               $('#work_result').html(`<p>${data["err"]}</p>`);
@@ -409,8 +396,8 @@ $(function($){
           },
           success: function(data) {
             if (!data["err"]){
-              $('#work_result').html(`<p>${data[0].name}が${data[0].multiple}人の${data[0].archive}のデータを登録しました。</p>`);
-              $('#name').val("");
+              $('#work_result').html(`<p>${data[0].name}(${data[0].multiple}人)${(data[0].archive==0)?"有効":"無効"}を登録しました。</p>`);
+              $('#name').attr("value","");
               $('#multiple').val(1);
               $('#work_archive').prop("checked", false);
               getAllWork();
@@ -553,10 +540,13 @@ $(function($){
             }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
               allocationView();
               if(data=="1"){
-                $('#bool-check').find('.state-btn').attr('style','background:yellow;')
+                $('#bool-check').find('.state-btn').removeClass('work')
+                $('#bool-check').find('.state-btn').addClass('off')
                 $('#bool-check').find('.state-btn').text('シャッフルの対称にする')
               }else{
-                $('#bool-check').find('.state-btn').attr('style','')
+                
+                $('#bool-check').find('.state-btn').removeClass('off')
+                $('#bool-check').find('.state-btn').addClass('work')
                 $('#bool-check').find('.state-btn').text('シャッフルの非対称にする')
               }
             }
@@ -577,8 +567,8 @@ $(function($){
         alert_text = `${$(this).text()}さんを不参加にしますか？`
         add_text = ($(this).closest(`#join_member_${$(this).attr("value")}`).find('span').text() == 0)? "":`\n${$(this).closest(`#join_member_${$(this).attr("value")}`).find('span').text().slice( 0, -8 )}の担当も削除されます`;
       }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
-        alert_text = `${$(this).closest(".select-member").find(".select-member-button").text()}さんを不参加にしますか？`
-        add_text = ($(this).closest('.content').find('.md-btn').text() == 0)? "":`\n${$(this).closest('.content').find('.md-btn').text()}の担当も削除されます`;
+        alert_text = `${$(this).closest(".select-member-button").find("p").text()}さんを不参加にしますか？`
+        add_text = ($(this).closest('.select-member').find('.md-btn').text() == 0)? "":`\n${$(this).closest('.select-member').find('.md-btn').text()}の担当も削除されます`;
       }
       
       if (confirm(`${alert_text}${add_text}`)) {

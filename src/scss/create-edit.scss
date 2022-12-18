@@ -17,10 +17,12 @@ tab_content_selects {
 }
 
 .btns { 
-  padding-right: 52px;
   padding-top: 37px;
 }
 
+.tab_content .btns { 
+  padding-right: 75px;
+}
 .btn {
   margin-left:  12px;
 }
