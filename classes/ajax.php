@@ -57,7 +57,10 @@ try{
           );
         }
       }
-      
+      if(!isset($productList)){
+        echo json_encode(null);
+        exit;
+      }
       echo json_encode($productList);
       exit;
     case 'join_member':
@@ -87,6 +90,10 @@ try{
           'work_name'  => $row['work_id']
         );
       }
+      if(!isset($productList)){
+        echo json_encode(null);
+        exit;
+      }
       echo json_encode($productList);
       exit;
     case 'join_work':
@@ -110,6 +117,10 @@ try{
           'name'  => $row['name'],
           'status' => $status
         );
+      }
+      if(!isset($productList)){
+        echo json_encode(null);
+        exit;
       }
       echo json_encode($productList);
       exit;
@@ -140,6 +151,10 @@ try{
             'checked' => (in_array($row['id'], $checked)) ? "checked" : ""
           );
         }
+      }
+      if(!isset($productList)){
+        echo json_encode(null);
+        exit;
       }
       echo json_encode($productList);
       exit;
@@ -232,6 +247,10 @@ try{
           'work_name'    => $row['work_id'],
         );
       }
+      if(!isset($productList)){
+        echo json_encode(null);
+        exit;
+      }
       echo json_encode($productList);
       exit;
     case 'member_select_work_definition':
@@ -293,6 +312,10 @@ try{
           'given_name' => $row['given_name']
         );
       }
+      if(!isset($productList)){
+        echo json_encode(null);
+        exit;
+      }
       echo json_encode($productList);
       exit;
     case 'work_list':
@@ -312,6 +335,10 @@ try{
           'id'    => $row['id'],
           'name'  => $row['name']
         );
+      }
+      if(!isset($productList)){
+        echo json_encode(null);
+        exit;
       }
       echo json_encode($productList);
       exit;
@@ -345,6 +372,10 @@ try{
         'kana_name' => $row['kana_name'],
         'archive' => $row['archive']
       );
+      if(!isset($productList)){
+        echo json_encode(null);
+        exit;
+      }
       echo json_encode($productList);
       exit;
     case 'work_add':
@@ -376,6 +407,10 @@ try{
         'multiple'  => $row['multiple'],
         'archive' => $row['archive']
       );
+      if(!isset($productList)){
+        echo json_encode(null);
+        exit;
+      }
       echo json_encode($productList);
       exit;
     case 'member_edit':

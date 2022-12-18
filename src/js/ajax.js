@@ -1,5 +1,6 @@
 $(function($){
   if ( location.pathname.indexOf("/create-edit.php") !== -1 ){
+    $("#create-edit_page").html("<p>登録・編集</p>");
     getAllMember();
     getAllWork();
     $('#member_view').change(function() {
@@ -10,11 +11,14 @@ $(function($){
       getAllWork();
     });
   }else if ( location.pathname.indexOf("/top.php") != -1 ){
+    $("#top_page").html("<p>トップ</p>");
     joinMember();
     joinWork();
   }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
+    $("#allocation_page").html("<p>割り当て</p>");
     allocationView();
   }else if ( location.pathname.indexOf("/option.php") != -1 ){
+    $("#option_page").html("<p>オプション</p>");
     getOptionList();
   }
   

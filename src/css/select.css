@@ -19,6 +19,6 @@
 
 .btn-names{
   max-height: 450px;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
