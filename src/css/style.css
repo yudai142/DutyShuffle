@@ -197,21 +197,12 @@ input[type=date]::-webkit-calendar-picker-indicator {
 .join_form {
   background-color: #D2DAF6;
   padding: 30px;
-  padding: 0 auto;
   border-radius: 20px;
 }
 .join_form ul {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-wrap: wrap;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-}
-.join_form li {
-  margin-right: 63px;
-  margin-top: 20px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 .join_form li:nth-child(4n) {
   margin-right: 0;
@@ -225,6 +216,7 @@ input[type=date]::-webkit-calendar-picker-indicator {
 .join_form li p {
   color: #1E9097;
   text-align: center;
+  width: 200px;
 }
 
 .button_collection p {
@@ -248,7 +240,6 @@ input[type=date]::-webkit-calendar-picker-indicator {
   text-align: center;
   background: rgba(0, 0, 0, 0.5);
   /* padding: 40px 20px; */
-  overflow: auto;
   /* opacity: 0; */
   display: none;
   -webkit-transition: 0.3s;
@@ -734,23 +725,10 @@ input[name=tab_item] {
 }
 
 .button-group {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-wrap: wrap;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-}
-
-.b-select {
-  margin-top: 40px;
-  margin-left: 40px;
-  width: calc(25% - 30px);
-}
-
-.b-select:nth-child(4n+1) {
-  margin-left: 0px;
+  padding: 20px 0;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
 .input-tx {

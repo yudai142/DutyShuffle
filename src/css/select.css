@@ -10,7 +10,7 @@
 .btn-list {
   display: flex;
   justify-content: space-between;
-  margin-top: 24px;
+  margin: 24px 0;
 }
 
 .b-conf {
@@ -18,7 +18,7 @@
 }
 
 .btn-names{
-  max-height: 450px;
+  max-height: 400px;
   overflow-y: scroll;
 }
 

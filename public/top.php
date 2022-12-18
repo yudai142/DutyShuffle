@@ -47,7 +47,7 @@ $next = date('Y-m-d', strtotime('+1 day', $timestamp));
   <?php if(isset($_REQUEST["ym"])): ?>
     <span style="position: relative;"><a href="./allocation.php?ym=<?php echo $_REQUEST["ym"]; ?>" class="login-button blue-button">割り当てへ</a></span>
   <?php else:?>
-    <span style="position: relative;"><a href="./allocation.php?ym=<?php echo date('Y/m/d'); ?>" class="login-button blue-button">割り当てへ</a></span>
+    <span style="position: relative;"><a href="./allocation.php" class="login-button blue-button">割り当てへ</a></span>
   <?php endif;?>
 </div>
 

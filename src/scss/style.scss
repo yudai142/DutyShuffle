@@ -182,16 +182,16 @@ input[type="date"] {
 .join_form{
   background-color: #D2DAF6;
   padding: 30px;
-  padding: 0 auto;
   border-radius: 20px;
   ul{
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
   li {
     // width: calc(25% - 50px * 3 / 4);
-    margin-right: 63px;
-    margin-top: 20px;
+    // margin-right: 63px;
+    // margin-top: 20px;
     &:nth-child(4n) {
       margin-right: 0;
     }
@@ -204,6 +204,7 @@ input[type="date"] {
     p {
       color: #1E9097;
       text-align: center;
+      width: 200px;
     }
   }
 }
@@ -234,7 +235,7 @@ input[type="date"] {
   background: rgba(0, 0, 0, 50%);
 
   /* padding: 40px 20px; */
-  overflow: auto;
+  // overflow: auto;
 
   /* opacity: 0; */
   display: none;
@@ -662,19 +663,21 @@ input[name="tab_item"] {
   background-color: #FFC738;
 }
 .button-group {
-  display: flex;
-  flex-wrap: wrap;
+  padding: 20px 0;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
-.b-select {
-  margin-top: 40px;
-  margin-left: 40px; 
-  width: calc(25% - 40px * 3 / 4);
-}
+// .b-select {
+//   margin-top: 40px;
+//   margin-left: 40px; 
+//   width: calc(25% - 40px * 3 / 4);
+// }
 
-.b-select:nth-child(4n+1) {
-  margin-left: 0px;
-}
+// .b-select:nth-child(4n+1) {
+//   margin-left: 0px;
+// }
 
 .input-tx {
   display: inline-block;
