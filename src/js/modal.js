@@ -179,14 +179,13 @@ $(document).on('click','input[name="area[]"]' , function() {
   }
 });
 
-$(document).on('click', ".select-member-button", function(e) {
-  if($(this).closest('.select-member').length && $(this).attr('value') != $('#checkboxes').closest('.select-member-button').attr('value') ){
-    let off = "#"+$('#checkboxes').closest('.select-member-button').attr('id');
-    let click_id = "#"+$(this).attr('id');
-    
-    let button_value = $(this).attr('value');
+$(document).on('click', function(e) {
+  if($(e.target).closest('.select-member-button').length && $(e.target).closest('.select-member-button').attr('value') != $('#checkboxes').find('#join-remove').attr('value') ){
+    let off_id = "#"+$('#checkboxes').closest('.select-member-button').attr('id');
+    let click_id = "#"+$(e.target).closest('.select-member-button').attr('id');
+    let button_value = $(e.target).closest('.select-member-button').attr('value');
     if($('#checkboxes').length){
-      $(off).find('#checkboxes').fadeOut().queue(function() {
+      $(off_id).find('#checkboxes').fadeOut().queue(function() {
         this.remove();
       });
     }
@@ -203,7 +202,7 @@ $(document).on('click', ".select-member-button", function(e) {
           $(click_id).append(`
             <div id="checkboxes">作業内容が登録されていません</div>
           `)
-          $(click_id).find('#checkboxes').fadeIn();
+          $(click_id).closest(".select-member").find('#checkboxes').fadeIn();
         }else if(data["err"] == null){
           let list = [];
           $.each(data, function(work_key, work_value){
@@ -217,12 +216,12 @@ $(document).on('click', ".select-member-button", function(e) {
                 <span>移動先を選んでください</span>
                 <br>
                 <button><label for="check-copy"><input type="checkbox" name="check-copy" id="check-copy" />複製して追加</label></button>
-                <button class='state-btn' data-target='remove-member' value=${button_value}>削除</button>
+                <button class='state-btn' data-target='remove-member' id="join-remove" value=${button_value}>削除</button>
               </div>
               ${list.join("")}
             </div>
           `)
-          $(click_id).find('#checkboxes').fadeIn();
+          $(click_id).closest(".select-member").find('#checkboxes').fadeIn();
         }else{
           $('#allocation-form').html(`<p>${data["err"]}</p>`);
         }
@@ -234,14 +233,6 @@ $(document).on('click', ".select-member-button", function(e) {
       }
     });
 	}else if($('#checkboxes').length && !($(e.target).closest('#check-form').attr('id') == "check-form")){
-    $('#checkboxes').fadeOut().queue(function() {
-      this.remove();
-    });
-  }
-});
-
-$(document).on('click', function() {
-  if($('#checkboxes').length){
     $('#checkboxes').fadeOut().queue(function() {
       this.remove();
     });
