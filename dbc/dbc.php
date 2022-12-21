@@ -5,7 +5,7 @@ if (!file_exists($filename)){
   function dbc(){
     try {
       $url = parse_url(getenv('CLEARDB_DATABASE_URL'));
-      $dsn = sprintf('mysql:host=%s;dbname=%s', $url['host'], substr($url['path'], 1));
+      $dsn = sprintf('mysql:host=%s;dbname=%s', $url['host'], substr($url['path'], 1),";charset=utf8mb4");
       $pdo = new PDO($dsn, $url['user'], $url['pass'], [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
