@@ -4,8 +4,8 @@ if (!file_exists($filename)){
   //For Heroku
   function dbc(){
     try {
-      $url = parse_url(getenv('DATABASE_URL'));
-      $dsn = sprintf('pgsql:host=%s;dbname=%s', $url['host'], substr($url['path'], 1));
+      $url = parse_url(getenv('CLEARDB_DATABASE_URL'));
+      $dsn = sprintf('mysql:host=%s;dbname=%s', $url['host'], substr($url['path'], 1));
       $pdo = new PDO($dsn, $url['user'], $url['pass'], [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
