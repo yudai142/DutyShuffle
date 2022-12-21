@@ -199,7 +199,7 @@ $(document).on('click', function(e) {
       },
       success: function(data) {
         if (data == null){
-          $(click_id).append(`
+          $(`${click_id} .button`).after(`
             <div id="checkboxes">作業内容が登録されていません</div>
           `)
           $(click_id).closest(".select-member").find('#checkboxes').fadeIn();
@@ -210,7 +210,7 @@ $(document).on('click', function(e) {
               <div class="select-work" value="${work_value.id}">${work_value.name}</div>
             `);
           });
-          $(click_id).append(`
+          $(`${click_id} .button`).after(`
             <div id="checkboxes">
               <div id="check-form">
                 <span>移動先を選んでください</span>

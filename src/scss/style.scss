@@ -198,11 +198,11 @@ input[type="date"] {
     &:nth-child(-n+4) {
       margin-top: 0;
     }
-    .button:nth-child(n+2) {
+    .select-member-button:nth-child(n+2) {
       margin-top: 8px;
     }
     p {
-      color: #1E9097;
+      color: green;
       text-align: center;
       width: 200px;
     }

@@ -42,7 +42,7 @@ $(function($){
               let member = data[1].filter(value => {if(value.work_id == work_value.id){return true;}});
               let list = [];
               $.each(member, function(member_key, member_value){
-                list.push(`<div class="button member select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}"><p style="color:white;">${member_value.family_name}　${member_value.given_name}</p></div>`);
+                list.push(`<div class="select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}"><div class="button member">${member_value.family_name}　${member_value.given_name}</div></div>`);
               });
               arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div>${list.join("")}</li>`);
             }else{
@@ -54,7 +54,7 @@ $(function($){
             let null_member = data[1].filter(value => {if(value.work_id == null){return true;}});
             let null_list = [];
             $.each(null_member, function(null_key, null_value){
-              null_list.push(`<li class="select-member"><div class="button member select-member-button" id="history_${null_value.history_id}" value="${null_value.history_id}"><p style="color:white;">${null_value.family_name}　${null_value.given_name}</p></div></li>`);
+              null_list.push(`<li class="select-member"><div class="select-member-button" id="history_${null_value.history_id}" value="${null_value.history_id}"><div class="button member">${null_value.family_name}　${null_value.given_name}</div></div></li>`);
             });
             $('#null-member-list').html(null_list);
           }
@@ -84,7 +84,7 @@ $(function($){
         }else if(data['err'] == null){
           let arr = [];
           $.each(data, function(key, value){
-            let work_name = (value.work_name != null)?`<p style="color:green;text-aline:center;">${value.work_name}</p>`:"";
+            let work_name = (value.work_name != null)?`<p>${value.work_name}</p>`:"";
             arr.push(`<li id=join_member_${value.history_id}><div class="button member state-btn" data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</div>${work_name}</li>`);
           });
           $('#join_member').html(arr);
@@ -603,7 +603,7 @@ $(function($){
         });
       }
     }else if ($(this).attr("data-target") == "allocation-remove") {
-      if (confirm(`割り当て済みの担当を全て解除します。よろしいでしょうか？`)) {
+      if (confirm(`割り当て済みの担当を全て解除します。よろしいですか？`)) {
         $.ajax({
           type: "POST",
           url: "../classes/ajax.php",

@@ -210,11 +210,11 @@ input[type=date]::-webkit-calendar-picker-indicator {
 .join_form li:nth-child(-n+4) {
   margin-top: 0;
 }
-.join_form li .button:nth-child(n+2) {
+.join_form li .select-member-button:nth-child(n+2) {
   margin-top: 8px;
 }
 .join_form li p {
-  color: #1E9097;
+  color: green;
   text-align: center;
   width: 200px;
 }
