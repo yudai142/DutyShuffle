@@ -10,7 +10,14 @@
               <input class="input-tx" id="name" type="text" required>
             </div>
             <div class="form">
-              <p class="item">参加枠数：<input class="input-tx" id="multiple" type="number" min=1 value=1 required> 枠</p>
+              <p class="item">参加枠数：</p>
+              <!-- <input class="input-tx" id="multiple" type="number" min=1 value=1 required> -->
+              <div class="spinner_area">
+                <div class="btn-spinner" data-cal="-1" data-target=".counter1">－</div>
+                <input type="number" id="multiple" value="1" class="counter1" min=1 data-min="1" required>
+                <div class="btn-spinner" data-cal="1" data-target=".counter1">＋</div>
+              </div>
+              <p class="item">枠</p>
             </div>
           </div>
           <div class="form-list">

@@ -47,6 +47,7 @@ h1 {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  white-space: nowrap;
 }
 
 .item {

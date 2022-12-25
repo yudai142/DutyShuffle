@@ -662,6 +662,47 @@ input[name=tab_item] {
   color: #fff;
 }
 
+/* 数字入力フォーム ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
+.btn-spinner {
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -webkit-user-select: none;
+  user-select: none;
+  padding: 0 15px;
+}
+.btn-spinner:hover {
+  opacity: 0.3;
+}
+
+.spinner_area {
+  background-color: #fff;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  line-height: 42px;
+  border-radius: 4px;
+  font-size: 18px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+  cursor: pointer;
+  color: #7B7A7A;
+}
+
+.spinner_area input {
+  text-align: center;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-top: 0;
+  border-bottom: 0;
+  font-size: 18px;
+  width: 100%;
+  vertical-align: middle;
+  /* デフォルトのスピナーを消す */
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
 /* 都留 */
 .container {
   width: 100%;
