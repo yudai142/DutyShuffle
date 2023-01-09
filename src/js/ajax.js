@@ -571,7 +571,7 @@ $(function($){
         alert_text = `${$(this).text()}さんを不参加にしますか？`
         add_text = ($(this).closest(`#join_member_${$(this).attr("value")}`).find('span').text() == 0)? "":`\n${$(this).closest(`#join_member_${$(this).attr("value")}`).find('span').text().slice( 0, -8 )}の担当も削除されます`;
       }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
-        alert_text = `${$(this).closest(".select-member-button").find("p").text()}さんを不参加にしますか？`
+        alert_text = `${$(this).closest(".select-member-button").find(".member").text()}さんを不参加にしますか？`
         add_text = ($(this).closest('.select-member').find('.md-btn').text() == 0)? "":`\n${$(this).closest('.select-member').find('.md-btn').text()}の担当も削除されます`;
       }
       
