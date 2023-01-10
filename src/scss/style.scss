@@ -644,10 +644,19 @@ input[name="tab_item"] {
   width: 100%;
   vertical-align: middle;
   /* デフォルトのスピナーを消す */
+  // -webkit-appearance: none;
+  // -moz-appearance:textfield;
+}
+/* Chrome/Safari */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  -moz-appearance:textfield;
 }
 
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 /* 都留 */
 
 .container {

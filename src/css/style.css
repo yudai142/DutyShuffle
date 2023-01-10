@@ -699,7 +699,16 @@ input[name=tab_item] {
   width: 100%;
   vertical-align: middle;
   /* デフォルトのスピナーを消す */
+}
+
+/* Chrome/Safari */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
+}
+
+/* Firefox */
+input[type=number] {
   -moz-appearance: textfield;
 }
 
