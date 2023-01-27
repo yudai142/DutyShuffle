@@ -204,19 +204,20 @@ input[type=date]::-webkit-calendar-picker-indicator {
   gap: 20px;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
-.join_form li:nth-child(4n) {
-  margin-right: 0;
+.join_form li {
+  margin: 0 auto;
 }
-.join_form li:nth-child(-n+4) {
-  margin-top: 0;
-}
-.join_form li .select-member-button:nth-child(n+2) {
-  margin-top: 8px;
+.join_form li .spinner_area {
+  margin-bottom: 8px;
 }
 .join_form li p {
   color: green;
   text-align: center;
   width: 200px;
+}
+
+#allocation-form .select-member-button {
+  margin-top: 8px;
 }
 
 .button_collection p {
@@ -675,6 +676,7 @@ input[name=tab_item] {
 }
 
 .spinner_area {
+  width: 200px;
   background-color: #fff;
   display: -webkit-box;
   display: -webkit-flex;
@@ -684,7 +686,6 @@ input[name=tab_item] {
   border-radius: 4px;
   font-size: 18px;
   border: 1px solid #ccc;
-  margin-right: 10px;
   cursor: pointer;
   color: #7B7A7A;
 }
@@ -779,6 +780,9 @@ input[type=number] {
   display: grid;
   gap: 20px;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+.button-group label {
+  margin: 0 auto;
 }
 
 .input-tx {

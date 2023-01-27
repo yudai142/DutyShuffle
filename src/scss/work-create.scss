@@ -34,10 +34,12 @@ h1 {
 
 .form {
   padding-bottom: 36px;
-
   /* margin-right: 30px; */
   display: flex;
-  white-space: nowrap
+  white-space: nowrap;
+  .spinner_area{
+    margin-right: 10px;
+  }
 }
 
 .item {

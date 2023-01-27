@@ -49,6 +49,9 @@ h1 {
   display: flex;
   white-space: nowrap;
 }
+.form .spinner_area {
+  margin-right: 10px;
+}
 
 .item {
   font-size: 36px;

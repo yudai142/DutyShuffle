@@ -42,9 +42,18 @@ $(function($){
               let member = data[1].filter(value => {if(value.work_id == work_value.id){return true;}});
               let list = [];
               $.each(member, function(member_key, member_value){
-                list.push(`<div class="select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}"><div class="button member">${member_value.family_name}　${member_value.given_name}</div></div>`);
+                list.push(`
+                  <div class="select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}">
+                    <div class="button member">${member_value.family_name}　${member_value.given_name}</div>
+                  </div>
+                `);
               });
-              arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div>${list.join("")}</li>`);
+              arr.push(`
+                <li class="select-member">
+                  <div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div>
+                  ${list.join("")}
+                </li>
+              `);
             }else{
               arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div></li>
               `);
@@ -783,7 +792,7 @@ $(function($){
   let spin_speed = 20; //変動スピード
   
   //長押し押下時
-  $('.btn-spinner').on('touchstart mousedown click', function(e){
+  $(document).on('touchstart mousedown click', '.btn-spinner', function(e){
       if(arySpinnerCtrl['interval']) return false;
       let target = $(this).data('target');
       arySpinnerCtrl['target'] = target;
