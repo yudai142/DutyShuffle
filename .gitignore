@@ -24,3 +24,4 @@ Homestead.json
 env.php
 .DS_Store
 .vscode
+docker/mysql/data
