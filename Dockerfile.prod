@@ -12,7 +12,19 @@ RUN apt-get update && apt-get install -y \
 
 # Node.jsのインストール（Prismaマイグレーション用）
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# アプリケーションファイルをコピー
+COPY . /app
+
+WORKDIR /app
+
+# npm依存関係のインストール
+RUN npm install
+
+# Prismaクライアント生成（ビルドステージで正しいバイナリで生成）
+RUN npx prisma generate
 
 # 本番環境ステージ
 FROM php:8.2-apache
@@ -33,14 +45,11 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# アプリケーションファイルをコピー
-COPY . .
+# ビルドステージからアプリケーションファイルをコピー
+COPY --from=builder /app .
 
 # 所有権を設定
 RUN chown -R www-data:www-data /var/www/html
-
-# キャッシュディレクトリを作成（Prismaクライアント用）
-RUN mkdir -p /var/www/html/node_modules/.prisma/client
 
 # Composerがインストール済みの場合
 RUN if [ -f "composer.json" ]; then \
@@ -48,11 +57,8 @@ RUN if [ -f "composer.json" ]; then \
     composer install --no-dev --optimize-autoloader; \
     fi
 
-# npm依存関係のインストール
-RUN npm install --production
-
-# Prismaクライアント生成用の環境変数を設定（マイグレーション時に生成）
-ENV PRISMA_SKIP_ENGINE_CHECK=true
+# npm依存関係を本番環境用にインストール
+RUN npm install --production --legacy-peer-deps
 
 # Apache設定ファイル作成
 RUN echo '<VirtualHost *:80>\n\
@@ -79,11 +85,11 @@ EXPOSE 10000
 # スタートアップスクリプト
 RUN echo '#!/bin/bash\n\
 set -e\n\
-echo "Generating Prisma client..."\n\
-npx prisma generate\n\
 echo "Running Prisma migrations..."\n\
 npx prisma migrate deploy\n\
 echo "Starting Apache..."\n\
 exec apache2-foreground' > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
+
+CMD ["/usr/local/bin/start.sh"]
 
 CMD ["/usr/local/bin/start.sh"]
