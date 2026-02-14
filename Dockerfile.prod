@@ -19,16 +19,19 @@ FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
-# 依存関係のインストール
+# 依存関係のインストール（ビルドとランタイムの両方）
 RUN apt-get update && apt-get install -y \
+    libpq-dev \
     libpq5 \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql \
+    && apt-get remove -y libpq-dev \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
 # Node.jsのインストール
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
 
 # アプリケーションファイルをコピー
 COPY . .
