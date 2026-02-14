@@ -51,8 +51,8 @@ RUN if [ -f "composer.json" ]; then \
 # npm依存関係のインストール
 RUN npm install --production
 
-# Prismaクライアントの生成
-RUN npx prisma generate
+# Prismaクライアント生成用の環境変数を設定（マイグレーション時に生成）
+ENV PRISMA_SKIP_ENGINE_CHECK=true
 
 # Apache設定ファイル作成
 RUN echo '<VirtualHost *:80>\n\
@@ -79,8 +79,10 @@ EXPOSE 10000
 # スタートアップスクリプト
 RUN echo '#!/bin/bash\n\
 set -e\n\
+echo "Generating Prisma client..."\n\
+npx prisma generate\n\
 echo "Running Prisma migrations..."\n\
-npx prisma migrate deploy --preview-feature\n\
+npx prisma migrate deploy\n\
 echo "Starting Apache..."\n\
 exec apache2-foreground' > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
 
