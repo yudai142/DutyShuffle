@@ -25,31 +25,33 @@ if (file_exists($filename)){
   }
   // echo "接続テスト"
   // echo connect();
-}else if($env){
-  //For Docker
-  require_once '../env.php';
-  // ini_set('display_errors', true);
-  function dbc(){
-    $host = getenv('DB_HOST');
-    $db = getenv('DB_NAME');
-    $user = getenv('DB_USER');
-    $pass = getenv('DB_PASSWORD');
-    $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
-    try {
-      $pdo = new PDO($dsn, $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-      ]);
-      // echo 'Mysql接続に成功しました';
-      // echo '<br>';
-      return $pdo;
-    } catch(PDOException $e) {
-      exit($e->getMessage());
-    }
-  }
-  // echo "接続テスト"
-  // echo connect();
-}else{
+}
+// else if($env){
+//   //For Docker
+//   require_once '../env.php';
+//   // ini_set('display_errors', true);
+//   function dbc(){
+//     $host = getenv('DB_HOST');
+//     $db = getenv('DB_NAME');
+//     $user = getenv('DB_USER');
+//     $pass = getenv('DB_PASSWORD');
+//     $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+//     try {
+//       $pdo = new PDO($dsn, $user, $pass, [
+//         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+//         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+//       ]);
+//       // echo 'Mysql接続に成功しました';
+//       // echo '<br>';
+//       return $pdo;
+//     } catch(PDOException $e) {
+//       exit($e->getMessage());
+//     }
+//   }
+//   // echo "接続テスト"
+//   // echo connect();
+// }
+else{
   //For Render.com PostgreSQL
   function dbc(){
     try {
