@@ -23,11 +23,8 @@ WORKDIR /app
 # npm依存関係のインストール
 RUN npm install
 
-# ビルド用の環境変数ファイルを作成
-RUN echo "DATABASE_URL=\"postgresql://sample_app_db_9yxh_user:e9oFIkZYzzQ2X2vxaT1qoDHrTFWjy1uL@dpg-d66ol65um26s738281kg-a.singapore-postgres.render.com/sample_app_db_9yxh\"" > /app/.env
-
-# Prismaクライアント生成（ビルドステージで正しいバイナリで生成）
-RUN cd /app && npx prisma generate
+# Prismaエンジンキャッシュをクリア
+RUN rm -rf node_modules/.prisma
 
 # 本番環境ステージ
 FROM php:8.2-apache
@@ -88,11 +85,11 @@ EXPOSE 10000
 # スタートアップスクリプト
 RUN echo '#!/bin/bash\n\
 set -e\n\
+echo "Generating Prisma client..."\n\
+npx prisma generate\n\
 echo "Running Prisma migrations..."\n\
 npx prisma migrate deploy\n\
 echo "Starting Apache..."\n\
 exec apache2-foreground' > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
-
-CMD ["/usr/local/bin/start.sh"]
 
 CMD ["/usr/local/bin/start.sh"]
