@@ -23,12 +23,8 @@ WORKDIR /app
 # npm依存関係のインストール
 RUN npm install
 
-# ビルド用の環境変数ファイルを作成（環境変数から読み込み）
-RUN if [ -z "$DATABASE_URL" ]; then \
-    echo "DATABASE_URL=\"postgresql://sample_app_db_9yxh_user:e9oFIkZYzzQ2X2vxaT1qoDHrTFWjy1uL@dpg-d66ol65um26s738281kg-a.singapore-postgres.render.com/sample_app_db_9yxh"" > /app/.env; \
-    else \
-    echo "DATABASE_URL=\"$DATABASE_URL\"" > /app/.env; \
-    fi
+# ビルド用の環境変数ファイルを作成
+RUN echo "DATABASE_URL=\"postgresql://sample_app_db_9yxh_user:e9oFIkZYzzQ2X2vxaT1qoDHrTFWjy1uL@dpg-d66ol65um26s738281kg-a.singapore-postgres.render.com/sample_app_db_9yxh\"" > /app/.env
 
 # Prismaクライアント生成（ビルドステージで正しいバイナリで生成）
 RUN cd /app && npx prisma generate
@@ -96,5 +92,7 @@ echo "Running Prisma migrations..."\n\
 npx prisma migrate deploy\n\
 echo "Starting Apache..."\n\
 exec apache2-foreground' > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
+
+CMD ["/usr/local/bin/start.sh"]
 
 CMD ["/usr/local/bin/start.sh"]
