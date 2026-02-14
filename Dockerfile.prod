@@ -1,0 +1,84 @@
+# ビルドステージ
+FROM php:8.2-apache AS builder
+
+# 依存関係のインストール
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
+
+# Node.jsのインストール（Prismaマイグレーション用）
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
+# 本番環境ステージ
+FROM php:8.2-apache
+
+WORKDIR /var/www/html
+
+# 依存関係のインストール
+RUN apt-get update && apt-get install -y \
+    libpq5 \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
+
+# Node.jsのインストール
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
+# アプリケーションファイルをコピー
+COPY . .
+
+# 所有権を設定
+RUN chown -R www-data:www-data /var/www/html
+
+# キャッシュディレクトリを作成（Prismaクライアント用）
+RUN mkdir -p /var/www/html/node_modules/.prisma/client
+
+# Composerがインストール済みの場合
+RUN if [ -f "composer.json" ]; then \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    composer install --no-dev --optimize-autoloader; \
+    fi
+
+# npm依存関係のインストール
+RUN npm install --production
+
+# Prismaクライアントの生成
+RUN npx prisma generate
+
+# Apache設定ファイル作成
+RUN echo '<VirtualHost *:80>\n\
+    ServerName _\n\
+    DocumentRoot /var/www/html\n\
+    <Directory /var/www/html>\n\
+        Options -Indexes +FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+        <IfModule mod_rewrite.c>\n\
+            RewriteEngine On\n\
+            RewriteCond %{REQUEST_FILENAME} !-f\n\
+            RewriteCond %{REQUEST_FILENAME} !-d\n\
+            RewriteRule ^ /index.php [QSA,L]\n\
+        </IfModule>\n\
+    </Directory>\n\
+    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
+    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+
+# ポート設定
+EXPOSE 10000
+
+# スタートアップスクリプト
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "Running Prisma migrations..."\n\
+npx prisma migrate deploy --preview-feature\n\
+echo "Starting Apache..."\n\
+exec apache2-foreground' > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
+
+CMD ["/usr/local/bin/start.sh"]

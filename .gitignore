@@ -22,6 +22,9 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 env.php
+.env
+.env.production
 .DS_Store
 .vscode
 docker/mysql/data
+.prisma/

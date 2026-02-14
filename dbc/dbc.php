@@ -50,12 +50,29 @@ if (file_exists($filename)){
   // echo "接続テスト"
   // echo connect();
 }else{
-  //For Heroku
+  //For Render.com PostgreSQL
   function dbc(){
     try {
-      $url = parse_url(getenv('CLEARDB_DATABASE_URL'));
-      $dsn = sprintf('mysql:host=%s;dbname=%s', $url['host'], substr($url['path'], 1),";charset=utf8mb4");
-      $pdo = new PDO($dsn, $url['user'], $url['pass'], [
+      $databaseUrl = getenv('DATABASE_URL');
+      if ($databaseUrl) {
+        // DATABASE_URL形式: postgresql://user:password@host:port/database
+        $url = parse_url($databaseUrl);
+        $host = $url['host'];
+        $port = $url['port'] ?? 5432;
+        $db = ltrim($url['path'], '/');
+        $user = $url['user'];
+        $pass = $url['pass'];
+        $dsn = "pgsql:host=$host;port=$port;dbname=$db";
+      } else {
+        // フォールバック: 環境変数から
+        $host = getenv('DB_HOST') ?: 'localhost';
+        $port = getenv('DB_PORT') ?: 5432;
+        $db = getenv('DB_NAME') ?: 'duty_shuffle';
+        $user = getenv('DB_USER') ?: 'postgres';
+        $pass = getenv('DB_PASS') ?: '';
+        $dsn = "pgsql:host=$host;port=$port;dbname=$db";
+      }
+      $pdo = new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
       ]);

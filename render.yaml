@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: duty-shuffle
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile.prod
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        scope: run
+        sync: false
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+    startCommand: /usr/local/bin/start.sh
+    ports:
+      - port: 10000
+        protocol: HTTP
+
+databases:
+  - name: duty-shuffle-db
+    databaseName: duty_shuffle
+    plan: free
+    region: oregon
+    ipAllowList: []
