@@ -754,6 +754,7 @@ try{
         $date = date('Y-m-d', strtotime($_REQUEST['date']));
         $sql = "SELECT id, multiple FROM work WHERE archive=false";
         $sql2 = "SELECT id, member_id, work_id FROM history WHERE date=?";
+        $sql3 = "SELECT work_id FROM off_work WHERE date=?";
         
         if (!($stmt = dbc()->query($sql))) {
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
@@ -764,11 +765,20 @@ try{
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
           exit;
         }
+        $stmt3 = dbc()->prepare($sql3);
+        if (!($stmt3->execute(array($date)))) {
+          echo json_encode(array("err" => "処理が正しく実行されませんでした"));
+          exit;
+        }
+        $off_works = $stmt3->fetchAll(PDO::FETCH_COLUMN);
         $work_list = [];
         foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-          for($i = 0; $i < $row["multiple"]; $i++){
-            $work_list[] = $row["id"];
-          };
+          // off_workテーブルで指定日付にOFF状態の作業は除外
+          if(!in_array($row["id"], $off_works)){
+            for($i = 0; $i < $row["multiple"]; $i++){
+              $work_list[] = $row["id"];
+            };
+          }
         }
 
         $history_list = [];
