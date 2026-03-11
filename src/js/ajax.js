@@ -3,8 +3,12 @@ $(function($){
   $.ajaxSetup({
     timeout: 10000, // 10秒
     complete: function() {
-      // 各AJAX通信の完了後にajaxStopをトリガー
-      $(document).trigger('ajaxStop');
+      // DOM操作が完了してからajaxStopをトリガー
+      setTimeout(function() {
+        requestAnimationFrame(function() {
+          $(document).trigger('ajaxStop');
+        });
+      }, 0);
     }
   });
 
