@@ -1,7 +1,7 @@
 $(function($){
-  // グローバルAjax設定 - すべてのAJAXリクエストに10秒のタイムアウトを設定
+  // グローバルAjax設定 - すべてのAJAXリクエストに30秒のタイムアウトを設定
   $.ajaxSetup({
-    timeout: 10000, // 10秒
+    timeout:30000, // 30秒
     complete: function() {
       // DOM操作が完了してからajaxStopをトリガー
       setTimeout(function() {
