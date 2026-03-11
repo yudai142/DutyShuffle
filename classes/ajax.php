@@ -65,7 +65,7 @@ try{
       exit;
     case 'join_member':
       $date = date('Y-m-d', strtotime($_REQUEST['date']));
-      $sql = "SELECT history.id ,family_name, given_name, work_id FROM history, member WHERE date=? AND member.id = history.member_id group by member_id ORDER BY member.kana_name ASC";
+      $sql = "SELECT DISTINCT ON (member_id) history.id, family_name, given_name, work_id FROM history, member WHERE date=? AND member.id = history.member_id ORDER BY member_id, member.kana_name ASC";
       $sql2 = "SELECT id ,name FROM work";
 
       $stmt = dbc()->prepare($sql);
@@ -98,7 +98,7 @@ try{
       exit;
     case 'join_work':
       $date = date('Y-m-d', strtotime($_REQUEST['date']));
-      $sql = "SELECT id, name FROM work WHERE archive=0";
+      $sql = "SELECT id, name FROM work WHERE archive=false";
       if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
@@ -752,7 +752,7 @@ try{
     case 'shuffle':
       if(isset($_REQUEST["date"])){
         $date = date('Y-m-d', strtotime($_REQUEST['date']));
-        $sql = "SELECT id, multiple FROM work WHERE archive=0";
+        $sql = "SELECT id, multiple FROM work WHERE archive=false";
         $sql2 = "SELECT id, member_id, work_id FROM history WHERE date=?";
         
         if (!($stmt = dbc()->query($sql))) {
