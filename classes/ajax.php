@@ -294,17 +294,19 @@ try{
       echo json_encode("work");
       exit;
     case 'member_list':
-      if($_REQUEST['select'] == "1"){
-        $sql = "SELECT * FROM member WHERE archive = 0";
-      }else if($_REQUEST['select'] == "2"){
-        $sql = "SELECT * FROM member WHERE archive = 1";
+      $select = isset($_REQUEST['select']) ? $_REQUEST['select'] : '0';
+      if($select == "1"){
+        $sql = "SELECT * FROM member WHERE archive = 0 ORDER BY kana_name ASC";
+      }else if($select == "2"){
+        $sql = "SELECT * FROM member WHERE archive = 1 ORDER BY kana_name ASC";
       }else{
-        $sql = "SELECT * FROM member";
+        $sql = "SELECT * FROM member ORDER BY kana_name ASC";
       }
       if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
+      $productList = [];
       foreach($stmt as $row) {
         $productList[] = array(
           'id'    => $row['id'],
@@ -312,31 +314,33 @@ try{
           'given_name' => $row['given_name']
         );
       }
-      if(!isset($productList)){
+      if(count($productList) == 0){
         echo json_encode(null);
         exit;
       }
       echo json_encode($productList);
       exit;
     case 'work_list':
-      if($_REQUEST['select'] == "1"){
-        $sql = "SELECT * FROM work WHERE archive = 0";
-      }else if($_REQUEST['select'] == "2"){
-        $sql = "SELECT * FROM work WHERE archive = 1";
+      $select = isset($_REQUEST['select']) ? $_REQUEST['select'] : '0';
+      if($select == "1"){
+        $sql = "SELECT * FROM work WHERE archive = 0 ORDER BY id ASC";
+      }else if($select == "2"){
+        $sql = "SELECT * FROM work WHERE archive = 1 ORDER BY id ASC";
       }else{
-        $sql = "SELECT * FROM work";
+        $sql = "SELECT * FROM work ORDER BY id ASC";
       }
       if (!($stmt = dbc()->query($sql))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
+      $productList = [];
       foreach($stmt as $row) {
         $productList[] = array(
           'id'    => $row['id'],
           'name'  => $row['name']
         );
       }
-      if(!isset($productList)){
+      if(count($productList) == 0){
         echo json_encode(null);
         exit;
       }
