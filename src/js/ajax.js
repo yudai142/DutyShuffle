@@ -121,10 +121,10 @@ $(function($){
           $('#join_member').append(`<p>${data["err"]}</p>`);
         }
       },
-      error: function(){
+      error: function(xhr, status, error){
         $('#join_member').append("<p>通信エラー</p>");
         console.log("通信失敗");
-        console.log(data);
+        console.log(error);
       }
     });
   }
@@ -149,10 +149,10 @@ $(function($){
           $('#join_work').append(`<p>${data["err"]}</p>`);
         }
       },
-      error: function(){
+      error: function(xhr, status, error){
         $('#join_work').append("<p>通信エラー</p>");
         console.log("通信失敗");
-        console.log(data);
+        console.log(error);
       }
     });
   }
@@ -176,10 +176,10 @@ $(function($){
           $('#member_show_result').append(`<p>${data["err"]}</p>`);
         }
       },
-      error: function(){
+      error: function(xhr, status, error){
         $('#member_show_result').append("<p>通信エラー</p>");
         console.log("通信失敗");
-        console.log(data);
+        console.log(error);
       }
     });
     // return false
@@ -205,10 +205,10 @@ $(function($){
           $('#work_show_result').append(`<p>${data["err"]}</p>`);
         }
       },
-      error: function(){
+      error: function(xhr, status, error){
         $('#work_show_result').append("<p>通信エラー</p>");
         console.log("通信失敗");
-        console.log(data);
+        console.log(error);
       }
     });
     // return false
@@ -303,10 +303,10 @@ $(function($){
           $('#option_list').append(`<p>${data["err"]}</p>`);
         }
       },
-      error: function(){
+      error: function(xhr, status, error){
         $('#option_list').append("<p>通信エラー</p>");
         console.log("通信失敗");
-        console.log(data);
+        console.log(error);
       }
     });
   }
