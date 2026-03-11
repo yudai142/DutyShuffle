@@ -92,10 +92,10 @@ $(function($){
           $('#allocation-form').html(`<p>${data["err"]}</p>`);
         }
       },
-      error: function(data) {
+      error: function(xhr, status, error) {
         $('#allocation-form').html("<p>通信エラー</p>");
         console.log("通信失敗");
-        console.log(data);
+        console.log(error);
       }
     });
   }
@@ -341,10 +341,10 @@ $(function($){
               $('#member_result').html(`<p>${data["err"]}</p>`);
             }
           },
-          error: function(data) {
+          error: function(xhr, status, error) {
             $('#member_result').html("<p>入力エラー</p>");
             console.log("通信失敗");
-            console.log(data);
+            console.log(error);
           }
         });
       }else{
@@ -371,10 +371,10 @@ $(function($){
               $('#member_result').html(`<p>${data["err"]}</p>`);
             }
           },
-          error: function(data) {
+          error: function(xhr, status, error) {
             $('#member_result').html("<p>入力エラー</p>");
             console.log("通信失敗");
-            console.log(data);
+            console.log(error);
           }
         });
       }
@@ -410,10 +410,10 @@ $(function($){
               $('#work_result').html(`<p>${data["err"]}</p>`);
             }
           },
-          error: function(data) {
+          error: function(xhr, status, error) {
             $('#work_result').html("<p>入力エラー</p>");
             console.log("通信失敗");
-            console.log(data);
+            console.log(error);
           }
         });
       }else{
@@ -438,10 +438,10 @@ $(function($){
               $('#work_result').html(`<p>${data["err"]}</p>`);
             }
           },
-          error: function(data) {
+          error: function(xhr, status, error) {
             $('#work_result').html("<p>入力エラー</p>");
             console.log("通信失敗");
-            console.log(data);
+            console.log(error);
           }
         });
       }
@@ -515,10 +515,10 @@ $(function($){
             $('#select_result').html(`<p>${data["err"]}</p>`);
           }
         },
-        error: function(data) {
+        error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
           console.log("通信失敗");
-          console.log(data);
+          console.log(error);
         }
       });
     }
@@ -547,10 +547,10 @@ $(function($){
             $('#select_result').html(`<p>${data["err"]}</p>`);
           }
         },
-        error: function(data) {
+        error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
           console.log("通信失敗");
-          console.log(data);
+          console.log(error);
         }
       });
     }
@@ -587,10 +587,10 @@ $(function($){
             $('#select_result').html(`<p>${data["err"]}</p>`);
           }
         },
-        error: function(data) {
+        error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
           console.log("通信失敗");
-          console.log(data);
+          console.log(error);
         }
       });
     }else if ($(this).attr("data-target") == "remove-member") {
@@ -624,10 +624,10 @@ $(function($){
               $('#select_result').html(`<p>${data["err"]}</p>`);
             }
           },
-          error: function(data) {
+          error: function(xhr, status, error) {
             $('#select_result').html("<p>入力エラー</p>");
             console.log("通信失敗");
-            console.log(data);
+            console.log(error);
           }
         });
       }
@@ -652,10 +652,10 @@ $(function($){
               $('#select_result').html(`<p>${data["err"]}</p>`);
             }
           },
-          error: function(data) {
+          error: function(xhr, status, error) {
             $('#select_result').html("<p>入力エラー</p>");
             console.log("通信失敗");
-            console.log(data);
+            console.log(error);
           }
         });
       }
@@ -680,10 +680,10 @@ $(function($){
             $('#select_result').html(`<p>${data["err"]}</p>`);
           }
         },
-        error: function(data) {
+        error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
           console.log("通信失敗");
-          console.log(data);
+          console.log(error);
         }
       });
     }else if ($(this).attr("data-target") == "add-member_option") {
@@ -711,10 +711,10 @@ $(function($){
               $('#select_result').html(`<p>${data["err"]}</p>`);
             }
           },
-          error: function(data) {
+          error: function(xhr, status, error) {
             $('#select_result').html("<p>入力エラー</p>");
             console.log("通信失敗");
-            console.log(data);
+            console.log(error);
           }
         })
       }
@@ -751,10 +751,10 @@ $(function($){
                       $('#select_result').html(`<p>${data["err"]}</p>`);
                     }
                   },
-                  error: function(data) {
+                  error: function(xhr, status, error) {
                     $('#select_result').html("<p>入力エラー</p>");
                     console.log("通信失敗");
-                    console.log(data);
+                    console.log(error);
                   }
                 })
               }
@@ -762,10 +762,10 @@ $(function($){
               $('#select_result').html(`<p>${data["err"]}</p>`);
             }
           },
-          error: function(data) {
+          error: function(xhr, status, error) {
             $('#select_result').html("<p>情報の取得に失敗しました</p>");
             console.log("通信失敗");
-            console.log(data);
+            console.log(error);
           }
         })
       }
@@ -799,10 +799,10 @@ $(function($){
             $('#select_result').html(`<p>${data["err"]}</p>`);
           }
         },
-        error: function(data) {
+        error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
           console.log("通信失敗");
-          console.log(data);
+          console.log(error);
         }
       })
     }
