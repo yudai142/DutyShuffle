@@ -21,3 +21,8 @@
     <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
   </head>
   <body>
+  <!-- ローディングアイコン -->
+  <div id="loading-spinner" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <p>読み込み中...</p>
+  </div>

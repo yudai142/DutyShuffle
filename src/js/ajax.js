@@ -1,4 +1,19 @@
 $(function($){
+  // グローバルAjax設定 - すべてのAJAXリクエストに10秒のタイムアウトを設定
+  $.ajaxSetup({
+    timeout: 10000 // 10秒
+  });
+
+  // グローバルなAJAXイベントハンドラ - すべてのAJAXリクエストで自動的にローディングを表示/非表示
+  $(document).on('ajaxStart', function() {
+    $('#loading-spinner').removeClass('hidden').addClass('show');
+  });
+
+  // ajaxComplete：成功・失敗問わずすべてのAJAX通信完了時に実行
+  $(document).on('ajaxComplete', function() {
+    $('#loading-spinner').removeClass('show').addClass('hidden');
+  });
+
   if ( location.pathname.indexOf("/create-edit.php") !== -1 ){
     $("#create-edit_page").html("<p>登録・編集</p>");
     getAllMember();
