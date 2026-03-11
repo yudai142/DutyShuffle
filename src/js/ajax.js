@@ -170,8 +170,8 @@ $(function($){
           let arr = []
           $.each(data, function(key, value){
             arr.push(`<div id=member_${value.id} class="button member b-select md-btn" data-target='modal-member' value=${value.id}>${value.family_name}　${value.given_name}</div>`);
-            $('#member_show_result').html(arr);
           });
+          $('#member_show_result').html(arr);
         }else{
           $('#member_show_result').append(`<p>${data["err"]}</p>`);
         }
