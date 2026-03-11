@@ -1,14 +1,20 @@
 $(function($){
+  // DOM操作完了を追跡するPromise
+  let domOperationPromise = Promise.resolve();
+
   // グローバルAjax設定 - すべてのAJAXリクエストに30秒のタイムアウトを設定
   $.ajaxSetup({
-    timeout:30000, // 30秒
     complete: function() {
-      // DOM操作が完了してからajaxStopをトリガー
-      setTimeout(function() {
-        requestAnimationFrame(function() {
-          $(document).trigger('ajaxStop');
-        });
-      }, 0);
+      // DOM操作が完了するまで待機するPromiseを作成
+      domOperationPromise = new Promise(resolve => {
+        setTimeout(function() {
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              resolve();
+            });
+          });
+        }, 0);
+      });
     }
   });
 
@@ -18,8 +24,10 @@ $(function($){
   });
 
   // ajaxStop：すべてのAJAX通信が完了したときに実行
-  $(document).on('ajaxStop', function() {
-    // requestAnimationFrameを使ってブラウザの再描画を待機
+  $(document).on('ajaxStop', async function() {
+    // DOM操作の完了を待つ
+    await domOperationPromise;
+    // ローダーを消す
     $('#loading-spinner').removeClass('show').addClass('hidden');
   });
 
