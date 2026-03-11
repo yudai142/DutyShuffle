@@ -9,8 +9,8 @@ $(function($){
     $('#loading-spinner').removeClass('hidden').addClass('show');
   });
 
-  // ajaxComplete：成功・失敗問わずすべてのAJAX通信完了時に実行
-  $(document).on('ajaxComplete', function() {
+  // ajaxStop：すべてのAJAX通信が完了したときに実行
+  $(document).on('ajaxStop', function() {
     $('#loading-spinner').removeClass('show').addClass('hidden');
   });
 
