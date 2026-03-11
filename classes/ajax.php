@@ -48,7 +48,7 @@ try{
       $off_works = $stmt3->fetchAll(PDO::FETCH_COLUMN);
 
       foreach($work_list as $row) {
-        if(in_array($row['id'], $work_id_list) || $row['archive'] == 0){
+        if(in_array($row['id'], $work_id_list) || $row['archive'] == false){
           $status = (in_array($row['id'], $off_works))? "0" : "1";
           $productList[0][] = array(
             'id'    => $row['id'],
@@ -143,7 +143,7 @@ try{
         $checked[] = $row['member_id'];
       }
       foreach($stmt as $row) {
-        if(in_array($row['id'], $checked) || $row['archive'] == 0){
+        if(in_array($row['id'], $checked) || $row['archive'] == false){
           $productList[] = array(
             'id'    => $row['id'],
             'family_name'  => $row['family_name'],
@@ -296,9 +296,9 @@ try{
     case 'member_list':
       $select = isset($_REQUEST['select']) ? $_REQUEST['select'] : '0';
       if($select == "1"){
-        $sql = "SELECT * FROM member WHERE archive = 0 ORDER BY kana_name ASC";
+        $sql = "SELECT * FROM member WHERE archive = false ORDER BY kana_name ASC";
       }else if($select == "2"){
-        $sql = "SELECT * FROM member WHERE archive = 1 ORDER BY kana_name ASC";
+        $sql = "SELECT * FROM member WHERE archive = true ORDER BY kana_name ASC";
       }else{
         $sql = "SELECT * FROM member ORDER BY kana_name ASC";
       }
@@ -323,9 +323,9 @@ try{
     case 'work_list':
       $select = isset($_REQUEST['select']) ? $_REQUEST['select'] : '0';
       if($select == "1"){
-        $sql = "SELECT * FROM work WHERE archive = 0 ORDER BY id ASC";
+        $sql = "SELECT * FROM work WHERE archive = false ORDER BY id ASC";
       }else if($select == "2"){
-        $sql = "SELECT * FROM work WHERE archive = 1 ORDER BY id ASC";
+        $sql = "SELECT * FROM work WHERE archive = true ORDER BY id ASC";
       }else{
         $sql = "SELECT * FROM work ORDER BY id ASC";
       }
@@ -528,7 +528,7 @@ try{
       
       $history = $stmt->fetch(PDO::FETCH_ASSOC);
       foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if($row['id'] != $history['work_id'] && $row['archive'] == 0){
+        if($row['id'] != $history['work_id'] && $row['archive'] == false){
           $productList[] = array(
             'id'    => $row['id'],
             'name'  => $row['name']
