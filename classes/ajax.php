@@ -802,5 +802,6 @@ try{
       exit;
   };
 }catch(PDOException $e){
-  exit($e->getMessage());
+  echo json_encode(array("err" => "データベースエラーが発生しました: " . $e->getMessage()));
+  exit;
 }
