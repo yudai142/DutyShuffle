@@ -16,9 +16,7 @@ $(function($){
   // ajaxStop：すべてのAJAX通信が完了したときに実行
   $(document).on('ajaxStop', function() {
     // requestAnimationFrameを使ってブラウザの再描画を待機
-    requestAnimationFrame(function() {
-      $('#loading-spinner').removeClass('show').addClass('hidden');
-    });
+    $('#loading-spinner').removeClass('show').addClass('hidden');
   });
 
   if ( location.pathname.indexOf("/create-edit.php") !== -1 ){
