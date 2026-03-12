@@ -123,7 +123,7 @@ fi
 
 # Prisma Client生成（エンジン互換性を考慮）
 echo "Generating Prisma Client..."
-npm exec prisma generate || true
+npm exec prisma generate --skip-engine-check 2>/dev/null || true
 
 # データベース存在確認
 echo "Checking database existence..."

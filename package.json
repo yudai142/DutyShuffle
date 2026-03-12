@@ -13,8 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.0.0",
-    "prisma": "^5.0.0"
+    "@prisma/client": "latest",
+    "prisma": "latest"
   },
   "devDependencies": {
     "prisma": "^4.6.1"
