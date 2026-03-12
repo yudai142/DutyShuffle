@@ -18,18 +18,13 @@
                 <div class="btn-spinner" data-cal="1" data-target=".counter1">＋</div>
               </div>
               <p class="item">枠</p>
+              <div class="toggle-buttons">
+                <label><input type="radio" name="is_above" value="1" checked> 以上</label>
+                <label><input type="radio" name="is_above" value="0"> 以下</label>
+              </div>
             </div>
           </div>
           <div class="form-list">
-            <div class="form">
-              <details class="accordion">
-                <summary id="is_above_label">以上</summary>
-                <div class="accordion-content">
-                  <label><input type="radio" name="is_above" value="1" checked> 以上</label>
-                  <label><input type="radio" name="is_above" value="0"> 以下</label>
-                </div>
-              </details>
-            </div>
             <div class="form">
               <p class="item">無効：</p>
               <input  type="checkbox" class="checkbox" id="work_archive" value="">

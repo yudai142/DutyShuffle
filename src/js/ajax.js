@@ -869,9 +869,5 @@ $(function($){
       }
   }
 
-  // アコーディオン内のラジオボタン変更時に summary テキストを更新
-  $('input[name="is_above"]').on('change', function() {
-    const label = $(this).val() === '1' ? '以上' : '以下';
-    $(this).closest('.accordion').find('summary').text(label);
-  });
+
 });
