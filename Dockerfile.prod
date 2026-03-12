@@ -57,9 +57,6 @@ RUN if [ -f "composer.json" ]; then \
 # npm依存関係をインストール（@prisma/clientを含む）
 RUN npm install --omit=dev --legacy-peer-deps
 
-# Prisma Clientを事前生成（メモリ消費削減のため）
-RUN npm exec prisma generate
-
 # Apache設定ファイル作成
 RUN cat > /etc/apache2/sites-available/000-default.conf << 'EOF'
 <VirtualHost *:80>
