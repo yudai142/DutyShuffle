@@ -46,6 +46,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # ビルドステージからアプリケーションファイルをコピー
 COPY --from=builder /app .
 
+# Prismaのキャッシュをクリア（バイナリターゲット互換性確保）
+RUN rm -rf node_modules/.prisma
+
 # 所有権を設定
 RUN chown -R www-data:www-data /var/www/html
 
@@ -120,6 +123,7 @@ cd /var/www/html
 if [ ! -f ".env" ]; then
     echo "Creating .env file..."
     echo "DATABASE_URL=\"$DATABASE_URL\"" > .env
+    echo "PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1" >> .env
     chmod 400 .env
 fi
 
