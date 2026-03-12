@@ -23,10 +23,7 @@ WORKDIR /app
 # npm依存関係のインストール
 RUN npm install
 
-# Prismaエンジンキャッシュをクリア
-RUN rm -rf node_modules/.prisma
-
-# 本番環境ステージ
+# ビルドステージの完了
 FROM php:8.2-apache
 
 WORKDIR /var/www/html
@@ -57,27 +54,29 @@ RUN if [ -f "composer.json" ]; then \
     composer install --no-dev --optimize-autoloader; \
     fi
 
-# npm依存関係を本番環境用にインストール
-RUN npm install --production --legacy-peer-deps
+# npm依存関係をインストール（@prisma/clientを含む）
+RUN npm install --omit=dev --legacy-peer-deps
 
 # Apache設定ファイル作成
-RUN echo '<VirtualHost *:80>\n\
-    ServerName _\n\
-    DocumentRoot /var/www/html\n\
-    <Directory /var/www/html>\n\
-        Options -Indexes +FollowSymLinks\n\
-        AllowOverride All\n\
-        Require all granted\n\
-        <IfModule mod_rewrite.c>\n\
-            RewriteEngine On\n\
-            RewriteCond %{REQUEST_FILENAME} !-f\n\
-            RewriteCond %{REQUEST_FILENAME} !-d\n\
-            RewriteRule ^ /index.php [QSA,L]\n\
-        </IfModule>\n\
-    </Directory>\n\
-    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
-    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
-</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+RUN cat > /etc/apache2/sites-available/000-default.conf << 'EOF'
+<VirtualHost *:80>
+    ServerName _
+    DocumentRoot /var/www/html
+    <Directory /var/www/html>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+        <IfModule mod_rewrite.c>
+            RewriteEngine On
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteCond %{REQUEST_FILENAME} !-d
+            RewriteRule ^ /index.php [QSA,L]
+        </IfModule>
+    </Directory>
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+EOF
 
 # ポート設定
 EXPOSE 10000
