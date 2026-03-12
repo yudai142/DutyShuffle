@@ -125,13 +125,13 @@ fi
 echo "Checking database existence..."
 if psql "$DATABASE_URL" -c "SELECT 1;" >/dev/null 2>&1; then
     echo "✓ Database exists - Running migrations only..."
-    npx prisma migrate deploy
+    npm run db:migrate
 else
     echo "✗ Database does not exist - Creating and initializing..."
     
     # データベース作成とスキーマ同期
     echo "Creating database and applying schema..."
-    npx prisma db push --skip-generate
+    npm run db:push
     
     if [ $? -eq 0 ]; then
         echo "✓ Database created and schema applied successfully"
@@ -142,7 +142,7 @@ else
     
     # マイグレーション実行
     echo "Running database migrations..."
-    npx prisma migrate deploy
+    npm run db:migrate
     
     if [ $? -eq 0 ]; then
         echo "✓ Database migration completed successfully"
@@ -152,7 +152,7 @@ else
     
     # 初回のみシードデータ投入
     echo "Inserting seed data..."
-    npx prisma db seed
+    npm run db:seed
     
     if [ $? -eq 0 ]; then
         echo "✓ Seed data inserted successfully"
@@ -162,7 +162,11 @@ else
 fi
 
 echo "========================================="
-echo "Starting Apache server..."
+echo "✓ Database initialization completed"
+echo "========================================="
+echo ""
+echo "========================================="
+echo "Starting Apache/PHP server..."
 echo "========================================="
 exec apache2-foreground
 EOF
