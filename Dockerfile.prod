@@ -126,17 +126,44 @@ fi
 echo "Generating Prisma Client..."
 npx prisma generate
 
-# Prismaマイグレーション実行 - デプロイ時は migrate deploy を優先
-echo "Running database migrations..."
-npx prisma migrate deploy || {
-    echo "Fallback: Running db push for schema synchronization..."
-    npx prisma db push --skip-generate
-}
-
-if [ $? -eq 0 ]; then
-    echo "✓ Database migration completed successfully"
+# データベース存在確認
+echo "Checking database existence..."
+if psql "$DATABASE_URL" -c "SELECT 1;" >/dev/null 2>&1; then
+    echo "✓ Database exists - Running migrations only..."
+    npx prisma migrate deploy
 else
-    echo "WARNING: Database migration encountered an issue"
+    echo "✗ Database does not exist - Creating and initializing..."
+    
+    # データベース作成とスキーマ同期
+    echo "Creating database and applying schema..."
+    npx prisma db push --skip-generate
+    
+    if [ $? -eq 0 ]; then
+        echo "✓ Database created and schema applied successfully"
+    else
+        echo "ERROR: Failed to create database"
+        exit 1
+    fi
+    
+    # マイグレーション実行
+    echo "Running database migrations..."
+    npx prisma migrate deploy
+    
+    if [ $? -eq 0 ]; then
+        echo "✓ Database migration completed successfully"
+    else
+        echo "WARNING: Database migration encountered an issue"
+    fi
+    
+    # 初回のみシードデータ投入
+    echo "Inserting seed data..."
+    npx prisma db seed
+    
+    if [ $? -eq 0 ]; then
+        echo "✓ Seed data inserted successfully"
+    else
+        echo "WARNING: Seed data insertion encountered an issue"
+    fi
 fi
 
 echo "========================================="
@@ -144,6 +171,6 @@ echo "Starting Apache server..."
 echo "========================================="
 exec apache2-foreground
 EOF
-chmod +x /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
 CMD ["/usr/local/bin/start.sh"]
