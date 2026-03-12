@@ -82,10 +82,68 @@ RUN echo '<VirtualHost *:80>\n\
 # ポート設定
 EXPOSE 10000
 
-# スタートアップスクリプト
-RUN echo '#!/bin/bash\n\
-set -e\n\
-echo "Starting Apache..."\n\
-exec apache2-foreground' > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
+# スタートアップスクリプト - Prismaマイグレーション実行
+RUN cat > /usr/local/bin/start.sh << 'EOF'
+#!/bin/bash
+set -e
+
+echo "========================================="
+echo "DutyShuffle - Render.com Startup Script"
+echo "========================================="
+
+# DATABASE_URLの確認
+if [ -z "$DATABASE_URL" ]; then
+    echo "ERROR: DATABASE_URL environment variable is not set"
+    echo "Please set DATABASE_URL in Render environment variables"
+    echo "Example: postgresql://neondb_owner:password@host/database_name"
+    exit 1
+fi
+
+echo "✓ DATABASE_URL is configured"
+
+# Neon DBの場合、SSL設定を追加
+if echo "$DATABASE_URL" | grep -q "neon.tech"; then
+    echo "✓ Detected Neon DB connection"
+    
+    # SSL接続を強制（Neon DB推奨）
+    if ! echo "$DATABASE_URL" | grep -q "sslmode"; then
+        export DATABASE_URL="${DATABASE_URL}?sslmode=require"
+        echo "✓ SSL mode enabled for Neon DB"
+    fi
+fi
+
+# アプリケーションディレクトリに移動
+cd /var/www/html
+
+# .envファイルの生成（既存ファイルがない場合）
+if [ ! -f ".env" ]; then
+    echo "Creating .env file..."
+    echo "DATABASE_URL=\"$DATABASE_URL\"" > .env
+    chmod 400 .env
+fi
+
+# Prisma Client生成
+echo "Generating Prisma Client..."
+npx prisma generate
+
+# Prismaマイグレーション実行 - デプロイ時は migrate deploy を優先
+echo "Running database migrations..."
+npx prisma migrate deploy || {
+    echo "Fallback: Running db push for schema synchronization..."
+    npx prisma db push --skip-generate
+}
+
+if [ $? -eq 0 ]; then
+    echo "✓ Database migration completed successfully"
+else
+    echo "WARNING: Database migration encountered an issue"
+fi
+
+echo "========================================="
+echo "Starting Apache server..."
+echo "========================================="
+exec apache2-foreground
+EOF
+chmod +x /usr/local/bin/start.sh
 
 CMD ["/usr/local/bin/start.sh"]
