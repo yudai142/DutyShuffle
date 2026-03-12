@@ -27,7 +27,7 @@
               <span class="supple upper">※チェックで無効</span>
             </div>
             <div id="work_result" style="color:orange;"></div>
-            <div class="toggle-buttons">
+            <div class="form toggle-buttons">
               <label><input type="radio" name="is_above" value="1" checked> 以上</label>
               <label><input type="radio" name="is_above" value="0"> 以下</label>
             </div>
