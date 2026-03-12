@@ -23,6 +23,9 @@ WORKDIR /app
 # npm依存関係のインストール
 RUN npm install
 
+# Prismaエンジンを事前生成（Render.comのバイナリ互換性確保）
+RUN npm exec prisma generate
+
 # ビルドステージの完了
 FROM php:8.2-apache
 
