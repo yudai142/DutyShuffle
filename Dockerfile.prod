@@ -103,17 +103,14 @@ fi
 echo "Generating Prisma Client..."
 npx prisma generate
 
-# DB 存在確認
-echo "Checking database..."
-if psql "$DATABASE_URL" -c "SELECT 1" >/dev/null 2>&1; then
-    echo "✓ Database exists - running migrations..."
-    npx prisma migrate deploy
-else
-    echo "✗ Database not found - creating..."
-    npx prisma db push
+# DB マイグレーション実行
+echo "Running database migrations..."
+npx prisma migrate deploy 2>&1 || {
+    echo "⚠ Initial migration - creating database schema..."
+    npx prisma db push --skip-generate
     npx prisma migrate deploy
     npx prisma db seed
-fi
+}
 
 echo "========================================="
 echo "✓ Database initialization complete"
