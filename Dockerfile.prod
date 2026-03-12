@@ -134,13 +134,13 @@ npm exec prisma generate --skip-engine-check 2>/dev/null || true
 echo "Checking database existence..."
 if psql "$DATABASE_URL" -c "SELECT 1;" >/dev/null 2>&1; then
     echo "✓ Database exists - Running migrations only..."
-    npm run db:migrate
+    PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1 npm run db:migrate
 else
     echo "✗ Database does not exist - Creating and initializing..."
     
     # データベース作成とスキーマ同期
     echo "Creating database and applying schema..."
-    npm run db:push
+    PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1 npm run db:push
     
     if [ $? -eq 0 ]; then
         echo "✓ Database created and schema applied successfully"
@@ -151,7 +151,7 @@ else
     
     # マイグレーション実行
     echo "Running database migrations..."
-    npm run db:migrate
+    PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1 npm run db:migrate
     
     if [ $? -eq 0 ]; then
         echo "✓ Database migration completed successfully"
@@ -161,7 +161,7 @@ else
     
     # 初回のみシードデータ投入
     echo "Inserting seed data..."
-    npm run db:seed
+    PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1 npm run db:seed
     
     if [ $? -eq 0 ]; then
         echo "✓ Seed data inserted successfully"
