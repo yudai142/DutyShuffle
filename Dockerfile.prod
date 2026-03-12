@@ -121,6 +121,9 @@ if [ ! -f ".env" ]; then
     chmod 400 .env
 fi
 
+# Prisma互換性設定
+export PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1
+
 # Prisma Client生成（エンジン互換性を考慮）
 echo "Generating Prisma Client..."
 npm exec prisma generate --skip-engine-check 2>/dev/null || true
