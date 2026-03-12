@@ -18,10 +18,6 @@
                 <div class="btn-spinner" data-cal="1" data-target=".counter1">＋</div>
               </div>
               <p class="item">枠</p>
-              <div class="toggle-buttons">
-                <label><input type="radio" name="is_above" value="1" checked> 以上</label>
-                <label><input type="radio" name="is_above" value="0"> 以下</label>
-              </div>
             </div>
           </div>
           <div class="form-list">
@@ -31,6 +27,10 @@
               <span class="supple upper">※チェックで無効</span>
             </div>
             <div id="work_result" style="color:orange;"></div>
+            <div class="toggle-buttons">
+              <label><input type="radio" name="is_above" value="1" checked> 以上</label>
+              <label><input type="radio" name="is_above" value="0"> 以下</label>
+            </div>
             <div class="btns">
               <div class="btn orange md-close">
                 戻る
