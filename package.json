@@ -1,24 +1,24 @@
 {
   "name": "duty_shuffle",
   "version": "1.0.0",
-  "description": "",
+  "description": "掃除当番管理システム",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "prisma generate",
     "db:push": "prisma db push --skip-generate",
     "db:migrate": "prisma migrate deploy",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "dev": "php -S localhost:8000"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "latest",
-    "prisma": "latest"
+    "@prisma/client": "^5.20.0",
+    "prisma": "^5.20.0"
   },
-  "devDependencies": {
-    "prisma": "^4.6.1"
-  },
+  "devDependencies": {},
   "prisma": {
     "seed": "node prisma/seed.js"
   }

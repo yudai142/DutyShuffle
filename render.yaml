@@ -7,6 +7,11 @@ services:
     dockerfilePath: ./Dockerfile.prod
     healthCheckPath: /
     autoDeploy: true
+    
+    # ビルド環境設定
+    buildCommand: npm install --legacy-peer-deps && npx prisma generate
+    
+    # 環境変数設定
     envVars:
       - key: DATABASE_URL
         scope: run
@@ -15,7 +20,16 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
+      - key: NODE_ENV
+        value: production
+    
+    # デプロイ前コマンド（マイグレーション実行）
+    preDeployCommand: npx prisma migrate deploy
+    
+    # スタートアップコマンド
     startCommand: /usr/local/bin/start.sh
+    
+    # ポート設定
     ports:
       - port: 10000
         protocol: HTTP

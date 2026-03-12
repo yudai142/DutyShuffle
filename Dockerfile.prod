@@ -1,71 +1,48 @@
 # ビルドステージ
 FROM php:8.2-apache AS builder
 
-# 依存関係のインストール
+# 依存関係インストール
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpq-dev \
+    git curl libpq-dev \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
-# Node.jsのインストール（Prismaマイグレーション用）
+# Node.js 18 インストール
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# アプリケーションファイルをコピー
+# アプリケーションコピー・依存インストール
 COPY . /app
-
 WORKDIR /app
+RUN npm ci --legacy-peer-deps
 
-# npm依存関係のインストール
-ENV PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1
-RUN npm install
-
-# Prismaバイナリ生成をスキップ（ビルド環境でのバイナリターゲット検証を防ぐ）
-RUN rm -rf node_modules/.prisma node_modules/@prisma/client
-
-# ビルドステージの完了
+# -----------------------------------------------
+# 本番ステージ
 FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
-# 依存関係のインストール（ビルドとランタイムの両方）
+# 依存関係インストール
 RUN apt-get update && apt-get install -y \
-    libpq-dev \
     libpq5 \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql \
-    && apt-get remove -y libpq-dev \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
-# Node.jsのインストール
+# Node.js 18 インストール
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# ビルドステージからアプリケーションファイルをコピー
+# ビルドステージからコピー
 COPY --from=builder /app .
 
-# Prismaのキャッシュをクリア（バイナリターゲット互換性確保）
-RUN rm -rf node_modules/.prisma && rm -rf node_modules/@prisma/client
-
-# 所有権を設定
+# 所有権設定
 RUN chown -R www-data:www-data /var/www/html
 
-# Composerがインストール済みの場合
-RUN if [ -f "composer.json" ]; then \
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    composer install --no-dev --optimize-autoloader; \
-    fi
-
-# npm依存関係をインストール（Prisma互換性設定を有効化）
-ENV PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1
-RUN npm install --legacy-peer-deps
-
-# Apache設定ファイル作成
+# Apache VirtualHost 設定
 RUN cat > /etc/apache2/sites-available/000-default.conf << 'EOF'
 <VirtualHost *:80>
     ServerName _
@@ -86,117 +63,64 @@ RUN cat > /etc/apache2/sites-available/000-default.conf << 'EOF'
 </VirtualHost>
 EOF
 
-# ポート設定
+# ポート指定
 EXPOSE 10000
 
-# スタートアップスクリプト - Prismaマイグレーション実行
-RUN cat > /usr/local/bin/start.sh << 'EOF'
+# スタートアップスクリプト
+RUN cat > /usr/local/bin/start.sh << 'STARTUP'
 #!/bin/bash
 set -e
 
 echo "========================================="
-echo "DutyShuffle - Render.com Startup Script"
+echo "DutyShuffle - Render.com Deployment"
 echo "========================================="
 
-# DATABASE_URLの確認
+# DATABASE_URL 確認
 if [ -z "$DATABASE_URL" ]; then
-    echo "ERROR: DATABASE_URL environment variable is not set"
-    echo "Please set DATABASE_URL in Render environment variables"
-    echo "Example: postgresql://neondb_owner:password@host/database_name"
+    echo "ERROR: DATABASE_URL not set"
     exit 1
 fi
 
-echo "✓ DATABASE_URL is configured"
+echo "✓ DATABASE_URL configured"
 
-# Neon DBの場合、SSL設定を追加
+# SSL設定（Neon DB用）
 if echo "$DATABASE_URL" | grep -q "neon.tech"; then
-    echo "✓ Detected Neon DB connection"
-    
-    # SSL接続を強制（Neon DB推奨）
     if ! echo "$DATABASE_URL" | grep -q "sslmode"; then
         export DATABASE_URL="${DATABASE_URL}?sslmode=require"
-        echo "✓ SSL mode enabled for Neon DB"
     fi
 fi
 
-# アプリケーションディレクトリに移動
 cd /var/www/html
 
-# Prisma互換性設定を明示的に設定
-export PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1
-export PRISMA_CLI_QUERY_ENGINE_TYPE=binary
-
-# ビルド時のバイナリキャッシュを完全削除
-rm -rf node_modules/.prisma node_modules/@prisma 2>/dev/null || true
-
-# ランタイムでPrisma Clientを再インストール・再生成（環境互換性確保）
-echo "Reinstalling Prisma Client for current environment..."
-npm install 2>/dev/null || true
-npm exec prisma generate 2>/dev/null || true
-
-# .envファイルの生成（既存ファイルがない場合）
+# .env ファイル生成
 if [ ! -f ".env" ]; then
     echo "Creating .env file..."
     echo "DATABASE_URL=\"$DATABASE_URL\"" > .env
-    chmod 400 .env
 fi
 
-# Prisma互換性設定
-export PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1
-
-# Prisma Client生成（エンジン互換性を考慮）
+# Prisma Client 生成（最新版で debian-openssl-3.0.x サポート）
 echo "Generating Prisma Client..."
-npm exec prisma generate --skip-engine-check 2>/dev/null || true
+npx prisma generate
 
-# データベース存在確認
-echo "Checking database existence..."
-if psql "$DATABASE_URL" -c "SELECT 1;" >/dev/null 2>&1; then
-    echo "✓ Database exists - Running migrations only..."
-    npm run db:migrate
+# DB 存在確認
+echo "Checking database..."
+if psql "$DATABASE_URL" -c "SELECT 1" >/dev/null 2>&1; then
+    echo "✓ Database exists - running migrations..."
+    npx prisma migrate deploy
 else
-    echo "✗ Database does not exist - Creating and initializing..."
-    
-    # データベース作成とスキーマ同期
-    echo "Creating database and applying schema..."
-    npm run db:push
-    
-    if [ $? -eq 0 ]; then
-        echo "✓ Database created and schema applied successfully"
-    else
-        echo "ERROR: Failed to create database"
-        exit 1
-    fi
-    
-    # マイグレーション実行
-    echo "Running database migrations..."
-    npm run db:migrate
-    
-    if [ $? -eq 0 ]; then
-        echo "✓ Database migration completed successfully"
-    else
-        echo "WARNING: Database migration encountered an issue"
-    fi
-    
-    # 初回のみシードデータ投入
-    echo "Inserting seed data..."
-    npm run db:seed
-    
-    if [ $? -eq 0 ]; then
-        echo "✓ Seed data inserted successfully"
-    else
-        echo "WARNING: Seed data insertion encountered an issue"
-    fi
+    echo "✗ Database not found - creating..."
+    npx prisma db push
+    npx prisma migrate deploy
+    npx prisma db seed
 fi
 
 echo "========================================="
-echo "✓ Database initialization completed"
-echo "========================================="
-echo ""
-echo "========================================="
-echo "Starting Apache/PHP server..."
+echo "✓ Database initialization complete"
+echo "Starting Apache..."
 echo "========================================="
 exec apache2-foreground
-EOF
-RUN chmod +x /usr/local/bin/start.sh
+STARTUP
+
+chmod +x /usr/local/bin/start.sh
 
 CMD ["/usr/local/bin/start.sh"]
