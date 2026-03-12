@@ -123,7 +123,6 @@ cd /var/www/html
 if [ ! -f ".env" ]; then
     echo "Creating .env file..."
     echo "DATABASE_URL=\"$DATABASE_URL\"" > .env
-    echo "PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1" >> .env
     chmod 400 .env
 fi
 
@@ -138,13 +137,13 @@ npm exec prisma generate --skip-engine-check 2>/dev/null || true
 echo "Checking database existence..."
 if psql "$DATABASE_URL" -c "SELECT 1;" >/dev/null 2>&1; then
     echo "✓ Database exists - Running migrations only..."
-    PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1 npm run db:migrate
+    npm run db:migrate
 else
     echo "✗ Database does not exist - Creating and initializing..."
     
     # データベース作成とスキーマ同期
     echo "Creating database and applying schema..."
-    PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1 npm run db:push
+    npm run db:push
     
     if [ $? -eq 0 ]; then
         echo "✓ Database created and schema applied successfully"
@@ -155,7 +154,7 @@ else
     
     # マイグレーション実行
     echo "Running database migrations..."
-    PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1 npm run db:migrate
+    npm run db:migrate
     
     if [ $? -eq 0 ]; then
         echo "✓ Database migration completed successfully"
@@ -165,7 +164,7 @@ else
     
     # 初回のみシードデータ投入
     echo "Inserting seed data..."
-    PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1 npm run db:seed
+    npm run db:seed
     
     if [ $? -eq 0 ]; then
         echo "✓ Seed data inserted successfully"
