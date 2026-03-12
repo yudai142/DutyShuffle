@@ -47,7 +47,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 COPY --from=builder /app .
 
 # Prismaのキャッシュをクリア（バイナリターゲット互換性確保）
-RUN rm -rf node_modules/.prisma
+RUN rm -rf node_modules/.prisma && rm -rf node_modules/@prisma/client
 
 # 所有権を設定
 RUN chown -R www-data:www-data /var/www/html
@@ -121,6 +121,11 @@ cd /var/www/html
 
 # Prisma互換性設定を明示的に設定
 export PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1
+export PRISMA_CLI_QUERY_ENGINE_TYPE=binary
+
+# ランタイムでPrisma Clientを再生成（環境互換性確保）
+echo "Regenerating Prisma Client for current environment..."
+npm exec prisma generate 2>/dev/null || true
 
 # .envファイルの生成（既存ファイルがない場合）
 if [ ! -f ".env" ]; then
