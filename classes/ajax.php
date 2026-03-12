@@ -391,18 +391,18 @@ try{
         echo json_encode(array("err" => implode('と', $err)."が不正です"));
         exit;
       }
-      $sql = "INSERT INTO work(name, multiple, archive) VALUES(?, ?, ?)";
+      $sql = "INSERT INTO work(name, multiple, archive, is_above) VALUES(?, ?, ?, ?)";
       $dbc = dbc();
       $stmt = $dbc->prepare($sql);
-      if (!($stmt->execute(array($_POST['name'], $_POST['multiple'], $_POST['archive'])))) {
+      if (!($stmt->execute(array($_POST['name'], $_POST['multiple'], $_POST['archive'], $_POST['isAbove'])))) {
         echo json_encode(array("err" => "データが正しく保存されませんでした"));
         exit;
       }
       $last_id = $dbc->lastInsertId();
-      $sql = "SELECT id, name, multiple, archive FROM work WHERE id = ?";
+      $sql = "SELECT id, name, multiple, archive, is_above FROM work WHERE id = ?";
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($last_id)))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
+        echo json_encode(array("err" => "データを��得できませんでした"));
         exit;
       }
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -410,7 +410,8 @@ try{
         'id'    => $row['id'],
         'name'    => $row['name'],
         'multiple'  => $row['multiple'],
-        'archive' => $row['archive']
+        'archive' => $row['archive'],
+        'isAbove' => $row['is_above']
       );
       if(!isset($productList)){
         echo json_encode(null);
@@ -436,7 +437,7 @@ try{
       echo json_encode($productList);
       exit;
     case 'work_edit':
-      $sql = "SELECT id, name, multiple, archive FROM work WHERE id = ?";
+      $sql = "SELECT id, name, multiple, archive, is_above FROM work WHERE id = ?";
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($_REQUEST['id'])))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
@@ -447,7 +448,8 @@ try{
         'id'    => $row['id'],
         'name'    => $row['name'],
         'multiple'  => $row['multiple'],
-        'archive' => $row['archive']
+        'archive' => $row['archive'],
+        'isAbove' => $row['is_above']
       );
       echo json_encode($productList);
       exit;
@@ -490,13 +492,13 @@ try{
         echo json_encode(array("err" => implode('と', $err)."が不正です"));
         exit;
       }
-      $sql = "UPDATE work SET name = ?, multiple = ?, archive = ? WHERE id = ?";
+      $sql = "UPDATE work SET name = ?, multiple = ?, archive = ?, is_above = ? WHERE id = ?";
       $stmt = dbc()->prepare($sql);
-      if (!($stmt->execute(array($_POST['name'], $_POST['multiple'], $_POST['archive'], $_POST['id'])))) {
+      if (!($stmt->execute(array($_POST['name'], $_POST['multiple'], $_POST['archive'], $_POST['isAbove'], $_POST['id'])))) {
         echo json_encode(array("err" => "データが正しく更新されませんでした"));
         exit;
       }
-      $sql = "SELECT id, name, multiple, archive FROM work WHERE id = ?";
+      $sql = "SELECT id, name, multiple, archive, is_above FROM work WHERE id = ?";
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($_POST['id'])))){
         echo json_encode(array("err" => "データの取得に失敗しました"));
@@ -507,7 +509,8 @@ try{
         'id'    => $row['id'],
         'name'    => $row['name'],
         'multiple'  => $row['multiple'],
-        'archive' => $row['archive']
+        'archive' => $row['archive'],
+        'isAbove' => $row['is_above']
       );
       echo json_encode($productList);
       exit;

@@ -17,6 +17,7 @@ model Work {
   name String @db.VarChar(255)
   multiple Int?
   archive Boolean @default(false)
+  isAbove Boolean @default(true) @map("is_above")
   memberOption MemberOption[]
   history History[]
   offWork OffWork[]

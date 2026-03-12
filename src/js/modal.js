@@ -18,6 +18,8 @@ $(document).on('click', '.md-btn', function(e) {
             $(modal).find('#name').val(data[0].name);
             $(modal).find('#multiple').val(data[0].multiple);
             (Number(data[0].archive)) ? $(modal).find('#work_archive').prop("checked", true) : $(modal).find('#work_archive').prop("checked", false);
+            $(modal).find(`input[name="is_above"][value="${Number(data[0].isAbove)}"]`).prop("checked", true);
+            $(modal).find('#is_above_label').text(Number(data[0].isAbove) ? '以上' : '以下');
             $(modal).find('#work_result p').remove();
             $(modal).find('#work_id').remove();
             $(modal).find('form').append(`<input type='hidden' id=work_id value=${data[0].id}>`);
@@ -35,6 +37,8 @@ $(document).on('click', '.md-btn', function(e) {
       $(modal).find('h1').text("作業登録");
       $(modal).find('#name').val("");
       $(modal).find('#multiple').val(1);
+      $(modal).find('input[name="is_above"][value="1"]').prop("checked", true);
+      $(modal).find('#is_above_label').text('以上');
       $(modal).find('#work_archive').prop("checked", false);
       $(modal).find('#work_result p').remove();
       $(modal).find('#work_id').remove();
