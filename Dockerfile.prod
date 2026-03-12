@@ -16,7 +16,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # アプリケーションコピー・依存インストール
 COPY . /app
 WORKDIR /app
-RUN npm ci --legacy-peer-deps
+RUN rm -f package-lock.json && npm install --legacy-peer-deps
 
 # -----------------------------------------------
 # 本番ステージ
