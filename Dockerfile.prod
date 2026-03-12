@@ -110,8 +110,12 @@ npx prisma generate
 echo "Initializing database schema..."
 npx prisma db push --skip-generate 2>&1
 
+# マイグレーション実行
+echo "Running database migrations..."
+npx prisma migrate deploy 2>&1 || echo "⚠ Migration already deployed or no new migrations"
+
 # シードデータ投入（既存データがあればスキップ）
-echo "Checking and seeding database..."
+echo "Seeding database..."
 npx prisma db seed 2>&1 || echo "⚠ Seed data already exists or seed script not applicable"
 
 echo "========================================="
