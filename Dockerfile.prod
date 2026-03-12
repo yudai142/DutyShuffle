@@ -24,6 +24,9 @@ WORKDIR /app
 ENV PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1
 RUN npm install
 
+# Prismaバイナリ生成をスキップ（ビルド環境でのバイナリターゲット検証を防ぐ）
+RUN rm -rf node_modules/.prisma node_modules/@prisma/client
+
 # ビルドステージの完了
 FROM php:8.2-apache
 
@@ -123,8 +126,12 @@ cd /var/www/html
 export PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1
 export PRISMA_CLI_QUERY_ENGINE_TYPE=binary
 
-# ランタイムでPrisma Clientを再生成（環境互換性確保）
-echo "Regenerating Prisma Client for current environment..."
+# ビルド時のバイナリキャッシュを完全削除
+rm -rf node_modules/.prisma node_modules/@prisma 2>/dev/null || true
+
+# ランタイムでPrisma Clientを再インストール・再生成（環境互換性確保）
+echo "Reinstalling Prisma Client for current environment..."
+npm install 2>/dev/null || true
 npm exec prisma generate 2>/dev/null || true
 
 # .envファイルの生成（既存ファイルがない場合）
