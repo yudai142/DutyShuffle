@@ -23,9 +23,6 @@ WORKDIR /app
 # npm依存関係のインストール
 RUN npm install
 
-# Prismaエンジンを事前生成（Render.comのバイナリ互換性確保）
-RUN npm exec prisma generate
-
 # ビルドステージの完了
 FROM php:8.2-apache
 
@@ -123,6 +120,10 @@ if [ ! -f ".env" ]; then
     echo "DATABASE_URL=\"$DATABASE_URL\"" > .env
     chmod 400 .env
 fi
+
+# Prisma Client生成（エンジン互換性を考慮）
+echo "Generating Prisma Client..."
+npm exec prisma generate || true
 
 # データベース存在確認
 echo "Checking database existence..."
