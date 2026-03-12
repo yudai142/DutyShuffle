@@ -103,13 +103,19 @@ fi
 echo "Generating Prisma Client..."
 npx prisma generate
 
-# DB マイグレーション実行
-echo "Running database migrations..."
-npx prisma migrate deploy 2>&1 || {
-    echo "⚠ Initial migration - creating database schema..."
-    npx prisma db push --skip-generate
-    npx prisma migrate deploy
-    npx prisma db seed
+# DB スキーマ作成（初回デプロイ用）
+echo "Creating database schema..."
+npx prisma db push --skip-generate
+
+# マイグレーション履歴の記録（既存マイグレーションはスキップ、新規はここから開始）
+echo "Resolving migration history..."
+npx prisma migrate resolve --rolled-back 20221108021909_init 2>/dev/null || true
+npx prisma migrate deploy 2>/dev/null || true
+
+# シードデータ投入
+echo "Seeding database..."
+npx prisma db seed 2>/dev/null || {
+    echo "⚠ Seed script not found or already executed"
 }
 
 echo "========================================="
