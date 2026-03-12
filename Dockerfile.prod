@@ -54,8 +54,8 @@ RUN if [ -f "composer.json" ]; then \
     composer install --no-dev --optimize-autoloader; \
     fi
 
-# npm依存関係をインストール（@prisma/clientを含む）
-RUN npm install --omit=dev --legacy-peer-deps
+# npm依存関係をインストール（Prisma CLIを含める）
+RUN npm install --legacy-peer-deps
 
 # Apache設定ファイル作成
 RUN cat > /etc/apache2/sites-available/000-default.conf << 'EOF'
