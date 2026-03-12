@@ -26,8 +26,9 @@ WORKDIR /var/www/html
 
 # 依存関係インストール
 RUN apt-get update && apt-get install -y \
-    libpq5 \
+    libpq-dev libpq5 \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql \
+    && apt-get remove -y libpq-dev \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
