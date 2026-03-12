@@ -119,6 +119,9 @@ fi
 # アプリケーションディレクトリに移動
 cd /var/www/html
 
+# Prisma互換性設定を明示的に設定
+export PRISMA_SKIP_VALIDATION_BINARY_TARGETS_MISMATCH=1
+
 # .envファイルの生成（既存ファイルがない場合）
 if [ ! -f ".env" ]; then
     echo "Creating .env file..."
