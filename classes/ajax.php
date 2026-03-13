@@ -775,15 +775,21 @@ try{
         }
         $off_works = $stmt3->fetchAll(PDO::FETCH_COLUMN);
         $work_list = [];
+        $work_limits = []; // 作業ごとの割り当て上限
+        $work_assignment_count = []; // 作業ごとの割り当て数
+        
         foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
           // off_workテーブルで指定日付にOFF状態の作業は除外
           if(!in_array($row["id"], $off_works)){
+            $work_assignment_count[$row["id"]] = 0;
             // is_above を参照して割り当て方法を決定
             if($row["is_above"]){ // 以上：multipleの数以上割り当て
+              $work_limits[$row["id"]] = -1; // 無制限（-1で表す）
               for($i = 0; $i < $row["multiple"]; $i++){
                 $work_list[] = $row["id"];
               };
-            } else { // 以下：multipleの数以下割り当て（1回のみ）
+            } else { // 以下：multipleの数以下割り当て
+              $work_limits[$row["id"]] = $row["multiple"];
               $work_list[] = $row["id"];
             }
           }
@@ -803,7 +809,16 @@ try{
         foreach($history_list as $row) {
           if(count($work_list) != 0){
             $assigned_work = $work_list[$work_index % count($work_list)];
-            $column_data = $column_data . "WHEN {$row} THEN {$assigned_work} ";
+            
+            // 上限チェック：is_above = false の場合、multiple の数を超えないようにする
+            if($work_limits[$assigned_work] == -1 || $work_assignment_count[$assigned_work] < $work_limits[$assigned_work]){
+              $column_data = $column_data . "WHEN {$row} THEN {$assigned_work} ";
+              $work_assignment_count[$assigned_work]++;
+            } else {
+              // 上限に達した場合は担当なし
+              $column_data = $column_data . "WHEN {$row} THEN null ";
+            }
+            
             $work_index++;
           }else{
             $column_data = $column_data . "WHEN {$row} THEN null ";
