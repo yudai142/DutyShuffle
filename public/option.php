@@ -1,15 +1,22 @@
 <?php $title = "オプション"; require_once "../component/head_component.php" ?>
 <link rel="stylesheet" href="../src/css/option.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
 <?php require_once "../component/sidebar_component.php"; ?>
 
 <div class="shuffle_option-form">
   <div class="shuffle_option-content">
     <p>作業が被らない期間：<input type="number" id="interval_input" class="input-tx sm" value="0" min="0">日</p>
-    <p>被らない期間のリセット日程：<input type="text" class="input-tx"><span class="btn yellow">リセット</span></p>
+    <div id="reset_date_row" class="reset-date-row">
+      <p>被らない期間のリセット日程：<label class="btn yellow" id="reset_date_clear_btn" for="datepicker">選択</label><input type="text" id="datepicker" style="width:0;height:0;border:none;padding:0;margin:0;"></p>
+    </div>
+    
     <div id="option_result" style="color:orange;"></div>
   </div>
   <span class="btn green" id="interval_save_btn">変更</span>
 </div>
+
 <div class="tabs">
   <input id="all" type="radio" name="tab_item" checked>
   <label class="tab_item" for="all">固定</label>
@@ -61,5 +68,6 @@
       </div>
     </div>
   </div>
+</div>
 
 <script src="../src/js/ajax.js"></script>

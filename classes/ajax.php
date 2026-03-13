@@ -895,6 +895,58 @@ try{
       }
       echo json_encode(array("success" => true));
       exit;
+    case 'get_reset_dates':
+      $sql = "SELECT reset_date FROM shuffle_option LIMIT 1";
+      $stmt = dbc()->query($sql);
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row && $row['reset_date']) {
+        $dates = json_decode($row['reset_date'], true);
+        if (!is_array($dates)) {
+          $dates = [];
+        }
+        echo json_encode(array("dates" => $dates));
+      } else {
+        echo json_encode(array("dates" => []));
+      }
+      exit;
+    case 'save_reset_dates':
+      if (!isset($_POST['dates'])) {
+        echo json_encode(array("err" => "不正なデータです"));
+        exit;
+      }
+      $datesJson = $_POST['dates'];
+      
+      // JSON デコードして検証
+      $dates = json_decode($datesJson, true);
+      if (!is_array($dates)) {
+        echo json_encode(array("err" => "日付形式が不正です"));
+        exit;
+      }
+      
+      // 既存データを確認
+      $sql = "SELECT COUNT(*) as cnt FROM shuffle_option";
+      $stmt = dbc()->query($sql);
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      
+      if ($row['cnt'] > 0) {
+        // データが存在する場合は更新
+        $sql = "UPDATE shuffle_option SET reset_date = ? WHERE id = 1";
+        $stmt = dbc()->prepare($sql);
+        if (!$stmt->execute(array($datesJson))) {
+          echo json_encode(array("err" => "更新に失敗しました"));
+          exit;
+        }
+      } else {
+        // データが存在しない場合は挿入
+        $sql = "INSERT INTO shuffle_option (id, reset_date) VALUES (1, ?)";
+        $stmt = dbc()->prepare($sql);
+        if (!$stmt->execute(array($datesJson))) {
+          echo json_encode(array("err" => "挿入に失敗しました"));
+          exit;
+        }
+      }
+      echo json_encode(array("success" => true));
+      exit;
   };
 }catch(PDOException $e){
   echo json_encode(array("err" => "データベースエラーが発生しました: " . $e->getMessage()));

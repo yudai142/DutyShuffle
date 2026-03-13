@@ -53,6 +53,8 @@ $(function($){
     $("#option_page").html("<p>オプション</p>");
     getOptionList();
     getIntervalValue();
+    initResetDatePicker();
+    getResetDates();
   }
   
   function allocationView(){
@@ -354,12 +356,102 @@ $(function($){
     });
   }
 
+  // 複数日付選択用のカレンダー初期化（Flatpickr）
+  let selectedDates = [];
+  let flatpickrInstance;
+  
+  function initResetDatePicker(){
+    flatpickrInstance = flatpickr("#datepicker", {
+      mode: "multiple",
+      dateFormat: "Y-m-d",
+      locale: "ja",
+      onChange: function(selectedDates, dateStr, instance) {
+        // 選択された日付が更新された時の処理
+        updateSelectedDatesDisplay();
+      }
+    });
+  }
+
+  function updateSelectedDatesDisplay(){
+    if (flatpickrInstance) {
+      selectedDates = flatpickrInstance.selectedDates.map(date => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      });
+    }
+  }
+
+  function getResetDates(){
+    $.ajax({
+      url: "../classes/ajax.php",
+      data: {
+        "type": 'get_reset_dates'
+      },
+      datatype: "json",
+      success: function(data) {
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        if (data && data.dates && Array.isArray(data.dates) && data.dates.length > 0) {
+          selectedDates = data.dates;
+          
+          // Flatpickr に日付をセット
+          if (flatpickrInstance) {
+            const dates = selectedDates.map(dateStr => new Date(dateStr));
+            flatpickrInstance.setDate(dates, false);
+          }
+          
+          updateSelectedDatesDisplay();
+          console.log("リセット日程を読み込みました: " + selectedDates.join(', '));
+        } else {
+          selectedDates = [];
+          if (flatpickrInstance) {
+            flatpickrInstance.clear();
+          }
+          console.log("リセット日程が見つかりません");
+        }
+      },
+      error: function(xhr, status, error){
+        console.log("通信失敗");
+        console.log(error);
+        selectedDates = [];
+      }
+    });
+  }
+
+  // 「表示」ボタンのハンドラ - カレンダーの表示/非表示をトグル
+  $('#reset_date_clear_btn').on('click', function(){
+    let container = $('#calendar_container');
+    if (container.hasClass('show')) {
+      container.removeClass('show');
+    } else {
+      container.addClass('show');
+      // カレンダーが開く際にフォーカスを当てる
+      setTimeout(function(){
+        $('#calendar_toggle_btn').focus();
+      }, 100);
+    }
+  });
+
+  // カレンダーボタンのハンドラ - datepicker をクリック
+  $(document).on('click', '#calendar_toggle_btn', function(){
+    $('#datepicker').click();
+  });
+
   $('#interval_save_btn').on('click', function(){
     let interval = $('#interval_input').val();
     if (interval == "" || isNaN(interval) || parseInt(interval) < 0) {
       $('#option_result').html("<p>有効な数値を入力してください</p>");
       return;
     }
+
+    let saveCount = 0;
+    let successCount = 0;
+    let hasError = false;
+
+    // 期間のAJAX保存
     $.ajax({
       type: "POST",
       url: "../classes/ajax.php",
@@ -370,20 +462,57 @@ $(function($){
       },
       success: function(data) {
         if (data != null && data['err'] == null){
+          successCount++;
+        } else {
+          hasError = true;
+        }
+        saveCount++;
+        checkSaveCompletion();
+      },
+      error: function(xhr, status, error) {
+        hasError = true;
+        saveCount++;
+        checkSaveCompletion();
+      }
+    });
+
+    // リセット日程のAJAX保存
+    $.ajax({
+      type: "POST",
+      url: "../classes/ajax.php",
+      datatype: "json",
+      data: {
+        "type": 'save_reset_dates',
+        "dates": JSON.stringify(selectedDates)
+      },
+      success: function(data) {
+        if (data != null && data['err'] == null){
+          successCount++;
+        } else {
+          hasError = true;
+        }
+        saveCount++;
+        checkSaveCompletion();
+      },
+      error: function(xhr, status, error) {
+        hasError = true;
+        saveCount++;
+        checkSaveCompletion();
+      }
+    });
+
+    function checkSaveCompletion(){
+      if (saveCount === 2) {
+        if (!hasError && successCount === 2) {
           $('#option_result').html("<p style=\"color: green;\">保存しました</p>");
           setTimeout(function(){
             $('#option_result').html("");
           }, 3000);
-        }else{
+        } else {
           $('#option_result').html("<p>保存に失敗しました</p>");
         }
-      },
-      error: function(xhr, status, error) {
-        $('#option_result').html("<p>通信エラーが発生しました</p>");
-        console.log("通信失敗");
-        console.log(error);
       }
-    });
+    }
   });
 
   $('#submit_member').on('click',function(){
