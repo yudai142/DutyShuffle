@@ -67,3 +67,9 @@ model OffWork {
   date DateTime @db.Date
   @@map("off_work")
 }
+
+model Worksheet {
+  id Int @id @default(autoincrement())
+  interval Int
+  @@map("worksheet")
+}

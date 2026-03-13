@@ -1,3 +1,3 @@
-FROM mysql:8.0
+FROM postgres:15
 
-EXPOSE 3306
+EXPOSE 5432

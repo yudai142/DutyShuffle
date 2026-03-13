@@ -161,7 +161,7 @@ try{
     case 'member_select_check':
       $date = date('Y-m-d',  strtotime($_REQUEST['date']));
       $select = (isset($_REQUEST['select'])) ? $_REQUEST['select'] : [];
-      $sql = "SELECT member_id work_id family_name given_name FROM history, member WHERE date=? AND member.id = history.member_id group by member_id ORDER BY kana_name ASC";
+      $sql = "SELECT DISTINCT ON (member_id) member_id, work_id, family_name, given_name FROM history, member WHERE date=? AND member.id = history.member_id ORDER BY member_id, member.kana_name ASC";
       $stmt = dbc()->prepare($sql);
       $stmt->execute(array($date));
       $productList = [];
