@@ -896,18 +896,18 @@ try{
       echo json_encode(array("success" => true));
       exit;
     case 'get_reset_dates':
-      $sql = "SELECT reset_date FROM shuffle_option LIMIT 1";
+      $sql = "SELECT reset_date FROM shuffle_option ORDER BY reset_date ASC";
       $stmt = dbc()->query($sql);
-      $row = $stmt->fetch(PDO::FETCH_ASSOC);
-      if ($row && $row['reset_date']) {
-        $dates = json_decode($row['reset_date'], true);
-        if (!is_array($dates)) {
-          $dates = [];
+      $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $dates = [];
+      if ($rows) {
+        foreach ($rows as $row) {
+          if ($row['reset_date']) {
+            $dates[] = $row['reset_date'];
+          }
         }
-        echo json_encode(array("dates" => $dates));
-      } else {
-        echo json_encode(array("dates" => []));
       }
+      echo json_encode(array("dates" => $dates));
       exit;
     case 'save_reset_dates':
       if (!isset($_POST['dates'])) {
@@ -923,29 +923,37 @@ try{
         exit;
       }
       
-      // 既存データを確認
-      $sql = "SELECT COUNT(*) as cnt FROM shuffle_option";
-      $stmt = dbc()->query($sql);
-      $row = $stmt->fetch(PDO::FETCH_ASSOC);
-      
-      if ($row['cnt'] > 0) {
-        // データが存在する場合は更新
-        $sql = "UPDATE shuffle_option SET reset_date = ? WHERE id = 1";
-        $stmt = dbc()->prepare($sql);
-        if (!$stmt->execute(array($datesJson))) {
-          echo json_encode(array("err" => "更新に失敗しました"));
+      $dbc = dbc();
+      try {
+        // 既存のリセット日程をすべて削除
+        $sql = "DELETE FROM shuffle_option";
+        $stmt = $dbc->prepare($sql);
+        if (!$stmt->execute()) {
+          echo json_encode(array("err" => "削除に失敗しました"));
           exit;
         }
-      } else {
-        // データが存在しない場合は挿入
-        $sql = "INSERT INTO shuffle_option (id, reset_date) VALUES (1, ?)";
-        $stmt = dbc()->prepare($sql);
-        if (!$stmt->execute(array($datesJson))) {
-          echo json_encode(array("err" => "挿入に失敗しました"));
-          exit;
+        
+        // 各日付を別々のレコードとして挿入
+        $sql = "INSERT INTO shuffle_option (reset_date) VALUES (?)";
+        $stmt = $dbc->prepare($sql);
+        
+        foreach ($dates as $date) {
+          // 日付フォーマットの検証
+          if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            echo json_encode(array("err" => "日付形式が不正です: " . $date));
+            exit;
+          }
+          
+          if (!$stmt->execute(array($date))) {
+            echo json_encode(array("err" => "挿入に失敗しました: " . $date));
+            exit;
+          }
         }
+        
+        echo json_encode(array("success" => true));
+      } catch (PDOException $e) {
+        echo json_encode(array("err" => "データベースエラー: " . $e->getMessage()));
       }
-      echo json_encode(array("success" => true));
       exit;
   };
 }catch(PDOException $e){
