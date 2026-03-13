@@ -857,6 +857,9 @@ $(function($){
             setTimeout(function() {
               getOptionList();
             }, 500);
+            setTimeout(function() {
+              $('#option_result').html("");
+            }, 3000);
           } else {
             $('#option_result').html(`<p>${data.err || "保存に失敗しました"}</p>`);
           }
@@ -892,6 +895,9 @@ $(function($){
             setTimeout(function() {
               getOptionList();
             }, 500);
+            setTimeout(function() {
+              $('#option_result').html("");
+            }, 3000);
           } else {
             $('#option_result').html(`<p>${data.err || "更新に失敗しました"}</p>`);
           }
