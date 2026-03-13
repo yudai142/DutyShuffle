@@ -31,6 +31,10 @@ $(function($){
     $('#loading-spinner').removeClass('show').addClass('hidden');
   });
 
+  // グローバル変数 - カレンダー初期化用
+  let selectedDates = [];
+  let flatpickrInstance;
+
   if ( location.pathname.indexOf("/create-edit.php") !== -1 ){
     $("#create-edit_page").html("<p>登録・編集</p>");
     getAllMember();
@@ -61,7 +65,7 @@ $(function($){
     $.ajax({
       type: "POST",
       url: "../classes/ajax.php",
-      datatype: "json",
+      dataType: "json",
       data: {
         "type": 'allocation_list',
         "date": $("#date").val()
@@ -332,7 +336,7 @@ $(function($){
       data: {
         "type": 'get_interval'
       },
-      datatype: "json",
+      dataType: "json",
       success: function(data) {
         // JSONとして正しく解析
         if (typeof data === 'string') {
@@ -357,8 +361,6 @@ $(function($){
   }
 
   // 複数日付選択用のカレンダー初期化（Flatpickr）
-  let selectedDates = [];
-  let flatpickrInstance;
   
   function initResetDatePicker(){
     flatpickrInstance = flatpickr("#datepicker", {
@@ -389,7 +391,7 @@ $(function($){
       data: {
         "type": 'get_reset_dates'
       },
-      datatype: "json",
+      dataType: "json",
       success: function(data) {
         if (typeof data === 'string') {
           data = JSON.parse(data);
@@ -447,6 +449,7 @@ $(function($){
       return;
     }
 
+    $('#option_result').html("<p>保存中...</p>");
     let saveCount = 0;
     let successCount = 0;
     let hasError = false;
@@ -455,15 +458,22 @@ $(function($){
     $.ajax({
       type: "POST",
       url: "../classes/ajax.php",
-      datatype: "json",
+      dataType: "json",
+      contentType: "application/x-www-form-urlencoded; charset=UTF-8",
       data: {
         "type": 'save_interval',
         "interval": parseInt(interval)
       },
       success: function(data) {
-        if (data != null && data['err'] == null){
-          successCount++;
-        } else {
+        try {
+          if (data && data.success === true) {
+            successCount++;
+          } else if (typeof data === 'object' && !data.err) {
+            successCount++;
+          } else {
+            hasError = true;
+          }
+        } catch (e) {
           hasError = true;
         }
         saveCount++;
@@ -480,15 +490,22 @@ $(function($){
     $.ajax({
       type: "POST",
       url: "../classes/ajax.php",
-      datatype: "json",
+      dataType: "json",
+      contentType: "application/x-www-form-urlencoded; charset=UTF-8",
       data: {
         "type": 'save_reset_dates',
         "dates": JSON.stringify(selectedDates)
       },
       success: function(data) {
-        if (data != null && data['err'] == null){
-          successCount++;
-        } else {
+        try {
+          if (data && data.success === true) {
+            successCount++;
+          } else if (typeof data === 'object' && !data.err) {
+            successCount++;
+          } else {
+            hasError = true;
+          }
+        } catch (e) {
           hasError = true;
         }
         saveCount++;
@@ -702,7 +719,7 @@ $(function($){
       $.ajax({
         type: "POST",
         url: "../classes/ajax.php",
-        datatype: "json",
+        dataType: "json",
         data: {
           "type": data_type,
           "select": check,
@@ -738,7 +755,7 @@ $(function($){
       $.ajax({
         type: "POST",
         url: "../classes/ajax.php",
-        datatype: "json",
+        dataType: "json",
         data: {
           "type": "work_select_definition",
           "select_work": $(this).attr("value"),
@@ -766,7 +783,7 @@ $(function($){
       $.ajax({
         type: "POST",
         url: "../classes/ajax.php",
-        datatype: "json",
+        dataType: "json",
         data: {
           "type": "work-change",
           "work_id": $(this).attr("value"),
@@ -814,7 +831,7 @@ $(function($){
         $.ajax({
           type: "POST",
           url: "../classes/ajax.php",
-          datatype: "json",
+          dataType: "json",
           data: {
             "type": "join_member_remove",
             "history_id": $(this).attr("value")
@@ -842,7 +859,7 @@ $(function($){
         $.ajax({
           type: "POST",
           url: "../classes/ajax.php",
-          datatype: "json",
+          dataType: "json",
           data: {
             "type": "allocation-remove",
             "date": $("#date").val()
@@ -989,7 +1006,7 @@ $(function($){
       $.ajax({
         type: "POST",
         url: "../classes/ajax.php",
-        datatype: "json",
+        dataType: "json",
         data: {
           "type": "update-member_option",
           "member_id": $(this).closest('form').find('select[name="members"]').val(),

@@ -871,29 +871,37 @@ try{
       }
       $interval = intval($_POST['interval']);
       
-      // 既存データを確認
-      $sql = "SELECT COUNT(*) as cnt FROM worksheet";
-      $stmt = dbc()->query($sql);
-      $row = $stmt->fetch(PDO::FETCH_ASSOC);
-      
-      if ($row['cnt'] > 0) {
-        // データが存在する場合は更新
-        $sql = "UPDATE worksheet SET interval = ? WHERE id = 1";
-        $stmt = dbc()->prepare($sql);
-        if (!$stmt->execute(array($interval))) {
-          echo json_encode(array("err" => "更新に失敗しました"));
-          exit;
+      try {
+        $dbc = dbc();
+        // 既存データを確認
+        $sql = "SELECT COUNT(*) as cnt FROM worksheet";
+        $stmt = $dbc->query($sql);
+        if ($stmt === false) {
+          // テーブルが存在しない場合は作成
+          $createSql = "CREATE TABLE IF NOT EXISTS worksheet (id INT PRIMARY KEY DEFAULT 1, interval INT DEFAULT 0)";
+          $dbc->exec($createSql);
         }
-      } else {
-        // データが存在しない場合は挿入
-        $sql = "INSERT INTO worksheet (id, interval) VALUES (1, ?)";
-        $stmt = dbc()->prepare($sql);
-        if (!$stmt->execute(array($interval))) {
-          echo json_encode(array("err" => "挿入に失敗しました"));
-          exit;
+        
+        // 再度カウント取得
+        $stmt = $dbc->query($sql);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($row['cnt'] > 0) {
+          // データが存在する場合は更新
+          $sql = "UPDATE worksheet SET interval = ? WHERE id = 1";
+          $stmt = $dbc->prepare($sql);
+          $stmt->execute(array($interval));
+        } else {
+          // データが存在しない場合は挿入
+          $sql = "INSERT INTO worksheet (id, interval) VALUES (1, ?)";
+          $stmt = $dbc->prepare($sql);
+          $stmt->execute(array($interval));
         }
+        
+        echo json_encode(array("success" => true));
+      } catch (PDOException $e) {
+        echo json_encode(array("err" => "エラー: " . $e->getMessage()));
       }
-      echo json_encode(array("success" => true));
       exit;
     case 'get_reset_dates':
       $sql = "SELECT reset_date FROM shuffle_option ORDER BY reset_date ASC";
@@ -923,15 +931,22 @@ try{
         exit;
       }
       
-      $dbc = dbc();
       try {
+        $dbc = dbc();
+        
+        // テーブル存在確認
+        $sql = "SELECT COUNT(*) as cnt FROM shuffle_option";
+        $stmt = $dbc->query($sql);
+        if ($stmt === false) {
+          // テーブルが存在しない場合は作成
+          $createSql = "CREATE TABLE IF NOT EXISTS shuffle_option (id INT AUTO_INCREMENT PRIMARY KEY, reset_date DATE)";
+          $dbc->exec($createSql);
+        }
+        
         // 既存のリセット日程をすべて削除
         $sql = "DELETE FROM shuffle_option";
         $stmt = $dbc->prepare($sql);
-        if (!$stmt->execute()) {
-          echo json_encode(array("err" => "削除に失敗しました"));
-          exit;
-        }
+        $stmt->execute();
         
         // 各日付を別々のレコードとして挿入
         $sql = "INSERT INTO shuffle_option (reset_date) VALUES (?)";
@@ -944,15 +959,12 @@ try{
             exit;
           }
           
-          if (!$stmt->execute(array($date))) {
-            echo json_encode(array("err" => "挿入に失敗しました: " . $date));
-            exit;
-          }
+          $stmt->execute(array($date));
         }
         
         echo json_encode(array("success" => true));
       } catch (PDOException $e) {
-        echo json_encode(array("err" => "データベースエラー: " . $e->getMessage()));
+        echo json_encode(array("err" => "エラー: " . $e->getMessage()));
       }
       exit;
   };
