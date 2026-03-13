@@ -56,7 +56,6 @@ model History {
 
 model ShuffleOption {
   id Int @id @default(autoincrement())
-  interval Int? @default(7)
   reset_date DateTime? @db.Date
   @@map("shuffle_option")
 }
