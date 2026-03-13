@@ -691,11 +691,10 @@ try{
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
           exit;
         }
+        echo json_encode(array("success" => true));
       }else{
         echo json_encode(array("err" => "入力情報が不正です"));
-        exit;
       }
-      echo json_encode("option");
       exit;
     case 'confirm-member_option':
       if(is_numeric($_REQUEST["option_id"])){

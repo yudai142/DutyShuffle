@@ -831,6 +831,65 @@ $(function($){
           }
         });
       }
+    }else if ($(this).attr("data-target") == "add-member_option") {
+      let work_id = $(this).closest('form').find('select[name="works"]').val();
+      let member_id = $(this).closest('form').find('select[name="members"]').val();
+      let status = $(this).attr("value");
+      
+      if (!work_id || !member_id) {
+        $('#option_result').html("<p>作業とメンバーを選択してください</p>");
+        return;
+      }
+      
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        dataType: "json",
+        data: {
+          "type": "add-member_option",
+          "work_id": work_id,
+          "member_id": member_id,
+          "status": status
+        },
+        success: function(data) {
+          if (data && data.success === true) {
+            $('#option_result').html("<p style='color:green;'>保存しました</p>");
+            setTimeout(function() {
+              getOptionList();
+            }, 500);
+          } else {
+            $('#option_result').html(`<p>${data.err || "保存に失敗しました"}</p>`);
+          }
+        },
+        error: function(xhr, status, error) {
+          $('#option_result').html("<p>通信エラーが発生しました</p>");
+        }
+      });
+    }else if ($(this).attr("data-target") == "delete-member_option") {
+      if (confirm("この設定を削除しますか？")) {
+        $.ajax({
+          type: "POST",
+          url: "../classes/ajax.php",
+          dataType: "json",
+          data: {
+            "type": "delete-member_option",
+            "option_id": $(this).attr("value")
+          },
+          success: function(data) {
+            if (data == null || !data.err) {
+              $('#option_result').html("<p style='color:green;'>削除しました</p>");
+              setTimeout(function() {
+                getOptionList();
+              }, 500);
+            } else {
+              $('#option_result').html(`<p>${data.err}</p>`);
+            }
+          },
+          error: function(xhr, status, error) {
+            $('#option_result').html("<p>通信エラーが発生しました</p>");
+          }
+        });
+      }
     }else if ($(this).attr("data-target") == "shuffle_btn") {
       $.ajax({
         type: "POST",
@@ -865,7 +924,7 @@ $(function($){
         $.ajax({
           type: "POST",
           url: "../classes/ajax.php",
-          datatype: "json",
+          dataType: "json",
           data: {
             "type": "add-member_option",
             "member_id": $(this).closest('form').find('#members_new').val(),
@@ -874,9 +933,13 @@ $(function($){
           },
           success: function(data) {
             if (data == null || !data["err"]){
+              $('#option_result').html("<p style=\"color: green;\">保存しました</p>");
+              setTimeout(function(){
+                $('#option_result').html("");
+              }, 3000);
               getOptionList();
             }else{
-              $('#select_result').html(`<p>${data["err"]}</p>`);
+              $('#option_result').html(`<p>${data["err"]}</p>`);
             }
           },
           error: function(xhr, status, error) {
