@@ -777,13 +777,15 @@ try{
         $work_list = [];
         $work_limits = []; // 作業ごとの割り当て上限
         $work_assignment_count = []; // 作業ごとの割り当て数
+        $work_info = []; // 作業情報を保存
         
         foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
           // off_workテーブルで指定日付にOFF状態の作業は除外
           if(!in_array($row["id"], $off_works)){
+            $work_info[$row["id"]] = $row;
             $work_assignment_count[$row["id"]] = 0;
             // is_above を参照して割り当て方法を決定
-            if($row["is_above"]){ // 以上：multipleの数以上割り当て
+            if($row["is_above"]){ // 以上：最低でもmultipleの数割り当て
               $work_limits[$row["id"]] = -1; // 無制限（-1で表す）
               for($i = 0; $i < $row["multiple"]; $i++){
                 $work_list[] = $row["id"];
@@ -799,6 +801,22 @@ try{
         foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
           $history_list[] = $row["id"];
         }
+        
+        // メンバー数がwork_list数より多い場合、is_above=trueの作業で拡張
+        if(count($history_list) > count($work_list)) {
+          $additional_needed = count($history_list) - count($work_list);
+          $work_ids = array_keys($work_info);
+          $idx = 0;
+          while($additional_needed > 0) {
+            $work_id = $work_ids[$idx % count($work_ids)];
+            if($work_info[$work_id]["is_above"]){ // is_above=trueのみ追加可
+              $work_list[] = $work_id;
+              $additional_needed--;
+            }
+            $idx++;
+          }
+        }
+        
         shuffle($work_list);
         shuffle($history_list);
         $work_stock = $work_list;
