@@ -927,9 +927,16 @@ try{
           // 各workについて、このメンバーが固定割り当て対象かチェック
           foreach($fixed_members as $work_id => $member_ids) {
             if (in_array($member_id, $member_ids)) {
-              $column_data = $column_data . "WHEN {$history_id} THEN {$work_id} ";
-              $work_assignment_count[$work_id]++;
-              $fixed_assigned[$history_id] = true;
+              // 除外メンバーでないか、過去interval日間に同じ作業に割り当てられていないかチェック
+              $is_excluded_member = isset($excluded_members[$work_id]) && in_array($member_id, $excluded_members[$work_id]);
+              $is_recent_work = isset($recent_member_works[$member_id]) && in_array($work_id, $recent_member_works[$member_id]);
+              
+              // 割り当て可能な場合のみ実行
+              if (!$is_excluded_member && !$is_recent_work) {
+                $column_data = $column_data . "WHEN {$history_id} THEN {$work_id} ";
+                $work_assignment_count[$work_id]++;
+                $fixed_assigned[$history_id] = true;
+              }
               break;
             }
           }
