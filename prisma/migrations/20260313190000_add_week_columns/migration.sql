@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "worksheet" ADD COLUMN "week_use" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN "week" INTEGER NOT NULL DEFAULT 0;

@@ -797,6 +797,35 @@ try{
           }
         }
         
+        // Worksheetテーブルからintervalを取得
+        $sql_worksheet = "SELECT interval FROM worksheet LIMIT 1";
+        $stmt_worksheet = dbc()->query($sql_worksheet);
+        $interval = 0;
+        if ($stmt_worksheet) {
+          $worksheet_row = $stmt_worksheet->fetch(PDO::FETCH_ASSOC);
+          if ($worksheet_row && isset($worksheet_row['interval'])) {
+            $interval = intval($worksheet_row['interval']);
+          }
+        }
+        
+        // 過去interval日間のメンバー作業履歴を取得
+        $recent_member_works = []; // [member_id => [work_id, ...]]
+        if ($interval > 0) {
+          $start_date = date('Y-m-d', strtotime("-{$interval} days", strtotime($date)));
+          $sql_recent = "SELECT DISTINCT member_id, work_id FROM history WHERE date BETWEEN ? AND ? AND work_id IS NOT NULL";
+          $stmt_recent = dbc()->prepare($sql_recent);
+          if ($stmt_recent->execute(array($start_date, $date))) {
+            foreach($stmt_recent->fetchAll(PDO::FETCH_ASSOC) as $recent_row) {
+              if (!isset($recent_member_works[$recent_row['member_id']])) {
+                $recent_member_works[$recent_row['member_id']] = [];
+              }
+              if (!in_array($recent_row['work_id'], $recent_member_works[$recent_row['member_id']])) {
+                $recent_member_works[$recent_row['member_id']][] = $recent_row['work_id'];
+              }
+            }
+          }
+        }
+        
         $off_works = $stmt3->fetchAll(PDO::FETCH_COLUMN);
         $work_list = [];
         $work_limits = []; // 作業ごとの割り当て上限
@@ -884,7 +913,12 @@ try{
               $candidate_work = $work_list[$work_index % count($work_list)];
               
               // 除外リストにこのメンバーがいないかチェック
-              if (!isset($excluded_members[$candidate_work]) || !in_array($member_id, $excluded_members[$candidate_work])) {
+              $is_excluded_member = isset($excluded_members[$candidate_work]) && in_array($member_id, $excluded_members[$candidate_work]);
+              
+              // 過去interval日間に同じ作業に割り当てられたかチェック
+              $is_recent_work = isset($recent_member_works[$member_id]) && in_array($candidate_work, $recent_member_works[$member_id]);
+              
+              if (!$is_excluded_member && !$is_recent_work) {
                 // 上限チェック：is_above = false の場合、multiple の数を超えないようにする
                 if($work_limits[$candidate_work] == -1 || $work_assignment_count[$candidate_work] < $work_limits[$candidate_work]){
                   $assigned_work = $candidate_work;

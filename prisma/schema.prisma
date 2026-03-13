@@ -70,5 +70,7 @@ model OffWork {
 model Worksheet {
   id Int @id @default(autoincrement())
   interval Int
+  weekUse Boolean @default(false) @map("week_use")
+  week Int @default(0)
   @@map("worksheet")
 }
