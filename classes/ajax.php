@@ -755,7 +755,7 @@ try{
     case 'shuffle':
       if(isset($_REQUEST["date"])){
         $date = date('Y-m-d', strtotime($_REQUEST['date']));
-        $sql = "SELECT id, multiple FROM work WHERE archive=false";
+        $sql = "SELECT id, multiple, is_above FROM work WHERE archive=false";
         $sql2 = "SELECT id, member_id, work_id FROM history WHERE date=?";
         $sql3 = "SELECT work_id FROM off_work WHERE date=?";
         
@@ -778,9 +778,14 @@ try{
         foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
           // off_workテーブルで指定日付にOFF状態の作業は除外
           if(!in_array($row["id"], $off_works)){
-            for($i = 0; $i < $row["multiple"]; $i++){
+            // is_above を参照して割り当て方法を決定
+            if($row["is_above"]){ // 以上：multipleの数以上割り当て
+              for($i = 0; $i < $row["multiple"]; $i++){
+                $work_list[] = $row["id"];
+              };
+            } else { // 以下：multipleの数以下割り当て（1回のみ）
               $work_list[] = $row["id"];
-            };
+            }
           }
         }
 
@@ -793,10 +798,13 @@ try{
         $work_stock = $work_list;
 
         $column_data = "";
+        $work_index = 0;
+        // 均等にメンバーを振り分ける
         foreach($history_list as $row) {
           if(count($work_list) != 0){
-            $column_data = $column_data . "WHEN {$row} THEN {$work_list[0]} ";
-            array_shift($work_list);
+            $assigned_work = $work_list[$work_index % count($work_list)];
+            $column_data = $column_data . "WHEN {$row} THEN {$assigned_work} ";
+            $work_index++;
           }else{
             $column_data = $column_data . "WHEN {$row} THEN null ";
           }
