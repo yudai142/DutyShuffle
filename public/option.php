@@ -4,10 +4,11 @@
 
 <div class="shuffle_option-form">
   <div class="shuffle_option-content">
-    <p>作業が被らない期間：<input type="text" class="input-tx sm">日</p>
-    <p>シャッフル時の判定開始日：<input type="text" class="input-tx"><span class="btn yellow">リセット</span></p>
+    <p>作業が被らない期間：<input type="number" id="interval_input" class="input-tx sm" value="0" min="0">日</p>
+    <p>被らない期間のリセット日程：<input type="text" class="input-tx"><span class="btn yellow">リセット</span></p>
+    <div id="option_result" style="color:orange;"></div>
   </div>
-  <span class="btn green">変更</span>
+  <span class="btn green" id="interval_save_btn">変更</span>
 </div>
 <div class="tabs">
   <input id="all" type="radio" name="tab_item" checked>

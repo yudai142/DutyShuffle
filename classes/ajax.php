@@ -854,6 +854,47 @@ try{
       }
       echo json_encode("shuffle");
       exit;
+    case 'get_interval':
+      $sql = "SELECT interval FROM worksheet LIMIT 1";
+      $stmt = dbc()->query($sql);
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row) {
+        echo json_encode(array("interval" => $row['interval']));
+      } else {
+        echo json_encode(array("interval" => 0));
+      }
+      exit;
+    case 'save_interval':
+      if (!isset($_POST['interval']) || !is_numeric($_POST['interval'])) {
+        echo json_encode(array("err" => "不正なデータです"));
+        exit;
+      }
+      $interval = intval($_POST['interval']);
+      
+      // 既存データを確認
+      $sql = "SELECT COUNT(*) as cnt FROM worksheet";
+      $stmt = dbc()->query($sql);
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      
+      if ($row['cnt'] > 0) {
+        // データが存在する場合は更新
+        $sql = "UPDATE worksheet SET interval = ? WHERE id = 1";
+        $stmt = dbc()->prepare($sql);
+        if (!$stmt->execute(array($interval))) {
+          echo json_encode(array("err" => "更新に失敗しました"));
+          exit;
+        }
+      } else {
+        // データが存在しない場合は挿入
+        $sql = "INSERT INTO worksheet (id, interval) VALUES (1, ?)";
+        $stmt = dbc()->prepare($sql);
+        if (!$stmt->execute(array($interval))) {
+          echo json_encode(array("err" => "挿入に失敗しました"));
+          exit;
+        }
+      }
+      echo json_encode(array("success" => true));
+      exit;
   };
 }catch(PDOException $e){
   echo json_encode(array("err" => "データベースエラーが発生しました: " . $e->getMessage()));

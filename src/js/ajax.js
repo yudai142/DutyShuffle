@@ -52,6 +52,7 @@ $(function($){
   }else if ( location.pathname.indexOf("/option.php") != -1 ){
     $("#option_page").html("<p>オプション</p>");
     getOptionList();
+    getIntervalValue();
   }
   
   function allocationView(){
@@ -322,6 +323,68 @@ $(function($){
       }
     });
   }
+
+  function getIntervalValue(){
+    $.ajax({
+      url: "../classes/ajax.php",
+      data: {
+        "type": 'get_interval'
+      },
+      datatype: "json",
+      success: function(data) {
+        // JSONとして正しく解析
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        if (data && data.interval !== null && data.interval !== undefined){
+          // レコードが存在する場合、保存されている値をテキストボックスに挿入
+          $('#interval_input').val(parseInt(data.interval));
+          console.log("期間設定を読み込みました: " + data.interval + "日");
+        }else{
+          // レコードが存在しない場合はデフォルト値0を設定
+          $('#interval_input').val(0);
+          console.log("期間設定が見つかりません。デフォルト値0を設定しました");
+        }
+      },
+      error: function(xhr, status, error){
+        console.log("通信失敗");
+        console.log(error);
+        $('#interval_input').val(0);
+      }
+    });
+  }
+
+  $('#interval_save_btn').on('click', function(){
+    let interval = $('#interval_input').val();
+    if (interval == "" || isNaN(interval) || parseInt(interval) < 0) {
+      $('#option_result').html("<p>有効な数値を入力してください</p>");
+      return;
+    }
+    $.ajax({
+      type: "POST",
+      url: "../classes/ajax.php",
+      datatype: "json",
+      data: {
+        "type": 'save_interval',
+        "interval": parseInt(interval)
+      },
+      success: function(data) {
+        if (data != null && data['err'] == null){
+          $('#option_result').html("<p style=\"color: green;\">保存しました</p>");
+          setTimeout(function(){
+            $('#option_result').html("");
+          }, 3000);
+        }else{
+          $('#option_result').html("<p>保存に失敗しました</p>");
+        }
+      },
+      error: function(xhr, status, error) {
+        $('#option_result').html("<p>通信エラーが発生しました</p>");
+        console.log("通信失敗");
+        console.log(error);
+      }
+    });
+  });
 
   $('#submit_member').on('click',function(){
     let err = [];
