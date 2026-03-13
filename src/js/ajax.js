@@ -865,6 +865,41 @@ $(function($){
           $('#option_result').html("<p>通信エラーが発生しました</p>");
         }
       });
+    }else if ($(this).attr("data-target") == "update-member_option") {
+      let work_id = $(this).closest('form').find('select[name="works"]').val();
+      let member_id = $(this).closest('form').find('select[name="members"]').val();
+      let option_id = $(this).attr("value");
+      
+      if (!work_id || !member_id) {
+        $('#option_result').html("<p>作業とメンバーを選択してください</p>");
+        return;
+      }
+      
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        dataType: "json",
+        data: {
+          "type": "update-member_option",
+          "work_id": work_id,
+          "member_id": member_id,
+          "option_id": option_id,
+          "change_tag": "works"
+        },
+        success: function(data) {
+          if (data && !data.err) {
+            $('#option_result').html("<p style='color:green;'>更新しました</p>");
+            setTimeout(function() {
+              getOptionList();
+            }, 500);
+          } else {
+            $('#option_result').html(`<p>${data.err || "更新に失敗しました"}</p>`);
+          }
+        },
+        error: function(xhr, status, error) {
+          $('#option_result').html("<p>通信エラーが発生しました</p>");
+        }
+      });
     }else if ($(this).attr("data-target") == "delete-member_option") {
       if (confirm("この設定を削除しますか？")) {
         $.ajax({
@@ -1003,28 +1038,8 @@ $(function($){
     if (err.length) {
       $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
     }else{
-      $.ajax({
-        type: "POST",
-        url: "../classes/ajax.php",
-        dataType: "json",
-        data: {
-          "type": "update-member_option",
-          "member_id": $(this).closest('form').find('select[name="members"]').val(),
-          "work_id": $(this).closest('form').find('select[name="works"]').val(),
-          "option_id": $(this).closest('form').find('button').val(),
-          "change_tag": $(this).attr("name"),
-        },
-        success: function(data) {
-          if (data == null || !data["err"]){
-            getOptionList();
-          }else{
-            $('#select_result').html(`<p>${data["err"]}</p>`);
-          }
-        },
-        error: function(xhr, status, error) {
-          $('#select_result').html("<p>入力エラー</p>");
-        }
-      })
+      // ボタンのテキストと data-target を変更
+      $(this).closest('form').find('.state-btn').text('更新').attr('data-target', 'update-member_option');
     }
   })
 
