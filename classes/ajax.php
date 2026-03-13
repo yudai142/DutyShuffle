@@ -772,6 +772,31 @@ try{
           echo json_encode(array("err" => "処理が正しく実行されませんでした"));
           exit;
         }
+        
+        // MemberOptionテーブルから固定（status=0）と除外（status=1）のメンバーを取得
+        $sql_option = "SELECT member_id, work_id, status FROM member_option";
+        $stmt_option = dbc()->query($sql_option);
+        $fixed_members = []; // 固定メンバー：[work_id => [member_id, ...]]
+        $excluded_members = []; // 除外メンバー：[work_id => [member_id, ...]]
+        
+        if ($stmt_option) {
+          foreach($stmt_option->fetchAll(PDO::FETCH_ASSOC) as $option_row) {
+            if ($option_row['status'] == 0) {
+              // status=0: 固定割り当て
+              if (!isset($fixed_members[$option_row['work_id']])) {
+                $fixed_members[$option_row['work_id']] = [];
+              }
+              $fixed_members[$option_row['work_id']][] = $option_row['member_id'];
+            } else if ($option_row['status'] == 1) {
+              // status=1: 除外
+              if (!isset($excluded_members[$option_row['work_id']])) {
+                $excluded_members[$option_row['work_id']] = [];
+              }
+              $excluded_members[$option_row['work_id']][] = $option_row['member_id'];
+            }
+          }
+        }
+        
         $off_works = $stmt3->fetchAll(PDO::FETCH_COLUMN);
         $work_list = [];
         $work_limits = []; // 作業ごとの割り当て上限
@@ -797,8 +822,10 @@ try{
         }
 
         $history_list = [];
+        $history_members = []; // member_idを保存
         foreach($stmt2->fetchAll(PDO::FETCH_ASSOC) as $row) {
           $history_list[] = $row["id"];
+          $history_members[$row["id"]] = $row["member_id"];
         }
         
         // メンバー数がwork_list数より多い場合、is_above=trueの作業で拡張
@@ -822,21 +849,59 @@ try{
 
         $column_data = "";
         $work_index = 0;
-        // 均等にメンバーを振り分ける
+        $fixed_assigned = []; // 固定により既に割り当てられたhistory_id
+        
+        // 先に固定メンバーを割り当てる (status=0)
+        foreach($history_list as $history_id) {
+          $member_id = $history_members[$history_id];
+          
+          // 各workについて、このメンバーが固定割り当て対象かチェック
+          foreach($fixed_members as $work_id => $member_ids) {
+            if (in_array($member_id, $member_ids)) {
+              $column_data = $column_data . "WHEN {$history_id} THEN {$work_id} ";
+              $work_assignment_count[$work_id]++;
+              $fixed_assigned[$history_id] = true;
+              break;
+            }
+          }
+        }
+        
+        // 固定で割り当てられなかったメンバーを均等に振り分ける
         foreach($history_list as $row) {
+          if (isset($fixed_assigned[$row])) {
+            // 既に固定で割り当てられた
+            continue;
+          }
+          
+          $member_id = $history_members[$row];
+          
           if(count($work_list) != 0){
-            $assigned_work = $work_list[$work_index % count($work_list)];
+            // 除外メンバーを避けて割り当て先を探す
+            $assigned_work = null;
+            $attempts = 0;
             
-            // 上限チェック：is_above = false の場合、multiple の数を超えないようにする
-            if($work_limits[$assigned_work] == -1 || $work_assignment_count[$assigned_work] < $work_limits[$assigned_work]){
-              $column_data = $column_data . "WHEN {$row} THEN {$assigned_work} ";
-              $work_assignment_count[$assigned_work]++;
-            } else {
-              // 上限に達した場合は担当なし
-              $column_data = $column_data . "WHEN {$row} THEN null ";
+            while ($assigned_work === null && $attempts < count($work_list)) {
+              $candidate_work = $work_list[$work_index % count($work_list)];
+              
+              // 除外リストにこのメンバーがいないかチェック
+              if (!isset($excluded_members[$candidate_work]) || !in_array($member_id, $excluded_members[$candidate_work])) {
+                // 上限チェック：is_above = false の場合、multiple の数を超えないようにする
+                if($work_limits[$candidate_work] == -1 || $work_assignment_count[$candidate_work] < $work_limits[$candidate_work]){
+                  $assigned_work = $candidate_work;
+                  $work_assignment_count[$candidate_work]++;
+                }
+              }
+              
+              $work_index++;
+              $attempts++;
             }
             
-            $work_index++;
+            if ($assigned_work !== null) {
+              $column_data = $column_data . "WHEN {$row} THEN {$assigned_work} ";
+            } else {
+              // 割り当て可能な作業がない場合は担当なし
+              $column_data = $column_data . "WHEN {$row} THEN null ";
+            }
           }else{
             $column_data = $column_data . "WHEN {$row} THEN null ";
           }
