@@ -113,8 +113,6 @@ $(function($){
       },
       error: function(xhr, status, error) {
         $('#allocation-form').html("<p>通信エラー</p>");
-        console.log("通信失敗");
-        console.log(error);
       }
     });
   }
@@ -142,8 +140,6 @@ $(function($){
       },
       error: function(xhr, status, error){
         $('#join_member').append("<p>通信エラー</p>");
-        console.log("通信失敗");
-        console.log(error);
       }
     });
   }
@@ -170,8 +166,6 @@ $(function($){
       },
       error: function(xhr, status, error){
         $('#join_work').append("<p>通信エラー</p>");
-        console.log("通信失敗");
-        console.log(error);
       }
     });
   }
@@ -197,8 +191,6 @@ $(function($){
       },
       error: function(xhr, status, error){
         $('#member_show_result').append("<p>通信エラー</p>");
-        console.log("通信失敗");
-        console.log(error);
       }
     });
     // return false
@@ -226,8 +218,6 @@ $(function($){
       },
       error: function(xhr, status, error){
         $('#work_show_result').append("<p>通信エラー</p>");
-        console.log("通信失敗");
-        console.log(error);
       }
     });
     // return false
@@ -324,8 +314,6 @@ $(function($){
       },
       error: function(xhr, status, error){
         $('#option_list').append("<p>通信エラー</p>");
-        console.log("通信失敗");
-        console.log(error);
       }
     });
   }
@@ -345,16 +333,12 @@ $(function($){
         if (data && data.interval !== null && data.interval !== undefined){
           // レコードが存在する場合、保存されている値をテキストボックスに挿入
           $('#interval_input').val(parseInt(data.interval));
-          console.log("期間設定を読み込みました: " + data.interval + "日");
         }else{
           // レコードが存在しない場合はデフォルト値0を設定
           $('#interval_input').val(0);
-          console.log("期間設定が見つかりません。デフォルト値0を設定しました");
         }
       },
       error: function(xhr, status, error){
-        console.log("通信失敗");
-        console.log(error);
         $('#interval_input').val(0);
       }
     });
@@ -406,18 +390,14 @@ $(function($){
           }
           
           updateSelectedDatesDisplay();
-          console.log("リセット日程を読み込みました: " + selectedDates.join(', '));
         } else {
           selectedDates = [];
           if (flatpickrInstance) {
             flatpickrInstance.clear();
           }
-          console.log("リセット日程が見つかりません");
         }
       },
       error: function(xhr, status, error){
-        console.log("通信失敗");
-        console.log(error);
         selectedDates = [];
       }
     });
@@ -564,8 +544,6 @@ $(function($){
           },
           error: function(xhr, status, error) {
             $('#member_result').html("<p>入力エラー</p>");
-            console.log("通信失敗");
-            console.log(error);
           }
         });
       }else{
@@ -594,8 +572,6 @@ $(function($){
           },
           error: function(xhr, status, error) {
             $('#member_result').html("<p>入力エラー</p>");
-            console.log("通信失敗");
-            console.log(error);
           }
         });
       }
@@ -634,8 +610,6 @@ $(function($){
           },
           error: function(xhr, status, error) {
             $('#work_result').html("<p>入力エラー</p>");
-            console.log("通信失敗");
-            console.log(error);
           }
         });
       }else{
@@ -663,8 +637,6 @@ $(function($){
           },
           error: function(xhr, status, error) {
             $('#work_result').html("<p>入力エラー</p>");
-            console.log("通信失敗");
-            console.log(error);
           }
         });
       }
@@ -701,19 +673,6 @@ $(function($){
       //     if (!data["err"]){
       //       $.each(data, function(key, value){
       //         if (confirm(`${value.family_name}　${value.given_name}さんは他のタスクに入っていますが、除外してもよろしいですか？`)) {
-      //           return false;
-      //         } else {
-      //           check.push(value.id)
-      //         }
-      //       });
-      //     }else{
-      //       $('#select_result').html(`<p>${data["err"]}</p>`);
-      //     }
-      //   },
-      //   error: function(data) {
-      //     $('#select_result').html("<p>入力エラー</p>");
-      //     console.log("通信失敗");
-      //     console.log(data);
       //   }
       // });
       $.ajax({
@@ -740,8 +699,6 @@ $(function($){
         },
         error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
-          console.log("通信失敗");
-          console.log(error);
         }
       });
     }
@@ -772,8 +729,6 @@ $(function($){
         },
         error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
-          console.log("通信失敗");
-          console.log(error);
         }
       });
     }
@@ -812,8 +767,6 @@ $(function($){
         },
         error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
-          console.log("通信失敗");
-          console.log(error);
         }
       });
     }else if ($(this).attr("data-target") == "remove-member") {
@@ -849,8 +802,6 @@ $(function($){
           },
           error: function(xhr, status, error) {
             $('#select_result').html("<p>入力エラー</p>");
-            console.log("通信失敗");
-            console.log(error);
           }
         });
       }
@@ -877,8 +828,6 @@ $(function($){
           },
           error: function(xhr, status, error) {
             $('#select_result').html("<p>入力エラー</p>");
-            console.log("通信失敗");
-            console.log(error);
           }
         });
       }
@@ -896,7 +845,6 @@ $(function($){
             if( location.pathname.indexOf("/top.php") != -1 ){
               joinMember();
             }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
-              // console.log(data)
               allocationView();
             }
           }else{
@@ -905,8 +853,6 @@ $(function($){
         },
         error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
-          console.log("通信失敗");
-          console.log(error);
         }
       });
     }else if ($(this).attr("data-target") == "add-member_option") {
@@ -914,7 +860,6 @@ $(function($){
       if (isNaN($(this).closest('form').find('#works_new').val())) err.push("作業");
       if (isNaN($(this).closest('form').find('#members_new').val())) err.push("メンバー");
       if (err.length) {
-        console.log(`${err.join("と")}が入力されていません`)
         $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
       }else{
         $.ajax({
@@ -936,15 +881,12 @@ $(function($){
           },
           error: function(xhr, status, error) {
             $('#select_result').html("<p>入力エラー</p>");
-            console.log("通信失敗");
-            console.log(error);
           }
         })
       }
     }else if ($(this).attr("data-target") == "delete-member_option") {
       let err = [];
       if (err.length) {
-        console.log(`${err.join("と")}が入力されていません`)
         $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
       }else{
         $.ajax({
@@ -976,8 +918,6 @@ $(function($){
                   },
                   error: function(xhr, status, error) {
                     $('#select_result').html("<p>入力エラー</p>");
-                    console.log("通信失敗");
-                    console.log(error);
                   }
                 })
               }
@@ -987,8 +927,6 @@ $(function($){
           },
           error: function(xhr, status, error) {
             $('#select_result').html("<p>情報の取得に失敗しました</p>");
-            console.log("通信失敗");
-            console.log(error);
           }
         })
       }
@@ -1000,7 +938,6 @@ $(function($){
     if (isNaN($(this).closest('form').find('select[name="works"]').val())) err.push("作業");
     if (isNaN($(this).closest('form').find('select[name="members"]').val())) err.push("メンバー");
     if (err.length) {
-      console.log(`${err.join("と")}が入力されていません`)
       $('#option_result').html(`<p>${err.join("と")}が入力されていません</p>`);
     }else{
       $.ajax({
@@ -1016,7 +953,6 @@ $(function($){
         },
         success: function(data) {
           if (data == null || !data["err"]){
-            console.log(data)
             getOptionList();
           }else{
             $('#select_result').html(`<p>${data["err"]}</p>`);
@@ -1024,8 +960,6 @@ $(function($){
         },
         error: function(xhr, status, error) {
           $('#select_result').html("<p>入力エラー</p>");
-          console.log("通信失敗");
-          console.log(error);
         }
       })
     }
