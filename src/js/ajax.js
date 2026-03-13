@@ -57,6 +57,8 @@ $(function($){
     $("#option_page").html("<p>オプション</p>");
     getOptionList();
     getIntervalValue();
+    getWeekUseValue();
+    getWeekValue();
     initResetDatePicker();
     getResetDates();
   }
@@ -344,6 +346,59 @@ $(function($){
     });
   }
 
+  function getWeekUseValue(){
+    $.ajax({
+      url: "../classes/ajax.php",
+      data: {
+        "type": 'get_week_use'
+      },
+      dataType: "json",
+      success: function(data) {
+        // JSONとして正しく解析
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        if (data && data.weekUse !== null && data.weekUse !== undefined){
+          // レコードが存在する場合、保存されている値をラジオボタンに設定
+          const weekUseValue = parseInt(data.weekUse) === 1 ? '1' : '0';
+          $('input[name="week_mode"][value="' + weekUseValue + '"]').prop('checked', true);
+        }else{
+          // レコードが存在しない場合はデフォルト値(0 = 指定日)を設定
+          $('input[name="week_mode"][value="0"]').prop('checked', true);
+        }
+      },
+      error: function(xhr, status, error){
+        $('input[name="week_mode"][value="0"]').prop('checked', true);
+      }
+    });
+  }
+
+  function getWeekValue(){
+    $.ajax({
+      url: "../classes/ajax.php",
+      data: {
+        "type": 'get_week'
+      },
+      dataType: "json",
+      success: function(data) {
+        // JSONとして正しく解析
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        if (data && data.week !== null && data.week !== undefined){
+          // レコードが存在する場合、保存されている曜日値をセレクトボックスに設定
+          $('#week_day_select').val(data.week.toString());
+        }else{
+          // レコードが存在しない場合はデフォルト値(0 = 月)を設定
+          $('#week_day_select').val('0');
+        }
+      },
+      error: function(xhr, status, error){
+        $('#week_day_select').val('0');
+      }
+    });
+  }
+
   // 複数日付選択用のカレンダー初期化（Flatpickr）
   
   function initResetDatePicker(){
@@ -422,6 +477,36 @@ $(function($){
     $('#datepicker').click();
   });
 
+  // 週ごと/指定日ラジオボタンの変更イベント
+  $(document).on('change', 'input[name="week_mode"]', function(){
+    let selectedValue = $(this).val();
+    
+    if (selectedValue === '0') {
+      // 指定日を選択
+      $('#reset_date_container').show();
+      $('#week_container').hide();
+    } else {
+      // 週ごとを選択
+      $('#reset_date_container').hide();
+      $('#week_container').show();
+    }
+  });
+
+  // ページ読み込み時の表示制御
+  $(function() {
+    // オプションページの場合、初期表示を設定
+    if (location.pathname.indexOf("/option.php") !== -1) {
+      let selectedWeekMode = $('input[name="week_mode"]:checked').val();
+      if (selectedWeekMode === '1') {
+        $('#reset_date_container').hide();
+        $('#week_container').show();
+      } else {
+        $('#reset_date_container').show();
+        $('#week_container').hide();
+      }
+    }
+  });
+
   $('#interval_save_btn').on('click', function(){
     let interval = $('#interval_input').val();
     if (interval == "" || isNaN(interval) || parseInt(interval) < 0) {
@@ -498,9 +583,81 @@ $(function($){
       }
     });
 
+    // 週ごとのリセット設定のAJAX保存
+    let weekUse = $('input[name="week_mode"]:checked').val();
+    if (weekUse === undefined || weekUse === null) {
+      weekUse = '0'; // デフォルト値
+    }
+    $.ajax({
+      type: "POST",
+      url: "../classes/ajax.php",
+      dataType: "json",
+      contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+      data: {
+        "type": 'save_week_use',
+        "weekUse": parseInt(weekUse)
+      },
+      success: function(data) {
+        try {
+          if (data && data.success === true) {
+            successCount++;
+          } else if (typeof data === 'object' && !data.err) {
+            successCount++;
+          } else {
+            hasError = true;
+          }
+        } catch (e) {
+          hasError = true;
+        }
+        saveCount++;
+        checkSaveCompletion();
+      },
+      error: function(xhr, status, error) {
+        hasError = true;
+        saveCount++;
+        checkSaveCompletion();
+      }
+    });
+
+    // 曜日選択のAJAX保存
+    let weekDay = $('#week_day_select').val();
+    if (weekDay === undefined || weekDay === null || weekDay === '') {
+      weekDay = '0'; // デフォルト値
+    }
+    $.ajax({
+      type: "POST",
+      url: "../classes/ajax.php",
+      dataType: "json",
+      contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+      data: {
+        "type": 'save_week',
+        "week": parseInt(weekDay)
+      },
+      success: function(data) {
+        try {
+          if (data && data.success === true) {
+            successCount++;
+          } else if (typeof data === 'object' && !data.err) {
+            successCount++;
+          } else {
+            hasError = true;
+          }
+        } catch (e) {
+          hasError = true;
+        }
+        saveCount++;
+        checkSaveCompletion();
+      },
+      error: function(xhr, status, error) {
+        hasError = true;
+        saveCount++;
+        checkSaveCompletion();
+      }
+    });
+
     function checkSaveCompletion(){
-      if (saveCount === 2) {
-        if (!hasError && successCount === 2) {
+      if (saveCount === 4) {
+        if (!hasError && successCount === 4) {
           $('#option_result').html("<p style=\"color: green;\">保存しました</p>");
           setTimeout(function(){
             $('#option_result').html("");

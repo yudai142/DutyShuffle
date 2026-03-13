@@ -131,3 +131,31 @@
 .option-form li .button:nth-child(n+3) {
   margin-top: 8px;
 }
+
+/* Select box styles for week container */
+.week-day-select {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  margin-left: 10px;
+  height: 32px;
+}
+
+.week-day-select:hover {
+  border-color: #666;
+  background-color: #f9f9f9;
+}
+
+.week-day-select:focus {
+  outline: none;
+  border-color: #60ADBD;
+  box-shadow: 0 0 4px rgba(96, 173, 189, 0.3);
+}
+
+#week_container {
+  margin: 20px 0;
+  display: none;
+}

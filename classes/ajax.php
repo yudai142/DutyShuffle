@@ -797,14 +797,18 @@ try{
           }
         }
         
-        // Worksheetテーブルからintervalを取得
-        $sql_worksheet = "SELECT interval FROM worksheet LIMIT 1";
+        // Worksheetテーブルからinterval、weekUse、weekを取得
+        $sql_worksheet = "SELECT interval, week_use, week FROM worksheet LIMIT 1";
         $stmt_worksheet = dbc()->query($sql_worksheet);
         $interval = 0;
+        $week_use = false;
+        $week = 0;
         if ($stmt_worksheet) {
           $worksheet_row = $stmt_worksheet->fetch(PDO::FETCH_ASSOC);
           if ($worksheet_row && isset($worksheet_row['interval'])) {
             $interval = intval($worksheet_row['interval']);
+            $week_use = $worksheet_row['week_use'];
+            $week = intval($worksheet_row['week']);
           }
         }
         
@@ -812,6 +816,42 @@ try{
         $recent_member_works = []; // [member_id => [work_id, ...]]
         if ($interval > 0) {
           $start_date = date('Y-m-d', strtotime("-{$interval} days", strtotime($date)));
+          
+          // weekUseがtrueの場合、曜日に基づいてintervalカウントをリセット判定
+          if ($week_use) {
+            // シャッフル日以前の最も近いweekカラムの曜日を見つける
+            $found_date = false;
+            for ($i = 0; $i < 7; $i++) {
+              $check_date = date('Y-m-d', strtotime("-{$i} days", strtotime($date)));
+              $check_day_of_week = intval(date('w', strtotime($check_date)));
+              
+              if ($check_day_of_week == $week) {
+                $start_date = $check_date;
+                $found_date = true;
+                break;
+              }
+            }
+            
+            // 見つからない場合はデフォルトの過去interval日を使用
+            if (!$found_date) {
+              $start_date = date('Y-m-d', strtotime("-{$interval} days", strtotime($date)));
+            }
+          } else {
+            // weekUseがfalseの場合、ShuffleOptionテーブルを参照
+            // 現在日付以前のreset_dateの中から最も新しいものを基準にする
+            $sql_reset_dates = "SELECT reset_date FROM shuffle_option WHERE reset_date <= ? ORDER BY reset_date DESC LIMIT 1";
+            $stmt_reset_dates = dbc()->prepare($sql_reset_dates);
+            
+            if ($stmt_reset_dates->execute(array($date))) {
+              $reset_date_row = $stmt_reset_dates->fetch(PDO::FETCH_ASSOC);
+              if ($reset_date_row && !empty($reset_date_row['reset_date'])) {
+                // reset_dateが存在する場合、その日付をstart_dateに設定
+                $reset_date = $reset_date_row['reset_date'];
+                $start_date = $reset_date;
+              }
+            }
+          }
+          
           $sql_recent = "SELECT DISTINCT member_id, work_id FROM history WHERE date BETWEEN ? AND ? AND work_id IS NOT NULL";
           $stmt_recent = dbc()->prepare($sql_recent);
           if ($stmt_recent->execute(array($start_date, $date))) {
@@ -962,6 +1002,26 @@ try{
         echo json_encode(array("interval" => 0));
       }
       exit;
+    case 'get_week_use':
+      $sql = "SELECT week_use FROM worksheet LIMIT 1";
+      $stmt = dbc()->query($sql);
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row) {
+        echo json_encode(array("weekUse" => $row['week_use']));
+      } else {
+        echo json_encode(array("weekUse" => false));
+      }
+      exit;
+    case 'get_week':
+      $sql = "SELECT week FROM worksheet LIMIT 1";
+      $stmt = dbc()->query($sql);
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($row) {
+        echo json_encode(array("week" => $row['week']));
+      } else {
+        echo json_encode(array("week" => 0));
+      }
+      exit;
     case 'save_interval':
       if (!isset($_POST['interval']) || !is_numeric($_POST['interval'])) {
         echo json_encode(array("err" => "不正なデータです"));
@@ -994,6 +1054,88 @@ try{
           $sql = "INSERT INTO worksheet (id, interval) VALUES (1, ?)";
           $stmt = $dbc->prepare($sql);
           $stmt->execute(array($interval));
+        }
+        
+        echo json_encode(array("success" => true));
+      } catch (PDOException $e) {
+        echo json_encode(array("err" => "エラー: " . $e->getMessage()));
+      }
+      exit;
+    case 'save_week_use':
+      if (!isset($_POST['weekUse'])) {
+        echo json_encode(array("err" => "不正なデータです"));
+        exit;
+      }
+      $weekUse = intval($_POST['weekUse']);
+      
+      try {
+        $dbc = dbc();
+        
+        // worksheetテーブルからデータ取得（エラーハンドリング）
+        try {
+          $sql = "SELECT COUNT(*) as cnt FROM worksheet";
+          $stmt = $dbc->query($sql);
+          if ($stmt === false) {
+            throw new Exception("クエリ実行失敗");
+          }
+          $row = $stmt->fetch(PDO::FETCH_ASSOC);
+          $recordCount = $row['cnt'] ?? 0;
+        } catch (Exception $e) {
+          // テーブルが存在しない場合
+          $recordCount = 0;
+        }
+        
+        if ($recordCount > 0) {
+          // データが存在する場合は更新
+          $sql = "UPDATE worksheet SET week_use = ? WHERE id = 1";
+          $stmt = $dbc->prepare($sql);
+          $stmt->execute(array($weekUse));
+        } else {
+          // データが存在しない場合は挿入
+          $sql = "INSERT INTO worksheet (id, week_use) VALUES (1, ?)";
+          $stmt = $dbc->prepare($sql);
+          $stmt->execute(array($weekUse));
+        }
+        
+        echo json_encode(array("success" => true));
+      } catch (PDOException $e) {
+        echo json_encode(array("err" => "エラー: " . $e->getMessage()));
+      }
+      exit;
+    case 'save_week':
+      if (!isset($_POST['week'])) {
+        echo json_encode(array("err" => "不正なデータです"));
+        exit;
+      }
+      $week = intval($_POST['week']);
+      
+      try {
+        $dbc = dbc();
+        
+        // worksheetテーブルからデータ取得（エラーハンドリング）
+        try {
+          $sql = "SELECT COUNT(*) as cnt FROM worksheet";
+          $stmt = $dbc->query($sql);
+          if ($stmt === false) {
+            throw new Exception("クエリ実行失敗");
+          }
+          $row = $stmt->fetch(PDO::FETCH_ASSOC);
+          $recordCount = $row['cnt'] ?? 0;
+        } catch (Exception $e) {
+          // テーブルが存在しない場合
+          $recordCount = 0;
+        }
+        
+        if ($recordCount > 0) {
+          // データが存在する場合は更新
+          $sql = "UPDATE worksheet SET week = ? WHERE id = 1";
+          $stmt = $dbc->prepare($sql);
+          $stmt->execute(array($week));
+        } else {
+          // データが存在しない場合は挿入
+          $sql = "INSERT INTO worksheet (id, week) VALUES (1, ?)";
+          $stmt = $dbc->prepare($sql);
+          $stmt->execute(array($week));
         }
         
         echo json_encode(array("success" => true));
