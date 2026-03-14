@@ -258,6 +258,14 @@ date            DATE             -- 対象日
 work_id         INTEGER FK       -- 作業ID
 ```
 
+### ER図
+
+テーブル間の関係を視覚的に確認できます：
+
+[ER図を表示](ER図(掃除当番管理アプリ).drawio)
+
+> 上記リンクをクリックすると、GitHub の draw.io ビューアでER図が表示されます。
+
 ---
 
 ## 🔌 API仕様
