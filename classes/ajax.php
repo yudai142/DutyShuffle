@@ -970,6 +970,7 @@ try{
         }
         
         // 固定で割り当てられなかったメンバーを均等に振り分ける
+        $member_index = 0;
         foreach($history_list as $row) {
           if (isset($fixed_assigned[$row])) {
             // 既に固定で割り当てられた
@@ -979,6 +980,7 @@ try{
           if (isset($unassigned_members[$row])) {
             // 既に割り当て不可と確定したメンバー
             $column_data = $column_data . "WHEN {$row} THEN null ";
+            $member_index++;
             continue;
           }
           
@@ -986,8 +988,13 @@ try{
           $assigned_work = null;
           
           if(count($unique_works_list) > 0){
-            // ユニークな作業をすべてチェック（確実に全作業を試行）
-            foreach($unique_works_list as $candidate_work) {
+            // ユニークな作業をメンバー毎にずらして試行（均等割り当て、無限ループ防止）
+            $works_array = array_values($unique_works_list);
+            $start_idx = $member_index % count($works_array);
+            
+            for ($i = 0; $i < count($works_array); $i++) {
+              $idx = ($start_idx + $i) % count($works_array);
+              $candidate_work = $works_array[$idx];
               // 除外リストにこのメンバーがいないかチェック
               $is_excluded_member = isset($excluded_members[$candidate_work]) && in_array($member_id, $excluded_members[$candidate_work]);
               
@@ -1016,6 +1023,7 @@ try{
             $unassigned_members[$row] = true;
             $column_data = $column_data . "WHEN {$row} THEN null ";
           }
+          $member_index++;
         }
         $ids = implode(",", $history_list);
         $sql3 = "UPDATE history SET work_id = CASE id ".$column_data." END WHERE id IN (".$ids.")";
