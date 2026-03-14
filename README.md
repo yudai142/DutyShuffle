@@ -262,9 +262,57 @@ work_id         INTEGER FK       -- 作業ID
 
 テーブル間の関係を視覚的に確認できます：
 
-[ER図を表示](ER図(掃除当番管理アプリ).drawio)
+```mermaid
+erDiagram
+    MEMBER ||--o{ HISTORY : ""
+    MEMBER ||--o{ MEMBER_OPTION : ""
+    WORK ||--o{ HISTORY : ""
+    WORK ||--o{ MEMBER_OPTION : ""
+    WORK ||--o{ OFF_WORK : ""
 
-> 上記リンクをクリックすると、GitHub の draw.io ビューアでER図が表示されます。
+    MEMBER {
+        int id PK "主キー"
+        string family_name "姓"
+        string given_name "名"
+        string kana_name "ふりがな"
+        boolean archive "アーカイブ状態"
+    }
+
+    WORK {
+        int id PK "主キー"
+        string name "作業名"
+        int multiple "参加人数"
+        boolean is_above "割り当てルール(true=以上,false=以下)"
+        boolean archive "アーカイブ状態"
+    }
+
+    HISTORY {
+        int id PK "主キー"
+        int member_id FK "メンバーID"
+        int work_id FK "作業ID(NULL=未割当)"
+        date date "割り当て日"
+    }
+
+    MEMBER_OPTION {
+        int id PK "主キー"
+        int member_id FK "メンバーID"
+        int work_id FK "作業ID"
+        int status "0=固定,1=除外"
+    }
+
+    OFF_WORK {
+        int id PK "主キー"
+        int work_id FK "作業ID"
+        date date "休止日"
+    }
+```
+
+> リレーション：
+> - **MEMBER ← HISTORY** : 1メンバーが複数の履歴を持つ
+> - **WORK ← HISTORY** : 1作業が複数の履歴を持つ
+> - **MEMBER ← MEMBER_OPTION** : 1メンバーが複数の固定割当設定を持つ
+> - **WORK ← MEMBER_OPTION** : 1作業が複数のメンバー設定を持つ
+> - **WORK ← OFF_WORK** : 1作業が複数の休止日を持つ
 
 ---
 
