@@ -260,59 +260,73 @@ work_id         INTEGER FK       -- 作業ID
 
 ### ER図
 
-テーブル間の関係を視覚的に確認できます：
+Prisma スキーマから自動生成したデータベース構造：
 
 ```mermaid
 erDiagram
-    MEMBER ||--o{ HISTORY : ""
-    MEMBER ||--o{ MEMBER_OPTION : ""
-    WORK ||--o{ HISTORY : ""
-    WORK ||--o{ MEMBER_OPTION : ""
-    WORK ||--o{ OFF_WORK : ""
-
-    MEMBER {
-        int id PK "主キー"
-        string family_name "姓"
-        string given_name "名"
-        string kana_name "ふりがな"
-        boolean archive "アーカイブ状態"
-    }
+    WORK ||--o{ HISTORY : contains
+    WORK ||--o{ MEMBER_OPTION : contains
+    WORK ||--o{ OFF_WORK : contains
+    MEMBER ||--o{ HISTORY : contains
+    MEMBER ||--o{ MEMBER_OPTION : contains
 
     WORK {
-        int id PK "主キー"
-        string name "作業名"
-        int multiple "参加人数"
-        boolean is_above "割り当てルール(true=以上,false=以下)"
-        boolean archive "アーカイブ状態"
+        int id PK
+        string name "VARCHAR(255)"
+        int multiple "nullable"
+        boolean archive "default: false"
+        boolean is_above "default: true"
+    }
+
+    MEMBER {
+        int id PK
+        string family_name "VARCHAR(30)"
+        string given_name "VARCHAR(30)"
+        string kana_name "VARCHAR(255)"
+        boolean archive "default: false"
     }
 
     HISTORY {
-        int id PK "主キー"
-        int member_id FK "メンバーID"
-        int work_id FK "作業ID(NULL=未割当)"
-        date date "割り当て日"
+        int id PK
+        int member_id FK
+        int work_id FK "nullable"
+        date date
     }
 
     MEMBER_OPTION {
-        int id PK "主キー"
-        int member_id FK "メンバーID"
-        int work_id FK "作業ID"
-        int status "0=固定,1=除外"
+        int id PK
+        int member_id FK
+        int work_id FK
+        int status "0=固定, 1=除外"
     }
 
     OFF_WORK {
-        int id PK "主キー"
-        int work_id FK "作業ID"
-        date date "休止日"
+        int id PK
+        int work_id FK
+        date date
+    }
+
+    SHUFFLE_OPTION {
+        int id PK
+        date reset_date "nullable"
+    }
+
+    WORKSHEET {
+        int id PK
+        int interval
+        boolean week_use "default: false"
+        int week "default: 0"
     }
 ```
 
-> リレーション：
-> - **MEMBER ← HISTORY** : 1メンバーが複数の履歴を持つ
-> - **WORK ← HISTORY** : 1作業が複数の履歴を持つ
-> - **MEMBER ← MEMBER_OPTION** : 1メンバーが複数の固定割当設定を持つ
-> - **WORK ← MEMBER_OPTION** : 1作業が複数のメンバー設定を持つ
-> - **WORK ← OFF_WORK** : 1作業が複数の休止日を持つ
+**主要リレーション：**
+- **WORK ← HISTORY** (1:M) : 1つの作業に複数の割り当て履歴
+- **MEMBER ← HISTORY** (1:M) : 1人のメンバーに複数の割り当て履歴
+- **WORK ← MEMBER_OPTION** (1:M) : 作業ごとの固定割当・除外設定
+- **MEMBER ← MEMBER_OPTION** (1:M) : メンバーごとの固定割当・除外設定
+- **WORK ← OFF_WORK** (1:M) : 作業ごとの休止日設定
+- **SHUFFLE_OPTION** : 独立（リセット日付管理用）
+- **WORKSHEET** : 独立（割当設定管理用）
 
 ---
 
