@@ -885,7 +885,9 @@ try{
               };
             } else { // 以下：multipleの数以下割り当て
               $work_limits[$row["id"]] = $row["multiple"];
-              $work_list[] = $row["id"];
+              for($i = 0; $i < $row["multiple"]; $i++){
+                $work_list[] = $row["id"];
+              };
             }
           }
         }
@@ -898,35 +900,54 @@ try{
         }
         
         // メンバー数がwork_list数より多い場合、is_above=trueの作業で拡張
+        // ただし、is_above=trueの作業がない場合は無限ループを避けるため、アルゴリズムを変更
         if(count($history_list) > count($work_list)) {
           $additional_needed = count($history_list) - count($work_list);
-          $work_ids = array_keys($work_info);
-          $idx = 0;
-          while($additional_needed > 0) {
-            $work_id = $work_ids[$idx % count($work_ids)];
-            if($work_info[$work_id]["is_above"]){ // is_above=trueのみ追加可
+          $is_above_works = [];
+          
+          // is_above=trueの作業のみを抽出
+          foreach(array_keys($work_info) as $work_id) {
+            if($work_info[$work_id]["is_above"]) {
+              $is_above_works[] = $work_id;
+            }
+          }
+          
+          // is_above=trueの作業がある場合のみ、適切に割り当て枠を拡張
+          if(count($is_above_works) > 0) {
+            $idx = 0;
+            while($additional_needed > 0) {
+              $work_id = $is_above_works[$idx % count($is_above_works)];
               $work_list[] = $work_id;
               $additional_needed--;
+              $idx++;
             }
-            $idx++;
           }
+          // is_above=trueの作業がない場合、work_listの拡張は行わない
+          // 結果として一部メンバーは割り当て不可（null）になる
         }
         
         shuffle($work_list);
         shuffle($history_list);
         $work_stock = $work_list;
+        
+        // ユニークな作業リストを事前計算
+        $unique_works_list = array_unique($work_list);
 
         $column_data = "";
         $work_index = 0;
         $fixed_assigned = []; // 固定により既に割り当てられたhistory_id
+        $unassigned_members = []; // 割り当てられなかったhistory_id
+        $fixed_targets = []; // 固定対象のhistory_id
         
         // 先に固定メンバーを割り当てる (status=0)
         foreach($history_list as $history_id) {
           $member_id = $history_members[$history_id];
+          $was_fixed_target = false;
           
           // 各workについて、このメンバーが固定割り当て対象かチェック
           foreach($fixed_members as $work_id => $member_ids) {
             if (in_array($member_id, $member_ids)) {
+              $was_fixed_target = true;
               // 除外メンバーでないか、過去interval日間に同じ作業に割り当てられていないかチェック
               $is_excluded_member = isset($excluded_members[$work_id]) && in_array($member_id, $excluded_members[$work_id]);
               $is_recent_work = isset($recent_member_works[$member_id]) && in_array($work_id, $recent_member_works[$member_id]);
@@ -940,6 +961,12 @@ try{
               break;
             }
           }
+          
+          // 固定対象だったが割り当てられなかった場合は未割り当て確定
+          if ($was_fixed_target && !isset($fixed_assigned[$history_id])) {
+            $unassigned_members[$history_id] = true;
+            $column_data = $column_data . "WHEN {$history_id} THEN null ";
+          }
         }
         
         // 固定で割り当てられなかったメンバーを均等に振り分ける
@@ -949,16 +976,18 @@ try{
             continue;
           }
           
-          $member_id = $history_members[$row];
+          if (isset($unassigned_members[$row])) {
+            // 既に割り当て不可と確定したメンバー
+            $column_data = $column_data . "WHEN {$row} THEN null ";
+            continue;
+          }
           
-          if(count($work_list) != 0){
-            // 除外メンバーを避けて割り当て先を探す
-            $assigned_work = null;
-            $attempts = 0;
-            
-            while ($assigned_work === null && $attempts < count($work_list)) {
-              $candidate_work = $work_list[$work_index % count($work_list)];
-              
+          $member_id = $history_members[$row];
+          $assigned_work = null;
+          
+          if(count($unique_works_list) > 0){
+            // ユニークな作業をすべてチェック（確実に全作業を試行）
+            foreach($unique_works_list as $candidate_work) {
               // 除外リストにこのメンバーがいないかチェック
               $is_excluded_member = isset($excluded_members[$candidate_work]) && in_array($member_id, $excluded_members[$candidate_work]);
               
@@ -970,20 +999,21 @@ try{
                 if($work_limits[$candidate_work] == -1 || $work_assignment_count[$candidate_work] < $work_limits[$candidate_work]){
                   $assigned_work = $candidate_work;
                   $work_assignment_count[$candidate_work]++;
+                  break; // 割り当て成功したら抜ける
                 }
               }
-              
-              $work_index++;
-              $attempts++;
             }
             
             if ($assigned_work !== null) {
               $column_data = $column_data . "WHEN {$row} THEN {$assigned_work} ";
             } else {
-              // 割り当て可能な作業がない場合は担当なし
+              // すべての作業をチェックしても割り当てられない場合は未割り当て確定
+              $unassigned_members[$row] = true;
               $column_data = $column_data . "WHEN {$row} THEN null ";
             }
           }else{
+            // 作業がない場合も未割り当て確定
+            $unassigned_members[$row] = true;
             $column_data = $column_data . "WHEN {$row} THEN null ";
           }
         }
