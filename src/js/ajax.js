@@ -873,7 +873,7 @@ $(function($){
         data: {
           "type": "work_select_definition",
           "select_work": $(this).attr("value"),
-          "history_id": $(this).closest(".select-member").find(".select-member-button").attr("value"),
+          "history_id": $(this).attr("data-history-id"),
           "date": $("#date").val(),
           "check-copy" : Number($('#check-copy').prop("checked"))
         },

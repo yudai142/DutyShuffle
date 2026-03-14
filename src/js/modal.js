@@ -209,7 +209,7 @@ $(document).on('click', function(e) {
           let list = [];
           $.each(data, function(work_key, work_value){
             list.push(`
-              <div class="select-work" value="${work_value.id}">${work_value.name}</div>
+              <div class="select-work" value="${work_value.id}" data-history-id="${button_value}">${work_value.name}</div>
             `);
           });
           $(`${click_id} .button`).after(`
