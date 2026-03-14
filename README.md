@@ -340,19 +340,6 @@ work_id         INTEGER FK       -- 作業ID
 
 ---
 
-## 🛠️ トラブルシューティング
-
-### シャッフルが完了しない
-→ `is_above=false` 作業の総容量がメンバー数より少ない場合、`is_above=true` 作業が必要です
-
-### メンバーが別の作業に割り当てられる
-→ モーダルボタンのhistory_idが正しく取得されているか確認（data-history-id属性）
-
-### 重複割り当てが発生する
-→ `interval` 設定値が小さすぎないか、`week_use` モード設定が正しいか確認
-
----
-
 ## 📝 ライセンス
 
 このプロジェクトはMITライセンスの下で公開されています。
@@ -370,11 +357,6 @@ docker-compose exec web php -S localhost:8000
 docker-compose exec web npx prisma studio  # GUI操作
 docker-compose exec web npx prisma reset   # リセット（開発環境のみ）
 ```
-
-### デバッグ
-- ブラウザコンソールでJavaScriptエラーを確認
-- `classes/ajax.php` にエラーログ出力を追加可能
-- Docker ログの確認: `docker-compose logs web`
 
 ---
 
