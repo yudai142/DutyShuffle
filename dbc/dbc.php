@@ -1,7 +1,7 @@
 <?php
 /**
- * Database Connection Manager with Connection Pooling
- * Supports pgBouncer connection pooling for optimized Render.com + Neon DB deployments
+ * Database Connection Manager with Connection Pooling & Fallback
+ * Supports pgBouncer connection pooling for Neon DB with automatic fallback
  */
 function dbc(){
   static $pdo = null;
@@ -30,49 +30,100 @@ function dbc(){
       $user = $url['user'];
       $pass = $url['pass'] ?? '';
       
-      // pgBouncer接続試行（Neon環境）
-      // pgBouncerが利用可能な場合、pooler.neon.techで接続
-      $pgbouncerHost = $host;
-      if (strpos($host, 'neon.tech') !== false) {
-        // pgBouncer用のホスト名に変更（例：ep-xxxxx.neon.tech → ep-xxxxx-pooler.neon.tech）
+      // Neon環境の検出
+      $isNeon = strpos($host, 'neon.tech') !== false;
+      
+      // 接続試行リスト（フォールバック対応）
+      $connectionAttempts = array();
+      
+      // 1. pgBouncer接続を試みる（Neon環境のみ）
+      if ($isNeon && getenv('APP_ENV') === 'production') {
         $pgbouncerHost = preg_replace('/\.neon\.tech$/', '-pooler.neon.tech', $host);
-        $pgbouncerPort = 6432; // pgBouncer デフォルトポート
-      } else {
-        $pgbouncerPort = $port;
+        $connectionAttempts[] = array(
+          'host' => $pgbouncerHost,
+          'port' => 6432,
+          'description' => 'pgBouncer pooler'
+        );
       }
       
-      $dsn = "pgsql:host=$pgbouncerHost;port=$pgbouncerPort;dbname=$db;connect_timeout=10";
+      // 2. 直接Neon接続（フォールバック）
+      $connectionAttempts[] = array(
+        'host' => $host,
+        'port' => $port,
+        'description' => 'Direct Neon connection'
+      );
+      
+      $lastError = null;
+      
+      foreach ($connectionAttempts as $attempt) {
+        try {
+          // SSL設定を含むDSN生成
+          $dsn = sprintf(
+            "pgsql:host=%s;port=%d;dbname=%s;connect_timeout=5;sslmode=require",
+            $attempt['host'],
+            $attempt['port'],
+            $db
+          );
+          
+          $pdo = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            // 永続接続を無効にして接続の安定性を優先
+            PDO::ATTR_PERSISTENT => false,
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_TIMEOUT => 30,
+          ]);
+          
+          // 接続成功時のセットアップ
+          $pdo->exec("SET statement_timeout = 30000");
+          $pdo->exec("SET lock_timeout = 10000");
+          
+          return $pdo;
+          
+        } catch (PDOException $e) {
+          $lastError = $e;
+          // 次の接続試行へ
+          continue;
+        }
+      }
+      
+      // 全ての接続試行が失敗
+      throw $lastError ?? new Exception('No connection attempts available');
+      
     } else {
-      // フォールバック: 環境変数から
+      // フォールバック: 環境変数から個別設定
       $host = getenv('DB_HOST') ?: 'localhost';
       $port = getenv('DB_PORT') ?: 5432;
       $db = getenv('DB_NAME') ?: 'duty_shuffle';
       $user = getenv('DB_USER') ?: 'postgres';
       $pass = getenv('DB_PASS') ?: '';
-      $dsn = "pgsql:host=$host;port=$port;dbname=$db;connect_timeout=10";
+      
+      $dsn = "pgsql:host=$host;port=$port;dbname=$db;connect_timeout=5;sslmode=prefer";
+      
+      $pdo = new PDO($dsn, $user, $pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_PERSISTENT => false,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_TIMEOUT => 30,
+      ]);
+      
+      $pdo->exec("SET statement_timeout = 30000");
+      $pdo->exec("SET lock_timeout = 10000");
+      
+      return $pdo;
     }
     
-    $pdo = new PDO($dsn, $user, $pass, [
-      // 重要: エラーモード
-      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-      // デフォルトFETCHモード
-      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-      // 接続プーリング: 永続的接続
-      PDO::ATTR_PERSISTENT => true,
-      // ステートメント準備のデフォルトモード（クライアント側準備で高速化）
-      PDO::ATTR_EMULATE_PREPARES => false,
-      // タイムアウト設定（秒単位）
-      PDO::ATTR_TIMEOUT => 30,
-    ]);
-    
-    // 接続成功時のセットアップ
-    // PostgreSQL固有の最適化設定
-    $pdo->exec("SET statement_timeout = 30000");  // 30秒でクエリタイムアウト
-    $pdo->exec("SET lock_timeout = 10000");        // 10秒でロックタイムアウト
-    
-    return $pdo;
   } catch(PDOException $e) {
-    exit('DB接続エラー: ' . $e->getMessage());
+    $debug = getenv('APP_DEBUG') === 'true';
+    $errorMsg = 'Database connection failed';
+    
+    if ($debug) {
+      $errorMsg .= ': ' . $e->getMessage();
+      error_log('DB Connection Error: ' . $e->getMessage());
+    }
+    
+    exit($errorMsg);
   }
 }
 ?>

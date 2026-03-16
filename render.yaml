@@ -20,6 +20,8 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
+      - key: PRISMA_SKIP_ENGINE_CHECK
+        value: "true"
       - key: NODE_ENV
         value: production
     
