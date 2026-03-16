@@ -5,124 +5,207 @@ header('Content-Type: application/json; charset=utf-8');
 
 try{
   switch($_REQUEST['type']){
+    // バッチリクエスト: 複数のデータをまとめて取得（オプションページの初期化用）
+    case 'batch_init_option':
+      $sql = "SELECT interval, week_use, week FROM worksheet LIMIT 1";
+      $stmt_worksheet = dbc()->query($sql);
+      $worksheet_row = $stmt_worksheet ? $stmt_worksheet->fetch(PDO::FETCH_ASSOC) : null;
+      
+      $sql2 = "SELECT reset_date FROM shuffle_option ORDER BY reset_date ASC";
+      $stmt_dates = dbc()->query($sql2);
+      $dates = [];
+      if ($stmt_dates) {
+        foreach($stmt_dates->fetchAll(PDO::FETCH_ASSOC) as $row) {
+          if ($row['reset_date']) {
+            $dates[] = $row['reset_date'];
+          }
+        }
+      }
+      
+      $result = array(
+        'interval' => $worksheet_row ? intval($worksheet_row['interval']) : 0,
+        'weekUse' => $worksheet_row ? intval($worksheet_row['week_use']) : 0,
+        'week' => $worksheet_row ? intval($worksheet_row['week']) : 0,
+        'resetDates' => $dates
+      );
+      echo json_encode($result);
+      exit;
+    
+    // バッチリクエスト: create-edit ページの初期化用
+    case 'batch_init_create_edit':
+      $select_member = isset($_REQUEST['member_view']) ? $_REQUEST['member_view'] : '0';
+      $select_work = isset($_REQUEST['work_view']) ? $_REQUEST['work_view'] : '0';
+      
+      // members取得
+      if($select_member == "1"){
+        $sql_m = "SELECT * FROM member WHERE archive = false ORDER BY kana_name ASC";
+      }else if($select_member == "2"){
+        $sql_m = "SELECT * FROM member WHERE archive = true ORDER BY kana_name ASC";
+      }else{
+        $sql_m = "SELECT * FROM member ORDER BY kana_name ASC";
+      }
+      
+      // works取得
+      if($select_work == "1"){
+        $sql_w = "SELECT * FROM work WHERE archive = false ORDER BY id ASC";
+      }else if($select_work == "2"){
+        $sql_w = "SELECT * FROM work WHERE archive = true ORDER BY id ASC";
+      }else{
+        $sql_w = "SELECT * FROM work ORDER BY id ASC";
+      }
+      
+      $stmt_m = dbc()->query($sql_m);
+      $stmt_w = dbc()->query($sql_w);
+      
+      if (!($stmt_m) || !($stmt_w)) {
+        echo json_encode(array("err" => "データを取得できませんでした"));
+        exit;
+      }
+      
+      $members = [];
+      $works = [];
+      
+      foreach($stmt_m->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $members[] = array(
+          'id' => $row['id'],
+          'family_name' => $row['family_name'],
+          'given_name' => $row['given_name']
+        );
+      }
+      
+      foreach($stmt_w->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $works[] = array(
+          'id' => $row['id'],
+          'name' => $row['name']
+        );
+      }
+      
+      echo json_encode(array('members' => $members, 'works' => $works));
+      exit;
+    
     case 'allocation_list':
       $date = date('Y-m-d',  strtotime($_REQUEST['date']));
       
-      $sql = "SELECT history.id,family_name, given_name ,work_id FROM history, member WHERE date=? AND member.id = history.member_id";
-      $sql2 = "SELECT id, name, archive FROM work";
-      $sql3 = "SELECT work_id FROM off_work WHERE date=?";
-
+      // 最適化: 1つのクエリで全情報を取得（JOIN + LEFT JOINで履歴やオフ情報も含める）
+      $sql = "
+        SELECT 
+          h.id as history_id,
+          m.family_name,
+          m.given_name,
+          h.work_id,
+          w.id as work_id_col,
+          w.name as work_name,
+          w.archive,
+          ow.work_id as off_work_id
+        FROM work w
+        LEFT JOIN history h ON w.id = h.work_id AND h.date = ?
+        LEFT JOIN member m ON h.member_id = m.id
+        LEFT JOIN off_work ow ON w.id = ow.work_id AND ow.date = ?
+        WHERE w.archive = false OR h.id IS NOT NULL
+        ORDER BY w.id, m.kana_name
+      ";
+      
       $stmt = dbc()->prepare($sql);
-      if (!($stmt->execute(array($date)))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
-        exit;
-      }
-
-      if (!($stmt2 = dbc()->query($sql2))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
-        exit;
-      }
-
-      $stmt3 = dbc()->prepare($sql3);
-      if (!($stmt3->execute(array($date)))) {
+      if (!($stmt->execute(array($date, $date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
       
-      $work_list = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-      $work_id_list = [];
+      $productList = array(array(), array());
+      $work_ids_seen = array();
       
       foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if($row['work_id'] != null){
-          $work_id_list[] = $row['work_id'];
-        }
-        $productList[1][] = array(
-          'history_id'    => $row['id'],
-          'family_name' => $row['family_name'],
-          'given_name'  => $row['given_name'],
-          'work_id'    => $row['work_id'],
-        );
-      }
-
-      $work_id_list = array_unique($work_id_list);
-      $off_works = $stmt3->fetchAll(PDO::FETCH_COLUMN);
-
-      foreach($work_list as $row) {
-        if(in_array($row['id'], $work_id_list) || $row['archive'] == false){
-          $status = (in_array($row['id'], $off_works))? "0" : "1";
+        // work情報を[0]に追加（重複を避ける）
+        if (!in_array($row['work_id_col'], $work_ids_seen)) {
+          $status = ($row['off_work_id'] !== null) ? "0" : "1";
           $productList[0][] = array(
-            'id'    => $row['id'],
-            'name'  => $row['name'],
+            'id'    => $row['work_id_col'],
+            'name'  => $row['work_name'],
             'status'  => $status
+          );
+          $work_ids_seen[] = $row['work_id_col'];
+        }
+        
+        // member情報を[1]に追加
+        if ($row['history_id'] !== null) {
+          $productList[1][] = array(
+            'history_id'    => $row['history_id'],
+            'family_name' => $row['family_name'],
+            'given_name'  => $row['given_name'],
+            'work_id'    => $row['work_id'],
           );
         }
       }
-      if(!isset($productList)){
-        echo json_encode(null);
-        exit;
-      }
-      echo json_encode($productList);
+      
+      echo json_encode(count($productList[0]) > 0 ? $productList : null);
       exit;
     case 'join_member':
       $date = date('Y-m-d', strtotime($_REQUEST['date']));
-      $sql = "SELECT DISTINCT ON (member_id) history.id, family_name, given_name, work_id FROM history, member WHERE date=? AND member.id = history.member_id ORDER BY member_id, member.kana_name ASC";
-      $sql2 = "SELECT id ,name FROM work";
-
+      
+      // 最適化: 1つのクエリで work名も JOINで取得
+      $sql = "
+        SELECT DISTINCT ON (h.member_id) 
+          h.id, 
+          m.family_name, 
+          m.given_name, 
+          h.work_id,
+          w.name as work_name
+        FROM history h
+        JOIN member m ON h.member_id = m.id
+        LEFT JOIN work w ON h.work_id = w.id
+        WHERE h.date = ?
+        ORDER BY h.member_id, m.kana_name ASC
+      ";
+      
       $stmt = dbc()->prepare($sql);
       if (!($stmt->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
-
-      if (!($stmt2 = dbc()->query($sql2))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
-        exit;
-      }
-      $work_list = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+      
+      $productList = [];
       foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        if($row['work_id'] != null){
-          $row['work_id'] = $work_list[array_search($row['work_id'], array_column($work_list, 'id'))]["name"];
-        }
         $productList[] = array(
           'history_id'    => $row['id'],
           'family_name' => $row['family_name'],
           'given_name'  => $row['given_name'],
-          'work_name'  => $row['work_id']
+          'work_name'  => $row['work_name']
         );
       }
-      if(!isset($productList)){
-        echo json_encode(null);
-        exit;
-      }
-      echo json_encode($productList);
+      
+      echo json_encode(count($productList) > 0 ? $productList : null);
       exit;
     case 'join_work':
       $date = date('Y-m-d', strtotime($_REQUEST['date']));
-      $sql = "SELECT id, name FROM work WHERE archive=false";
-      if (!($stmt = dbc()->query($sql))) {
+      
+      // 最適化: 1つのクエリで オフ情報も条件付きで取得
+      $sql = "
+        SELECT 
+          w.id, 
+          w.name,
+          CASE WHEN ow.work_id IS NOT NULL THEN 0 ELSE 1 END as status
+        FROM work w
+        LEFT JOIN off_work ow ON w.id = ow.work_id AND ow.date = ?
+        WHERE w.archive = false
+        ORDER BY w.id
+      ";
+      
+      $stmt = dbc()->prepare($sql);
+      if (!($stmt->execute(array($date)))) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
-      $sql2 = "SELECT work_id FROM off_work WHERE date=?";
-      $stmt2 = dbc()->prepare($sql2);
-      if (!($stmt2->execute(array($date)))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
-        exit;
-      }
-      $off_works = $stmt2->fetchAll(PDO::FETCH_COLUMN);
-      foreach($stmt as $row) {
-        $status = (in_array($row['id'], $off_works))? "0" : "1";
+      
+      $productList = [];
+      foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $productList[] = array(
           'id'    => $row['id'],
           'name'  => $row['name'],
-          'status' => $status
+          'status' => intval($row['status'])
         );
       }
-      if(!isset($productList)){
-        echo json_encode(null);
-        exit;
-      }
-      echo json_encode($productList);
+      
+      echo json_encode(count($productList) > 0 ? $productList : null);
       exit;
     case 'member_select_list':
       $date = date('Y-m-d',  strtotime($_REQUEST['date']));
@@ -659,28 +742,26 @@ try{
       echo json_encode("member");
       exit;
     case 'option_list':
-      $sql = "SELECT id ,family_name, given_name, archive FROM member ORDER BY member.kana_name ASC";
-      $sql2 = "SELECT id ,name, archive FROM work";
-      $sql3 = "SELECT id ,member_id, work_id, status FROM member_option";
+      // 最適化: 複数のクエリを1つのトランザクションで実行
+      $sql_members = "SELECT id, family_name, given_name, archive FROM member ORDER BY kana_name ASC";
+      $sql_works = "SELECT id, name, archive FROM work ORDER BY id ASC";
+      $sql_options = "SELECT id, member_id, work_id, status FROM member_option";
 
-      if (!($stmt = dbc()->query($sql))) {
+      $stmt_members = dbc()->query($sql_members);
+      $stmt_works = dbc()->query($sql_works);
+      $stmt_options = dbc()->query($sql_options);
+
+      if (!($stmt_members) || !($stmt_works) || !($stmt_options)) {
         echo json_encode(array("err" => "データを取得できませんでした"));
         exit;
       }
 
-      if (!($stmt2 = dbc()->query($sql2))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
-        exit;
-      }
-
-      if (!($stmt3 = dbc()->query($sql3))) {
-        echo json_encode(array("err" => "データを取得できませんでした"));
-        exit;
-      }
-
-      $productList[] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      $productList[] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-      $productList[] = $stmt3->fetchAll(PDO::FETCH_ASSOC);
+      $productList = array(
+        $stmt_members->fetchAll(PDO::FETCH_ASSOC),
+        $stmt_works->fetchAll(PDO::FETCH_ASSOC),
+        $stmt_options->fetchAll(PDO::FETCH_ASSOC)
+      );
+      
       echo json_encode($productList);
       exit;
     case 'add-member_option':

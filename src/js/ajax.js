@@ -1,4 +1,105 @@
 $(function($){
+  // ==================== キャッシングシステム ====================
+  const CACHE_CONFIG = {
+    GLOBAL_TTL: 60 * 1000,        // グローバル キャッシュ有効期間: 60秒
+    ALLOCATION_TTL: 30 * 1000,    // allocation_list キャッシュ: 30秒
+    MEMBER_TTL: 120 * 1000,       // member_list キャッシュ: 120秒
+    WORK_TTL: 120 * 1000          // work_list キャッシュ: 120秒
+  };
+
+  const ajaxCache = new Map();
+  
+  /**
+   * キャッシュキーの生成
+   */
+  function getCacheKey(type, params = {}) {
+    return JSON.stringify({ type, params: Object.keys(params).sort().reduce((sorted, key) => {
+      sorted[key] = params[key];
+      return sorted;
+    }, {})});
+  }
+  
+  /**
+   * キャッシュ設定の取得
+   */
+  function getCacheTTL(type) {
+    const ttlMap = {
+      'allocation_list': CACHE_CONFIG.ALLOCATION_TTL,
+      'member_list': CACHE_CONFIG.MEMBER_TTL,
+      'work_list': CACHE_CONFIG.WORK_TTL,
+      'join_member': CACHE_CONFIG.ALLOCATION_TTL,
+      'join_work': CACHE_CONFIG.ALLOCATION_TTL,
+      'option_list': CACHE_CONFIG.GLOBAL_TTL
+    };
+    return ttlMap[type] || CACHE_CONFIG.GLOBAL_TTL;
+  }
+  
+  /**
+   * キャッシュからデータ取得（有効期限内の場合）
+   */
+  function getCachedData(type, params = {}) {
+    const key = getCacheKey(type, params);
+    const cached = ajaxCache.get(key);
+    
+    if (cached && Date.now() - cached.timestamp < getCacheTTL(type)) {
+      return cached.data;
+    }
+    
+    return null;
+  }
+  
+  /**
+   * キャッシュにデータを保存
+   */
+  function setCachedData(type, params = {}, data) {
+    const key = getCacheKey(type, params);
+    ajaxCache.set(key, { data, timestamp: Date.now() });
+  }
+  
+  /**
+   * 特定のキャッシュをクリア
+   */
+  function invalidateCache(pattern = null) {
+    if (pattern === null) {
+      ajaxCache.clear();
+    } else {
+      for (const key of ajaxCache.keys()) {
+        if (key.includes(pattern)) {
+          ajaxCache.delete(key);
+        }
+      }
+    }
+  }
+  
+  /**
+   * キャッシュ対応のAJAX関数（内部使用）
+   */
+  function cachedAjax(type, params = {}) {
+    return new Promise((resolve, reject) => {
+      // キャッシュを確認
+      const cached = getCachedData(type, params);
+      if (cached !== null) {
+        return resolve(cached);
+      }
+      
+      // キャッシュがない場合はAJAX実行
+      $.ajax({
+        type: "POST",
+        url: "../classes/ajax.php",
+        dataType: "json",
+        data: { type, ...params },
+        success: function(data) {
+          // キャッシュに保存
+          setCachedData(type, params, data);
+          resolve(data);
+        },
+        error: function(xhr, status, error) {
+          reject(new Error(`AJAX Error: ${status}`));
+        }
+      });
+    });
+  }
+
   // DOM操作完了を追跡するPromise
   let domOperationPromise = Promise.resolve();
 
@@ -37,52 +138,128 @@ $(function($){
 
   if ( location.pathname.indexOf("/create-edit.php") !== -1 ){
     $("#create-edit_page").html("<p>登録・編集</p>");
-    getAllMember();
-    getAllWork();
+    // 並列処理でメンバーと作業を同時取得
+    Promise.all([
+      cachedAjax('member_list', { select: $('#member_view').val() }),
+      cachedAjax('work_list', { select: $('#work_view').val() })
+    ]).then(([members, works]) => {
+      renderMembersTable(members);
+      renderWorksTable(works);
+    });
+    
     $('#member_view').change(function() {
+      invalidateCache('member_list');
       getAllMember();
     });
       
     $('#work_view').change(function() {
+      invalidateCache('work_list');
       getAllWork();
     });
   }else if ( location.pathname.indexOf("/top.php") != -1 ){
     $("#top_page").html("<p>トップ</p>");
-    joinMember();
-    joinWork();
+    // 並列処理でメンバーと作業を同時取得
+    Promise.all([
+      cachedAjax('join_member', { date: $("#date").val() }),
+      cachedAjax('join_work', { date: $("#date").val() })
+    ]).then(([members, works]) => {
+      renderJoinMembers(members);
+      renderJoinWorks(works);
+    });
   }else if ( location.pathname.indexOf("/allocation.php") != -1 ){
     $("#allocation_page").html("<p>割り当て</p>");
     allocationView();
   }else if ( location.pathname.indexOf("/option.php") != -1 ){
     $("#option_page").html("<p>オプション</p>");
-    getOptionList();
-    getIntervalValue();
-    getWeekUseValue();
-    getWeekValue();
-    initResetDatePicker();
-    getResetDates();
-  }
-  
-  function allocationView(){
+    // バッチリクエストで全オプション初期化データを一度に取得
     $.ajax({
       type: "POST",
       url: "../classes/ajax.php",
       dataType: "json",
-      data: {
-        "type": 'allocation_list',
-        "date": $("#date").val()
-      },
+      data: { "type": 'batch_init_option' },
       success: function(data) {
-        if (data == null){
+        if (data && !data.err) {
+          $('#interval_input').val(data.interval);
+          $('input[name="week_mode"][value="' + data.weekUse + '"]').prop('checked', true);
+          $('#week_day_select').val(data.week.toString());
+          
+          selectedDates = data.resetDates;
+          if (flatpickrInstance) {
+            const dates = selectedDates.map(dateStr => new Date(dateStr));
+            flatpickrInstance.setDate(dates, false);
+          }
+        }
+      }
+    });
+    
+    getOptionList();
+    initResetDatePicker();
+  }
+  
+  // ==================== レンダリング関数 ====================
+  function renderMembersTable(data) {
+    if (data == null || data.err != null) {
+      $('#member_show_result').html("");
+    } else {
+      let arr = [];
+      $.each(data, function(key, value) {
+        arr.push(`<div id=member_${value.id} class="button member b-select md-btn" data-target='modal-member' value=${value.id}>${value.family_name}　${value.given_name}</div>`);
+      });
+      $('#member_show_result').html(arr);
+    }
+  }
+
+  function renderWorksTable(data) {
+    if (data == null || data.err != null) {
+      $('#work_show_result').html("");
+    } else {
+      let arr = [];
+      $.each(data, function(key, value) {
+        arr.push(`<div id=work_${value.id} class="button work b-select md-btn" data-target='modal-work' value=${value.id}>${value.name}</div>`);
+      });
+      $('#work_show_result').html(arr);
+    }
+  }
+
+  function renderJoinMembers(data) {
+    if (data == null || data.err != null) {
+      $('#join_member').html("");
+    } else {
+      let arr = [];
+      $.each(data, function(key, value) {
+        let work_name = (value.work_name != null) ? `<p>${value.work_name}</p>` : "";
+        arr.push(`<li id=join_member_${value.history_id}><div class="button member state-btn" data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</div>${work_name}</li>`);
+      });
+      $('#join_member').html(arr);
+    }
+  }
+
+  function renderJoinWorks(data) {
+    if (data == null || data.err != null) {
+      $('#join_work').html("");
+    } else {
+      let arr = [];
+      $.each(data, function(key, value) {
+        let style = (value.status == 1) ? 'work' : 'off';
+        arr.push(`<li id=join_work_${value.id}><div class="button ${style} state-btn" data-target='work-change' value=${value.id}>${value.name}</div></li>`);
+      });
+      $('#join_work').html(arr);
+    }
+  }
+  
+  function allocationView(){
+    cachedAjax('allocation_list', { date: $("#date").val() })
+      .then(data => {
+        if (data == null) {
           $('#allocation-form').html("");
-        }else if(data["err"] == null){
-          let arr = []
-          $.each(data[0], function(work_key, work_value){
-            let style = (work_value.status == 1)? 'work' : 'off'
-            if(data[1] != null){
+        } else if(data["err"] == null) {
+          let arr = [];
+          $.each(data[0], function(work_key, work_value) {
+            let style = (work_value.status == 1) ? 'work' : 'off';
+            if(data[1] != null) {
               let member = data[1].filter(value => {if(value.work_id == work_value.id){return true;}});
               let list = [];
-              $.each(member, function(member_key, member_value){
+              $.each(member, function(member_key, member_value) {
                 list.push(`
                   <div class="select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}">
                     <div class="button member">${member_value.family_name}　${member_value.given_name}</div>
@@ -95,252 +272,143 @@ $(function($){
                   ${list.join("")}
                 </li>
               `);
-            }else{
-              arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div></li>
-              `);
+            } else {
+              arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div></li>`);
             }
           });
-          if(data[1] != null){
+          if(data[1] != null) {
             let null_member = data[1].filter(value => {if(value.work_id == null){return true;}});
             let null_list = [];
-            $.each(null_member, function(null_key, null_value){
+            $.each(null_member, function(null_key, null_value) {
               null_list.push(`<li class="select-member"><div class="select-member-button" id="history_${null_value.history_id}" value="${null_value.history_id}"><div class="button member">${null_value.family_name}　${null_value.given_name}</div></div></li>`);
             });
             $('#null-member-list').html(null_list);
           }
           $('#allocation-form').html(arr);
-        }else{
+        } else {
           $('#allocation-form').html(`<p>${data["err"]}</p>`);
         }
-      },
-      error: function(xhr, status, error) {
+      })
+      .catch(error => {
         $('#allocation-form').html("<p>通信エラー</p>");
-      }
-    });
+      });
   }
   
   function joinMember(){
-    $.ajax({
-      url: "../classes/ajax.php",
-      data: {
-        "type": 'join_member',
-        "date": $("#date").val()
-      },
-      success: function(data) {
-        if (data == null){
-          $('#join_member').html("");
-        }else if(data['err'] == null){
-          let arr = [];
-          $.each(data, function(key, value){
-            let work_name = (value.work_name != null)?`<p>${value.work_name}</p>`:"";
-            arr.push(`<li id=join_member_${value.history_id}><div class="button member state-btn" data-target='remove-member' value=${value.history_id}>${value.family_name}　${value.given_name}</div>${work_name}</li>`);
-          });
-          $('#join_member').html(arr);
-        }else{
-          $('#join_member').append(`<p>${data["err"]}</p>`);
-        }
-      },
-      error: function(xhr, status, error){
-        $('#join_member').append("<p>通信エラー</p>");
-      }
-    });
+    cachedAjax('join_member', { date: $("#date").val() })
+      .then(data => renderJoinMembers(data))
+      .catch(() => $('#join_member').append("<p>通信エラー</p>"));
   }
+
   function joinWork(){
-    $.ajax({
-      url: "../classes/ajax.php",
-      data: {
-        "type": 'join_work',
-        "date": $("#date").val()
-      },
-      success: function(data) {
-        if (data == null){
-          false
-        }else if(data['err'] == null){
-          let arr = [];
-          $.each(data, function(key, value){
-            let style = (value.status == 1)? 'work' : 'off'
-            arr.push(`<li id=join_work_${value.id}><div class="button ${style} state-btn" data-target='work-change' value=${value.id}>${value.name}</div></li>`);
-          });
-          $('#join_work').html(arr);
-        }else{
-          $('#join_work').append(`<p>${data["err"]}</p>`);
-        }
-      },
-      error: function(xhr, status, error){
-        $('#join_work').append("<p>通信エラー</p>");
-      }
-    });
+    cachedAjax('join_work', { date: $("#date").val() })
+      .then(data => renderJoinWorks(data))
+      .catch(() => $('#join_work').append("<p>通信エラー</p>"));
   }
+
   function getAllMember(){
-    $.ajax({
-      url: "../classes/ajax.php",
-      data: {
-        "type": 'member_list',
-        "select": $('#member_view').val()
-      },
-      success: function(data) {
-        if (data == null){
-          $('#member_show_result').html("");
-        }else if(data['err'] == null){
-          let arr = []
-          $.each(data, function(key, value){
-            arr.push(`<div id=member_${value.id} class="button member b-select md-btn" data-target='modal-member' value=${value.id}>${value.family_name}　${value.given_name}</div>`);
-          });
-          $('#member_show_result').html(arr);
-        }else{
-          $('#member_show_result').append(`<p>${data["err"]}</p>`);
-        }
-      },
-      error: function(xhr, status, error){
-        $('#member_show_result').append("<p>通信エラー</p>");
-      }
-    });
-    // return false
+    cachedAjax('member_list', { select: $('#member_view').val() })
+      .then(data => renderMembersTable(data))
+      .catch(() => $('#member_show_result').append("<p>通信エラー</p>"));
   }
   
   function getAllWork(){
-    $.ajax({
-      url: "../classes/ajax.php",
-      data: {
-        "type": 'work_list',
-        "select": $('#work_view').val()
-      },
-      success: function(data) {
-        if (data == null){
-          $('#work_show_result').html("")
-        }else if(data['err'] == null){
-          let arr = []
-          $.each(data, function(key, value){
-              arr.push(`<div id=work_${value.id} class="button work b-select md-btn" data-target='modal-work' value=${value.id}>${value.name}</div>`);
-          });
-          $('#work_show_result').html(arr)
-        }else{
-          $('#work_show_result').append(`<p>${data["err"]}</p>`);
-        }
-      },
-      error: function(xhr, status, error){
-        $('#work_show_result').append("<p>通信エラー</p>");
-      }
-    });
-    // return false
+    cachedAjax('work_list', { select: $('#work_view').val() })
+      .then(data => renderWorksTable(data))
+      .catch(() => $('#work_show_result').append("<p>通信エラー</p>"));
   }
 
   function getOptionList(){
-    $.ajax({
-      url: "../classes/ajax.php",
-      data: {
-        "type": 'option_list'
-      },
-      success: function(data) {
-        if (data == null){
-          $('#option_list').html("")
-        }else if(data['err'] == null){
+    cachedAjax('option_list', {})
+      .then(data => {
+        if (data == null) {
+          $('#option_list').html("");
+        } else if(data['err'] == null) {
           let fixed_list = [];
           let exclusion_list = [];
-          data[2].unshift({
-            id:null,
-            status: 0
-          },{
-            id:null,
-            status: 1
-          })
-          $.each(data[2], function(option_key, option_value){
-            let work_class = (option_value.id == null)?"add_option":"change_option";
+          data[2].unshift({ id:null, status: 0 }, { id:null, status: 1 });
+          
+          $.each(data[2], function(option_key, option_value) {
+            let work_class = (option_value.id == null) ? "add_option" : "change_option";
             let work_list = $("<select>", {
-              id: `works_${(option_value.id == null)?"new":option_value.id}`,
+              id: `works_${(option_value.id == null) ? "new" : option_value.id}`,
               name: 'works',
               class:`button work square ${work_class}`,
-            })
-            if(option_value.id == null){
-              work_list.append($('<option>')
-              .prop({
-                hidden: true,
-                text: "ーー"
-              }))
+            });
+            
+            if(option_value.id == null) {
+              work_list.append($('<option>').prop({ hidden: true, text: "ーー" }));
             }
+            
             for (const val of data[1]) {
-              if(val["archive"] == 0 || val["id"] == option_value.work_id){
-                let selected = (val["id"] == option_value.work_id)?true : false;
-                $(work_list).append($('<option>')
-                .prop({
+              if(val["archive"] == 0 || val["id"] == option_value.work_id) {
+                let selected = (val["id"] == option_value.work_id) ? true : false;
+                $(work_list).append($('<option>').prop({
                   value: val["id"],
                   text: val["name"],
                   selected: selected
-                }))
+                }));
               }
             }
 
-            let member_class = (option_value.id == null)?"add_option":"change_option";
+            let member_class = (option_value.id == null) ? "add_option" : "change_option";
             let member_list = $("<select>", {
-              id: `members_${(option_value.id == null)?"new":option_value.id}`,
+              id: `members_${(option_value.id == null) ? "new" : option_value.id}`,
               name: 'members',
               class:`button member square ${member_class}`
-            })
-            if(option_value.id == null){
-              member_list.append($('<option>')
-              .prop({
-                hidden: true,
-                text: "ーー"
-              }))
+            });
+            
+            if(option_value.id == null) {
+              member_list.append($('<option>').prop({ hidden: true, text: "ーー" }));
             }
+            
             for (const val of data[0]) {
-              if(val["archive"] == 0 || val["id"] == option_value.member_id){
-                let selected = (val["id"] == option_value.member_id)?true : false;
-                $(member_list).append($('<option>')
-                .prop({
+              if(val["archive"] == 0 || val["id"] == option_value.member_id) {
+                let selected = (val["id"] == option_value.member_id) ? true : false;
+                $(member_list).append($('<option>').prop({
                   value: val["id"],
                   text: `${val["family_name"]}　${val["given_name"]}`,
                   selected: selected
-                }))
+                }));
               }
             }
+            
             let option_list = $("<form>", {onsubmit: "return false;"})
               .append($("<ul>", {class: "option-group"})
-              .append($("<li>").append(work_list), $("<li>").append(member_list), $("<li>").append($("<div>",{
-                text:(option_value.id == null)?"追加":"解除", 
-                value: (option_value.id == null)?option_value.status:option_value.id,
-                class: "button work state-btn",
-                "data-target": (option_value.id == null)?"add-member_option":"delete-member_option"
-              }))))
-            if(option_value.status == 0){
+              .append($("<li>").append(work_list), $("<li>").append(member_list), 
+                $("<li>").append($("<div>",{
+                  text:(option_value.id == null) ? "追加" : "解除", 
+                  value: (option_value.id == null) ? option_value.status : option_value.id,
+                  class: "button work state-btn",
+                  "data-target": (option_value.id == null) ? "add-member_option" : "delete-member_option"
+                }))));
+            
+            if(option_value.status == 0) {
               fixed_list.push(option_list);
-            }else{
+            } else {
               exclusion_list.push(option_list);
             }
           });
-          $('#fixed_list').html(fixed_list)
-          $('#exclusion_list').html(exclusion_list)
-        }else{
+          
+          $('#fixed_list').html(fixed_list);
+          $('#exclusion_list').html(exclusion_list);
+        } else {
           $('#option_list').append(`<p>${data["err"]}</p>`);
         }
-      },
-      error: function(xhr, status, error){
-        $('#option_list').append("<p>通信エラー</p>");
-      }
-    });
+      })
+      .catch(() => $('#option_list').append("<p>通信エラー</p>"));
   }
 
   function getIntervalValue(){
     $.ajax({
       url: "../classes/ajax.php",
-      data: {
-        "type": 'get_interval'
-      },
+      data: { "type": 'get_interval' },
       dataType: "json",
       success: function(data) {
-        // JSONとして正しく解析
-        if (typeof data === 'string') {
-          data = JSON.parse(data);
-        }
-        if (data && data.interval !== null && data.interval !== undefined){
-          // レコードが存在する場合、保存されている値をテキストボックスに挿入
-          $('#interval_input').val(parseInt(data.interval));
-        }else{
-          // レコードが存在しない場合はデフォルト値0を設定
-          $('#interval_input').val(0);
-        }
+        if (typeof data === 'string') data = JSON.parse(data);
+        $('#interval_input').val(data && data.interval !== null ? parseInt(data.interval) : 0);
       },
-      error: function(xhr, status, error){
+      error: function(){
         $('#interval_input').val(0);
       }
     });
@@ -349,25 +417,14 @@ $(function($){
   function getWeekUseValue(){
     $.ajax({
       url: "../classes/ajax.php",
-      data: {
-        "type": 'get_week_use'
-      },
+      data: { "type": 'get_week_use' },
       dataType: "json",
       success: function(data) {
-        // JSONとして正しく解析
-        if (typeof data === 'string') {
-          data = JSON.parse(data);
-        }
-        if (data && data.weekUse !== null && data.weekUse !== undefined){
-          // レコードが存在する場合、保存されている値をラジオボタンに設定
-          const weekUseValue = parseInt(data.weekUse) === 1 ? '1' : '0';
-          $('input[name="week_mode"][value="' + weekUseValue + '"]').prop('checked', true);
-        }else{
-          // レコードが存在しない場合はデフォルト値(0 = 指定日)を設定
-          $('input[name="week_mode"][value="0"]').prop('checked', true);
-        }
+        if (typeof data === 'string') data = JSON.parse(data);
+        const weekUseValue = data && data.weekUse !== null ? (parseInt(data.weekUse) === 1 ? '1' : '0') : '0';
+        $('input[name="week_mode"][value="' + weekUseValue + '"]').prop('checked', true);
       },
-      error: function(xhr, status, error){
+      error: function(){
         $('input[name="week_mode"][value="0"]').prop('checked', true);
       }
     });
@@ -376,24 +433,13 @@ $(function($){
   function getWeekValue(){
     $.ajax({
       url: "../classes/ajax.php",
-      data: {
-        "type": 'get_week'
-      },
+      data: { "type": 'get_week' },
       dataType: "json",
       success: function(data) {
-        // JSONとして正しく解析
-        if (typeof data === 'string') {
-          data = JSON.parse(data);
-        }
-        if (data && data.week !== null && data.week !== undefined){
-          // レコードが存在する場合、保存されている曜日値をセレクトボックスに設定
-          $('#week_day_select').val(data.week.toString());
-        }else{
-          // レコードが存在しない場合はデフォルト値(0 = 月)を設定
-          $('#week_day_select').val('0');
-        }
+        if (typeof data === 'string') data = JSON.parse(data);
+        $('#week_day_select').val(data && data.week !== null ? data.week.toString() : '0');
       },
-      error: function(xhr, status, error){
+      error: function(){
         $('#week_day_select').val('0');
       }
     });
@@ -427,32 +473,23 @@ $(function($){
   function getResetDates(){
     $.ajax({
       url: "../classes/ajax.php",
-      data: {
-        "type": 'get_reset_dates'
-      },
+      data: { "type": 'get_reset_dates' },
       dataType: "json",
       success: function(data) {
-        if (typeof data === 'string') {
-          data = JSON.parse(data);
-        }
+        if (typeof data === 'string') data = JSON.parse(data);
         if (data && data.dates && Array.isArray(data.dates) && data.dates.length > 0) {
           selectedDates = data.dates;
-          
-          // Flatpickr に日付をセット
           if (flatpickrInstance) {
             const dates = selectedDates.map(dateStr => new Date(dateStr));
             flatpickrInstance.setDate(dates, false);
           }
-          
           updateSelectedDatesDisplay();
         } else {
           selectedDates = [];
-          if (flatpickrInstance) {
-            flatpickrInstance.clear();
-          }
+          if (flatpickrInstance) flatpickrInstance.clear();
         }
       },
-      error: function(xhr, status, error){
+      error: function(){
         selectedDates = [];
       }
     });
@@ -508,6 +545,19 @@ $(function($){
   });
 
   $('#interval_save_btn').on('click', function(){
+    // 日付変更時のキャッシュ無効化をここで設定
+    $(document).on('change', '#date', function(){
+      invalidateCache('allocation_list');
+      invalidateCache('join_member');
+      invalidateCache('join_work');
+      if (location.pathname.indexOf("/top.php") !== -1) {
+        joinMember();
+        joinWork();
+      } else if (location.pathname.indexOf("/allocation.php") !== -1) {
+        allocationView();
+      }
+    });
+    
     let interval = $('#interval_input').val();
     if (interval == "" || isNaN(interval) || parseInt(interval) < 0) {
       $('#option_result').html("<p>有効な数値を入力してください</p>");
@@ -693,6 +743,7 @@ $(function($){
           success: function(data) {
             if (!data["err"]){
               $('#member_result').html(`<p>${data[0].family_name}${data[0].given_name}(${data[0].kana_name})${(data[0].archive==0)?"有効":"無効"}を更新しました。</p>`);
+              invalidateCache('member_list');
               $('.modal-container').fadeOut();
               getAllMember();
             }else{
@@ -722,6 +773,7 @@ $(function($){
               $('#given_name').val("");
               $('#kana_name').val("");
               $('#member_archive').prop("checked", false);
+              invalidateCache('member_list');
               getAllMember();
             }else{
               $('#member_result').html(`<p>${data["err"]}</p>`);
@@ -733,7 +785,6 @@ $(function($){
         });
       }
     }
-    // return false
   });
   
   $('#submit_work').on('click',function(){
@@ -759,6 +810,8 @@ $(function($){
           success: function(data) {
             if (!data["err"]){
               $('#work_result').html(`<p>${data[0].name}(${data[0].multiple}人)${(data[0].archive==0)?"有効":"無効"}に更新しました。</p>`);
+              invalidateCache('work_list');
+              invalidateCache('option_list');
               $('.modal-container').fadeOut();
               getAllWork();
             }else{
@@ -787,6 +840,8 @@ $(function($){
               $('#name').val("");
               $('#multiple').val(1);
               $('#work_archive').prop("checked", false);
+              invalidateCache('work_list');
+              invalidateCache('option_list');
               getAllWork();
             }else{
               $('#work_result').html(`<p>${data["err"]}</p>`);
@@ -798,7 +853,6 @@ $(function($){
         });
       }
     }
-    // return false
   });
   
   $('#submit_select').on('click',function(){
