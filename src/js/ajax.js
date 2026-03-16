@@ -1,4 +1,56 @@
 $(function($){
+  // ==================== Web Worker 初期化 ====================
+  let dataWorker = null;
+  const WORKER_ENABLED = typeof Worker !== 'undefined';
+  
+  if (WORKER_ENABLED) {
+    try {
+      dataWorker = new Worker('../src/js/dataProcessWorker.js');
+      console.log('Web Worker initialized successfully');
+    } catch(e) {
+      console.warn('Failed to initialize Web Worker, using main thread:', e);
+      dataWorker = null;
+    }
+  }
+  
+  /**
+   * Workerにタスクを送信してデータ処理を実行（非同期）
+   * @param {string} task - 処理タスク名
+   * @param {*} data - 処理するデータ
+   * @param {Object} params - 処理パラメータ
+   * @returns {Promise} 処理結果
+   */
+  function processWithWorkerAsync(task, data, params = {}) {
+    return new Promise((resolve, reject) => {
+      if (!dataWorker || !WORKER_ENABLED) {
+        // フォールバック：メインスレッドで処理
+        console.log(`Worker not available, processing '${task}' in main thread`);
+        resolve(null);
+        return;
+      }
+      
+      const timeout = setTimeout(() => {
+        reject(new Error(`Worker task '${task}' timeout`));
+      }, 5000);
+      
+      const handleMessage = (event) => {
+        if (event.data.task === task) {
+          clearTimeout(timeout);
+          dataWorker.removeEventListener('message', handleMessage);
+          
+          if (event.data.success) {
+            resolve(event.data.result);
+          } else {
+            reject(new Error(event.data.error));
+          }
+        }
+      };
+      
+      dataWorker.addEventListener('message', handleMessage);
+      dataWorker.postMessage({ task, data, params });
+    });
+  }
+
   // ==================== キャッシングシステム ====================
   const CACHE_CONFIG = {
     GLOBAL_TTL: 60 * 1000,        // グローバル キャッシュ有効期間: 60秒
@@ -249,42 +301,24 @@ $(function($){
   
   function allocationView(){
     cachedAjax('allocation_list', { date: $("#date").val() })
-      .then(data => {
+      .then(async data => {
         if (data == null) {
           $('#allocation-form').html("");
         } else if(data["err"] == null) {
-          let arr = [];
-          $.each(data[0], function(work_key, work_value) {
-            let style = (work_value.status == 1) ? 'work' : 'off';
-            if(data[1] != null) {
-              let member = data[1].filter(value => {if(value.work_id == work_value.id){return true;}});
-              let list = [];
-              $.each(member, function(member_key, member_value) {
-                list.push(`
-                  <div class="select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}">
-                    <div class="button member">${member_value.family_name}　${member_value.given_name}</div>
-                  </div>
-                `);
-              });
-              arr.push(`
-                <li class="select-member">
-                  <div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div>
-                  ${list.join("")}
-                </li>
-              `);
+          // Worker でデータ処理を実行
+          try {
+            const processedData = await processWithWorkerAsync('format_allocation_list', data);
+            
+            // Worker が利用可能な場合は処理済みデータを使用、そうでない場合は元データを処理
+            if (processedData && processedData.raw) {
+              renderAllocationTable(processedData.raw);
             } else {
-              arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div></li>`);
+              renderAllocationTable(data[0], data[1]);
             }
-          });
-          if(data[1] != null) {
-            let null_member = data[1].filter(value => {if(value.work_id == null){return true;}});
-            let null_list = [];
-            $.each(null_member, function(null_key, null_value) {
-              null_list.push(`<li class="select-member"><div class="select-member-button" id="history_${null_value.history_id}" value="${null_value.history_id}"><div class="button member">${null_value.family_name}　${null_value.given_name}</div></div></li>`);
-            });
-            $('#null-member-list').html(null_list);
+          } catch(error) {
+            console.warn('Worker processing failed, using main thread:', error);
+            renderAllocationTable(data[0], data[1]);
           }
-          $('#allocation-form').html(arr);
         } else {
           $('#allocation-form').html(`<p>${data["err"]}</p>`);
         }
@@ -294,109 +328,197 @@ $(function($){
       });
   }
   
+  /**
+   * 割り当てテーブルをレンダリング
+   */
+  function renderAllocationTable(works, members) {
+    let arr = [];
+    $.each(works, function(work_key, work_value) {
+      let style = (work_value.status == 1) ? 'work' : 'off';
+      if(members != null) {
+        let member = members.filter(value => {if(value.work_id == work_value.id){return true;}});
+        let list = [];
+        $.each(member, function(member_key, member_value) {
+          list.push(`
+            <div class="select-member-button" id="history_${member_value.history_id}" value="${member_value.history_id}">
+              <div class="button member">${member_value.family_name}　${member_value.given_name}</div>
+            </div>
+          `);
+        });
+        arr.push(`
+          <li class="select-member">
+            <div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div>
+            ${list.join("")}
+          </li>
+        `);
+      } else {
+        arr.push(`<li class="select-member"><div class="md-btn button ${style} square work-title content" data-target="modal-select" data-type="work" value="${work_value.id}">${work_value.name}</div></li>`);
+      }
+    });
+    if(members != null) {
+      let null_member = members.filter(value => {if(value.work_id == null){return true;}});
+      let null_list = [];
+      $.each(null_member, function(null_key, null_value) {
+        null_list.push(`<li class="select-member"><div class="select-member-button" id="history_${null_value.history_id}" value="${null_value.history_id}"><div class="button member">${null_value.family_name}　${null_value.given_name}</div></div></li>`);
+      });
+      $('#null-member-list').html(null_list);
+    }
+    $('#allocation-form').html(arr);
+  }
+  
   function joinMember(){
     cachedAjax('join_member', { date: $("#date").val() })
-      .then(data => renderJoinMembers(data))
+      .then(async data => {
+        // Worker でデータ処理を実行
+        try {
+          const processedData = await processWithWorkerAsync('format_join_members', data);
+          renderJoinMembers(processedData ? processedData.members : data);
+        } catch(error) {
+          console.warn('Worker processing failed:', error);
+          renderJoinMembers(data);
+        }
+      })
       .catch(() => $('#join_member').append("<p>通信エラー</p>"));
   }
 
   function joinWork(){
     cachedAjax('join_work', { date: $("#date").val() })
-      .then(data => renderJoinWorks(data))
+      .then(async data => {
+        // Worker でデータ処理を実行
+        try {
+          const processedData = await processWithWorkerAsync('format_join_works', data);
+          renderJoinWorks(processedData ? processedData.works : data);
+        } catch(error) {
+          console.warn('Worker processing failed:', error);
+          renderJoinWorks(data);
+        }
+      })
       .catch(() => $('#join_work').append("<p>通信エラー</p>"));
   }
 
   function getAllMember(){
     cachedAjax('member_list', { select: $('#member_view').val() })
-      .then(data => renderMembersTable(data))
+      .then(async data => {
+        // Worker でデータ処理を実行（バッチ処理）
+        try {
+          const processedData = await processWithWorkerAsync('batch_process_members', { members: data, works: [], assignments: [] });
+          renderMembersTable(processedData ? processedData.members : data);
+        } catch(error) {
+          console.warn('Worker processing failed:', error);
+          renderMembersTable(data);
+        }
+      })
       .catch(() => $('#member_show_result').append("<p>通信エラー</p>"));
   }
   
   function getAllWork(){
     cachedAjax('work_list', { select: $('#work_view').val() })
-      .then(data => renderWorksTable(data))
+      .then(async data => {
+        // Worker でデータ処理を実行（バッチ処理）
+        try {
+          const processedData = await processWithWorkerAsync('batch_process_works', { works: data, members: [], assignments: [] });
+          renderWorksTable(processedData ? processedData.works : data);
+        } catch(error) {
+          console.warn('Worker processing failed:', error);
+          renderWorksTable(data);
+        }
+      })
       .catch(() => $('#work_show_result').append("<p>通信エラー</p>"));
   }
 
   function getOptionList(){
     cachedAjax('option_list', {})
-      .then(data => {
+      .then(async data => {
         if (data == null) {
           $('#option_list').html("");
         } else if(data['err'] == null) {
-          let fixed_list = [];
-          let exclusion_list = [];
-          data[2].unshift({ id:null, status: 0 }, { id:null, status: 1 });
-          
-          $.each(data[2], function(option_key, option_value) {
-            let work_class = (option_value.id == null) ? "add_option" : "change_option";
-            let work_list = $("<select>", {
-              id: `works_${(option_value.id == null) ? "new" : option_value.id}`,
-              name: 'works',
-              class:`button work square ${work_class}`,
-            });
-            
-            if(option_value.id == null) {
-              work_list.append($('<option>').prop({ hidden: true, text: "ーー" }));
-            }
-            
-            for (const val of data[1]) {
-              if(val["archive"] == 0 || val["id"] == option_value.work_id) {
-                let selected = (val["id"] == option_value.work_id) ? true : false;
-                $(work_list).append($('<option>').prop({
-                  value: val["id"],
-                  text: val["name"],
-                  selected: selected
-                }));
-              }
-            }
-
-            let member_class = (option_value.id == null) ? "add_option" : "change_option";
-            let member_list = $("<select>", {
-              id: `members_${(option_value.id == null) ? "new" : option_value.id}`,
-              name: 'members',
-              class:`button member square ${member_class}`
-            });
-            
-            if(option_value.id == null) {
-              member_list.append($('<option>').prop({ hidden: true, text: "ーー" }));
-            }
-            
-            for (const val of data[0]) {
-              if(val["archive"] == 0 || val["id"] == option_value.member_id) {
-                let selected = (val["id"] == option_value.member_id) ? true : false;
-                $(member_list).append($('<option>').prop({
-                  value: val["id"],
-                  text: `${val["family_name"]}　${val["given_name"]}`,
-                  selected: selected
-                }));
-              }
-            }
-            
-            let option_list = $("<form>", {onsubmit: "return false;"})
-              .append($("<ul>", {class: "option-group"})
-              .append($("<li>").append(work_list), $("<li>").append(member_list), 
-                $("<li>").append($("<div>",{
-                  text:(option_value.id == null) ? "追加" : "解除", 
-                  value: (option_value.id == null) ? option_value.status : option_value.id,
-                  class: "button work state-btn",
-                  "data-target": (option_value.id == null) ? "add-member_option" : "delete-member_option"
-                }))));
-            
-            if(option_value.status == 0) {
-              fixed_list.push(option_list);
-            } else {
-              exclusion_list.push(option_list);
-            }
-          });
-          
-          $('#fixed_list').html(fixed_list);
-          $('#exclusion_list').html(exclusion_list);
+          // Worker でデータ処理を実行
+          try {
+            const processedData = await processWithWorkerAsync('calculate_statistics', data[2]);
+            renderOptionList(data);
+          } catch(error) {
+            console.warn('Worker processing failed:', error);
+            renderOptionList(data);
+          }
         } else {
           $('#option_list').append(`<p>${data["err"]}</p>`);
         }
       })
       .catch(() => $('#option_list').append("<p>通信エラー</p>"));
+  }
+  
+  /**
+   * オプションリストをレンダリング
+   */
+  function renderOptionList(data) {
+    let fixed_list = [];
+    let exclusion_list = [];
+    data[2].unshift({ id:null, status: 0 }, { id:null, status: 1 });
+    
+    $.each(data[2], function(option_key, option_value) {
+      let work_class = (option_value.id == null) ? "add_option" : "change_option";
+      let work_list = $("<select>", {
+        id: `works_${(option_value.id == null) ? "new" : option_value.id}`,
+        name: 'works',
+        class:`button work square ${work_class}`,
+      });
+      
+      if(option_value.id == null) {
+        work_list.append($('<option>').prop({ hidden: true, text: "ーー" }));
+      }
+      
+      for (const val of data[1]) {
+        if(val["archive"] == 0 || val["id"] == option_value.work_id) {
+          let selected = (val["id"] == option_value.work_id) ? true : false;
+          $(work_list).append($('<option>').prop({
+            value: val["id"],
+            text: val["name"],
+            selected: selected
+          }));
+        }
+      }
+
+      let member_class = (option_value.id == null) ? "add_option" : "change_option";
+      let member_list = $("<select>", {
+        id: `members_${(option_value.id == null) ? "new" : option_value.id}`,
+        name: 'members',
+        class:`button member square ${member_class}`
+      });
+      
+      if(option_value.id == null) {
+        member_list.append($('<option>').prop({ hidden: true, text: "ーー" }));
+      }
+      
+      for (const val of data[0]) {
+        if(val["archive"] == 0 || val["id"] == option_value.member_id) {
+          let selected = (val["id"] == option_value.member_id) ? true : false;
+          $(member_list).append($('<option>').prop({
+            value: val["id"],
+            text: `${val["family_name"]}　${val["given_name"]}`,
+            selected: selected
+          }));
+        }
+      }
+      
+      let option_list = $("<form>", {onsubmit: "return false;"})
+        .append($("<ul>", {class: "option-group"})
+        .append($("<li>").append(work_list), $("<li>").append(member_list), 
+          $("<li>").append($("<div>",{
+            text:(option_value.id == null) ? "追加" : "解除", 
+            value: (option_value.id == null) ? option_value.status : option_value.id,
+            class: "button work state-btn",
+            "data-target": (option_value.id == null) ? "add-member_option" : "delete-member_option"
+          }))));
+      
+      if(option_value.status == 0) {
+        fixed_list.push(option_list);
+      } else {
+        exclusion_list.push(option_list);
+      }
+    });
+    
+    $('#fixed_list').html(fixed_list);
+    $('#exclusion_list').html(exclusion_list);
   }
 
   function getIntervalValue(){
