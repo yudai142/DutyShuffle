@@ -301,24 +301,12 @@ $(function($){
   
   function allocationView(){
     cachedAjax('allocation_list', { date: $("#date").val() })
-      .then(async data => {
+      .then(data => {
         if (data == null) {
           $('#allocation-form').html("");
         } else if(data["err"] == null) {
-          // Worker でデータ処理を実行
-          try {
-            const processedData = await processWithWorkerAsync('format_allocation_list', data);
-            
-            // Worker が利用可能な場合は処理済みデータを使用、そうでない場合は元データを処理
-            if (processedData && processedData.raw) {
-              renderAllocationTable(processedData.raw);
-            } else {
-              renderAllocationTable(data[0], data[1]);
-            }
-          } catch(error) {
-            console.warn('Worker processing failed, using main thread:', error);
-            renderAllocationTable(data[0], data[1]);
-          }
+          // data[0] = works, data[1] = members の構造で処理
+          renderAllocationTable(data[0], data[1]);
         } else {
           $('#allocation-form').html(`<p>${data["err"]}</p>`);
         }
@@ -368,78 +356,35 @@ $(function($){
   
   function joinMember(){
     cachedAjax('join_member', { date: $("#date").val() })
-      .then(async data => {
-        // Worker でデータ処理を実行
-        try {
-          const processedData = await processWithWorkerAsync('format_join_members', data);
-          renderJoinMembers(processedData ? processedData.members : data);
-        } catch(error) {
-          console.warn('Worker processing failed:', error);
-          renderJoinMembers(data);
-        }
-      })
+      .then(data => renderJoinMembers(data))
       .catch(() => $('#join_member').append("<p>通信エラー</p>"));
   }
 
   function joinWork(){
     cachedAjax('join_work', { date: $("#date").val() })
-      .then(async data => {
-        // Worker でデータ処理を実行
-        try {
-          const processedData = await processWithWorkerAsync('format_join_works', data);
-          renderJoinWorks(processedData ? processedData.works : data);
-        } catch(error) {
-          console.warn('Worker processing failed:', error);
-          renderJoinWorks(data);
-        }
-      })
+      .then(data => renderJoinWorks(data))
       .catch(() => $('#join_work').append("<p>通信エラー</p>"));
   }
 
   function getAllMember(){
     cachedAjax('member_list', { select: $('#member_view').val() })
-      .then(async data => {
-        // Worker でデータ処理を実行（バッチ処理）
-        try {
-          const processedData = await processWithWorkerAsync('batch_process_members', { members: data, works: [], assignments: [] });
-          renderMembersTable(processedData ? processedData.members : data);
-        } catch(error) {
-          console.warn('Worker processing failed:', error);
-          renderMembersTable(data);
-        }
-      })
+      .then(data => renderMembersTable(data))
       .catch(() => $('#member_show_result').append("<p>通信エラー</p>"));
   }
   
   function getAllWork(){
     cachedAjax('work_list', { select: $('#work_view').val() })
-      .then(async data => {
-        // Worker でデータ処理を実行（バッチ処理）
-        try {
-          const processedData = await processWithWorkerAsync('batch_process_works', { works: data, members: [], assignments: [] });
-          renderWorksTable(processedData ? processedData.works : data);
-        } catch(error) {
-          console.warn('Worker processing failed:', error);
-          renderWorksTable(data);
-        }
-      })
+      .then(data => renderWorksTable(data))
       .catch(() => $('#work_show_result').append("<p>通信エラー</p>"));
   }
 
   function getOptionList(){
     cachedAjax('option_list', {})
-      .then(async data => {
+      .then(data => {
         if (data == null) {
           $('#option_list').html("");
         } else if(data['err'] == null) {
-          // Worker でデータ処理を実行
-          try {
-            const processedData = await processWithWorkerAsync('calculate_statistics', data[2]);
-            renderOptionList(data);
-          } catch(error) {
-            console.warn('Worker processing failed:', error);
-            renderOptionList(data);
-          }
+          renderOptionList(data);
         } else {
           $('#option_list').append(`<p>${data["err"]}</p>`);
         }
