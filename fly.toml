@@ -1,65 +1,23 @@
-# fly.io 設定ファイル
-app = "dutyshuffle"
-primary_region = "nrt"  # Tokyo region (低レイテンシ)
+# fly.toml app configuration file generated for dutyshuffle on 2026-03-20T10:51:21Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'dutyshuffle'
+primary_region = 'nrt'
 
 [build]
-  dockerfile = "./Dockerfile"
 
 [http_service]
-  internal_port = 80
+  internal_port = 8080
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  processes = ["app"]
+  min_machines_running = 0
+  processes = ['app']
 
-[env]
-  # Prisma環境
-  NODE_ENV = "production"
-
-[[services]]
-  protocol = "tcp"
-  internal_port = 80
-  processes = ["app"]
-
-  [services.concurrency]
-    type = "connections"
-    hard_limit = 100
-    soft_limit = 80
-
-  [[services.ports]]
-    port = 80
-    handlers = ["http"]
-    force_https = true
-
-  [[services.ports]]
-    port = 443
-    handlers = ["tls", "http"]
-
-  # ヘルスチェック
-  [services.http_checks]
-    enabled = true
-    grace_period = "10s"
-    interval = "15s"
-    timeout = "5s"
-    method = "GET"
-    path = "/"
-    protocol = "http"
-    tls_skip_verify = false
-    headers = {}
-
-# メモリとCPU設定
 [[vm]]
-  cpu_kind = "shared"
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 1024
-  processes = ["app"]
-
-# スケーリング設定
-[deploy]
-  release_command = "npm run build && npm run db:push"
-  release_command_timeout = "300s"
-
-[env]
-  DATABASE_URL = ""  # fly.io Postgresql に設定予定
-  PHP_MEMORY_LIMIT = "512M"
-  PHP_MAX_EXECUTION_TIME = "30"
+  memory_mb = 256
