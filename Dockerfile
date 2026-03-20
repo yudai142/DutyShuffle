@@ -17,6 +17,9 @@ RUN a2enmod rewrite headers
 # ワークディレクトリを設定
 WORKDIR /var/www/html
 
+# すべてのソースコードをコピー
+COPY . .
+
 # Apache設定ファイルをコピー
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
@@ -24,7 +27,6 @@ COPY apache.conf /etc/apache2/sites-available/000-default.conf
 RUN a2ensite 000-default
 
 # 依存関係をインストール
-COPY package*.json ./
 RUN npm install || true
 
 # スタートアップスクリプトをコピー
