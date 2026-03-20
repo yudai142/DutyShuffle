@@ -26,10 +26,10 @@ primary_region = "nrt"
   cpus = 1
   memory_mb = 1024
 
-# マイグレーション設定
-[deploy]
-  release_command = "npx prisma migrate deploy"
-  release_command_timeout = "300s"
+# マイグレーション設定（注：タイムアウトの場合はコメントアウト）
+# [deploy]
+#   release_command = "npx prisma migrate deploy"
+#   release_command_timeout = "300s"
 
 # 環境変数
 [env]
