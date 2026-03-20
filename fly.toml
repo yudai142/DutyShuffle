@@ -12,11 +12,11 @@ primary_region = "nrt"
   auto_stop_machines = true
   auto_start_machines = true
 
-  # ヘルスチェック
-  [http_service.checks.alive]
+  [[http_service.checks]]
     grace_period = "10s"
     interval = "15s"
     timeout = "5s"
+    type = "http"
     method = "GET"
     path = "/top.php"
 
